@@ -13,7 +13,7 @@ const Login = () => {
   };
 
   const handleloginroute=()=>{
-    navigate('/');
+    navigate('/signup');
   }
 
   const handleSubmit = (e) => {
@@ -37,7 +37,7 @@ const Login = () => {
     setErrors(tempErrors);
 
     if (isValid) {
-      alert('Login successful!');
+      navigate('/home')
     }
   };
 

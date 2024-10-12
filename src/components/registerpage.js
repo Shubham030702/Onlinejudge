@@ -11,7 +11,7 @@ const Register = () => {
   const navigate = useNavigate();
 
   const handleLoginRoute = () => {
-    navigate('/Login');
+    navigate('/');
   };
 
   const validateEmail = (email) => {
@@ -50,8 +50,7 @@ const Register = () => {
     setErrors(tempErrors);
 
     if (isValid) {
-      alert('Sign Up successful!');
-      // Here, you can add logic to submit the form data
+      navigate('/home')
     }
   };
 

@@ -1,0 +1,36 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+nav{
+    height: 7vh;
+    width: 100vw;
+    color: rgba(240, 248, 255, 0.735);
+    margin-top: 5vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+nav li{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+nav li h1{
+    margin: auto 5vh;
+}
+
+nav li a{
+    list-style: none;
+    font-style: normal;
+    text-decoration: none;
+    color: aliceblue;
+}
+nav li a:hover{
+    list-style: none;
+    font-style: normal;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.324);
+}
