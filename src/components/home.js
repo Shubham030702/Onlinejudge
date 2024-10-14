@@ -1,34 +1,48 @@
-import React from 'react'
-import './home.css'
-import { useNavigate } from 'react-router-dom';
-function Home() {
-  const navigate = useNavigate();
+import './home.css';
+import React, { useEffect, useState } from 'react';
 
-  const handlequestionRoute=()=>{
-    navigate('/')
-  }
+const ProblemList = () => {
+  const [problems, setProblems] = useState([]);
+
+  useEffect(() => {
+    const fetchProblems = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/problems'); 
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        console.log(data);
+        setProblems(data);
+      } catch (error) {
+        console.error('Error fetching problems:', error);
+      }
+    };
+
+    fetchProblems();
+  }, []);
 
   return (
     <>
-    <div className="home">
-    <div className="smallnav">
-      <li>All</li>
-      <li>Array</li>
-      <li>Binary Search</li>
-      <li>Graph</li>
-      <li>Dynamic Programming & Recursion</li>
-      <li>Stack & queue</li>
-    </div>
-    <div class="card" onClick={handlequestionRoute}>
-        <div class="best">
-            <h1>Two Sum</h1>
+      <div className="home">
+        {problems.map(problem => (
+          <li key={problem._id}>
+            <div class="card">
+        <div class="title">
+            <h1>{problem.problemName}</h1>
         </div>
-        <h2>Array</h2>
-        <h3>Easy</h3>
+        <div class="price">
+            <h2>{problem.difficulty}</h2>
+        </div>
+        <div class="action">
+            {problem.topics.map(t=>(<h4>{t}</h4>))}
+        </div>
     </div>
-    </div>
+          </li>
+        ))}
+      </div>
     </>
-  )
-}
+  );
+};
 
-export default Home
+export default ProblemList;

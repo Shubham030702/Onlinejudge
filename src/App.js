@@ -2,8 +2,9 @@ import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-route
 import Navbar from './components/navbar';
 import Login from './components/loginpage';
 import Register from './components/registerpage';
-import Home from './components/home';
+import ProblemList from './components/home';
 import './App.css'
+import Problems from './components/problem';
 
 function App() {
   const location = useLocation();
@@ -14,7 +15,8 @@ function App() {
       <Routes>
         <Route path='/signup' element={<Register />} />
         <Route path='/' element={<Login />} />
-        <Route path='/home' element={<Home />} />
+        <Route path='/home' element={<ProblemList />} />
+        <Route path='/problem' element={<Problems />} />
       </Routes>
     </>
   );

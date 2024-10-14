@@ -5,10 +5,16 @@
     background-color: rgba(240, 255, 255, 0.345);
     overflow: scroll;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: row;
+}
+
+.home li{
+    list-style: none;
 }
 
 .card {
-    margin: auto;
+    margin: 2vh;
     position: relative;
     height: 200px;
     width: 300px;
@@ -27,7 +33,7 @@
     scale: 1.1;
 }
 
-.card .best {
+.title {
     padding: 5px;
     background-color: #5a5151;
     color: #fff;
