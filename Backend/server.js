@@ -21,6 +21,7 @@ app.get('/api/problems', async (req, res) => {
 });
 
 app.get('/api/problem/:id', async (req, res) => {
+  console.log(req.params.id);
   try {
     const problem = await Problem.findById(req.params.id);
     if (!problem) return res.status(404).json({ message: 'Problem not found' });

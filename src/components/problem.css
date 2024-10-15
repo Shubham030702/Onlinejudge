@@ -13,6 +13,9 @@
     margin: 0 auto;
     backdrop-filter: blur(5px);
     background-color: rgb(39, 39, 39);
+    font-family: 'Times New Roman', Times, serif;
+    padding: 2vh;
+    overflow: scroll;
 }
 
 .resizable-editor {
@@ -22,3 +25,14 @@
     width: 46vw; 
     font-family: 'Courier New', Courier, monospace;
   }
+
+.left h1{
+    margin-bottom: 2vh;
+}
+
+.left h3{
+    margin-bottom: 2vh;
+}
+.left h4{
+    margin-bottom: 4vh;
+}

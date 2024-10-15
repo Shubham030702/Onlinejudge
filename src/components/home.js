@@ -1,9 +1,9 @@
 import './home.css';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ProblemList = () => {
   const [problems, setProblems] = useState([]);
-
   useEffect(() => {
     const fetchProblems = async () => {
       try {
@@ -22,11 +22,26 @@ const ProblemList = () => {
     fetchProblems();
   }, []);
 
+  const navigate = useNavigate();
+  const problemroute = async(id) =>{
+    try {
+      const response = await fetch(`http://localhost:5000/api/problem/${id}`); 
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      console.log(data);
+      navigate(`/problems/${id}`, { state: { problemData: data } });
+    } catch (error) {
+      console.error('Error fetching problems:', error);
+    }
+  }
+
   return (
     <>
       <div className="home">
         {problems.map(problem => (
-          <li key={problem._id}>
+          <li key={problem._id} onClick={() => problemroute(problem._id)}>
             <div class="card">
         <div class="title">
             <h1>{problem.problemName}</h1>
