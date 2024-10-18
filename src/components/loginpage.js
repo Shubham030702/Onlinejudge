@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './loginpage.css'
-import { useNavigate } from 'react-router-dom';
+import { useAsyncValue, useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -16,7 +16,7 @@ const Login = () => {
     navigate('/signup');
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     
     let isValid = true;
@@ -34,11 +34,32 @@ const Login = () => {
       isValid = false;
     }
 
+    const credentials = {
+      Email :email,
+      Password:password
+    }
+
     setErrors(tempErrors);
 
     if (isValid) {
-      navigate('/home')
-    }
+      try{
+        const response = await fetch('http://localhost:5000/api/login',{
+          method:'POST',
+          headers: {
+            'Content-Type' : 'application/json',
+          },
+          body : JSON.stringify(credentials)
+        })
+        const data = await response.json()
+        if(response.ok) {
+          alert(data.message)
+          navigate('/home')
+      }
+        else alert(data.message)
+      }catch(error){
+        alert(error)
+      }
+  }
   };
 
   return (

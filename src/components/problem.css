@@ -18,12 +18,16 @@
     overflow: scroll;
 }
 
-.resizable-editor {
-    resize: vertical; 
-    overflow: auto;
-    height: 40vh; 
-    width: 46vw; 
-    font-family: 'Courier New', Courier, monospace;
+.right{
+    padding: 0;
+    overflow: hidden;
+}
+
+.resizer {
+    height: 10px;
+    background-color: #4b3838;
+    cursor: row-resize;
+    width: 100%;
   }
 
 .left h1{
@@ -35,4 +39,8 @@
 }
 .left h4{
     margin-bottom: 4vh;
+}
+
+.tests{
+    overflow: scroll;
 }

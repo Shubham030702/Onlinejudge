@@ -19,7 +19,7 @@ const Register = () => {
     return re.test(String(email).toLowerCase());
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     
     let isValid = true;
@@ -31,26 +31,45 @@ const Register = () => {
       tempErrors.email = "Please enter a valid email address.";
       isValid = false;
     }
-
     if (username.trim() === '') {
-      tempErrors.username = "Username is required."; // Added check for username
+      tempErrors.username = "Username is required."; 
       isValid = false;
     }
-
     if (password.length < 6) {
       tempErrors.password = "Password must be at least 6 characters long.";
       isValid = false;
     }
-    
     if (password !== conPassword) {
-      tempErrors.conPassword = "Password doesn't match."; // Fixed error key
+      tempErrors.conPassword = "Password doesn't match."; 
       isValid = false;
     }
 
     setErrors(tempErrors);
 
+    const credentials={
+      Email : email,
+      Username : username,
+      Password : password
+    };
+
     if (isValid) {
-      navigate('/home')
+      try{
+        const response = await fetch('http://localhost:5000/api/signup',{
+          method: 'POST',
+          headers: {
+            'Content-Type' : 'application/json',
+          },
+          body : JSON.stringify(credentials)
+        });
+        const data = await response.json()
+        if(response.ok) {
+          alert('User Signed in Successfully...');
+          navigate('/home')
+      }
+        else alert(data.message)
+      }catch(error){
+        alert(error)
+      }
     }
   };
 
@@ -71,8 +90,8 @@ const Register = () => {
         </div>
         <div className="input-group">
           <input
-            type="text" // Changed to 'text'
-            id="username" // Changed ID to be unique
+            type="text" 
+            id="username" 
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -83,7 +102,7 @@ const Register = () => {
         <div className="input-group">
           <input
             type="password"
-            id="password" // Ensure unique ID
+            id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
