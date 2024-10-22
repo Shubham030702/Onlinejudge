@@ -1,5 +1,19 @@
 const mongoose = require('mongoose');
 
+const submissionSchema = new mongoose.Schema({
+  Problem : {
+    type:String,
+    required:true
+  },
+  Status :{
+    type : String,
+    required:true,
+  },
+  Time : {
+    type : Date,
+    default : Date.now
+  }
+})
 const userSchema = new mongoose.Schema({
   Username: {
     type: String,
@@ -16,9 +30,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 6,
+  },
+  Submissions:{
+    type: [submissionSchema],
   }
 }, { timestamps: true });
-
 const User = mongoose.model('User', userSchema);
+
 
 module.exports = User;

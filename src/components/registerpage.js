@@ -64,7 +64,7 @@ const Register = () => {
         const data = await response.json()
         if(response.ok) {
           alert('User Signed in Successfully...');
-          navigate('/home')
+          navigate('/')
       }
         else alert(data.message)
       }catch(error){

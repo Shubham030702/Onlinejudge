@@ -4,15 +4,20 @@ import { useNavigate } from 'react-router-dom';
 
 const ProblemList = () => {
   const [problems, setProblems] = useState([]);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchProblems = async () => {
       try {
         const response = await fetch('http://localhost:5000/api/problems'); 
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          if(response.status === 401) {
+            console.log("error: message nahi")
+            navigate('/')
+        }
+          else throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log(data);
         setProblems(data);
       } catch (error) {
         console.error('Error fetching problems:', error);
@@ -22,7 +27,6 @@ const ProblemList = () => {
     fetchProblems();
   }, []);
 
-  const navigate = useNavigate();
   const problemroute = async(id) =>{
     try {
       const response = await fetch(`http://localhost:5000/api/problem/${id}`); 
@@ -30,7 +34,10 @@ const ProblemList = () => {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-      console.log(data);
+      if (!response.ok) {
+        if(response.status === 401) navigate('/');
+        else throw new Error('Network response was not ok');
+      }
       navigate(`/problems/${id}`, { state: { problemData: data } });
     } catch (error) {
       console.error('Error fetching problems:', error);

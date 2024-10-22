@@ -52,12 +52,13 @@ const Login = () => {
         })
         const data = await response.json()
         if(response.ok) {
-          alert(data.message)
           navigate('/home')
-      }
-        else alert(data.message)
+        }
+        else {
+          console.log(data.message);
+        }
       }catch(error){
-        alert(error)
+        console.log(error);
       }
   }
   };

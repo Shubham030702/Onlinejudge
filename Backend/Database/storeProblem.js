@@ -1,10 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const { MongoClient } = require('mongodb');
-
-const uri = 'mongodb://localhost:27017/';
-const client = new MongoClient(uri);
-const dbName = 'ProblemStatements';
+require('dotenv').config({ path: '../.env' });
+const client = new MongoClient(process.env.MONGODB_URI);
+const dbName = 'users';
 
 async function storeProblem(problemDir) {
   try {
