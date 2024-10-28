@@ -12,7 +12,6 @@ const ProblemList = () => {
         const response = await fetch('http://localhost:5000/api/problems'); 
         if (!response.ok) {
           if(response.status === 401) {
-            console.log("error: message nahi")
             navigate('/')
         }
           else throw new Error('Network response was not ok');

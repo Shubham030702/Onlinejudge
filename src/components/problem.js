@@ -11,19 +11,20 @@ function Problems() {
   const location = useLocation();
   const {problemData} = location.state;
   const [isVisible, setIsVisible] = useState(false);
-
-  const problemdesc={
-    ProblemName : problemData.problemName
-  }
+  const [code,setCode] = useState("// write your code here ");
 
   const submitprob = async() =>{
-    try{
+    const problemdesc={
+      ProblemName : problemData.problemName,
+      Code: code
+    }
+    try{  
       const response = await fetch('http://localhost:5000/api/submission',{
         method:'POST',
         headers:{
           'content-type': 'application/json'
         },
-        body : JSON.stringify(problemdesc)
+        body : JSON.stringify({problemdesc})
       })
     }catch(error){
       alert(error)
@@ -69,8 +70,9 @@ function Problems() {
         height={`${height}%`}
         width="100%" 
         defaultLanguage="cpp"
-        defaultValue="// Write your code here"
+        defaultValue={code}
         theme="vs-dark"
+        onChange={(value)=>setCode(value)}
       />
       <div className="resizer" onMouseDown={handleMouseDown}></div>
       <div className="tests" style={{ height: `${100 - height}%` }}>

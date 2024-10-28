@@ -10,12 +10,11 @@ async function storeProblem(problemDir) {
     await client.connect();
     const db = client.db(dbName);
     const problemsCollection = db.collection('problems');
-    const description = fs.readFileSync(path.join(problemDir, 'probdesc.txt'), 'utf-8');
+    const description = fs.readFileSync(path.join(problemDir, 'Structure.md'), 'utf-8');
     const lines = description.split('\n');
-
     lines.forEach(line => {
-      if (line.startsWith('Problem :')) {
-        problemname = line.replace('Problem :', '').trim(); 
+      if (line.startsWith('Problem Name:')) {
+        problemname = line.replace('Problem Name:', '').trim(); 
       } else if (line.startsWith('Difficulty :')) {
         difficulty = line.replace('Difficulty :', '').trim(); 
       } else if (line.startsWith('Topic :')) {
@@ -23,7 +22,7 @@ async function storeProblem(problemDir) {
       }
     });
 
-    const problemStatement = fs.readFileSync(path.join(problemDir, 'problem.md'), 'utf-8');
+    const problemStatement = fs.readFileSync(path.join(problemDir, 'Problem.md'), 'utf-8');
 
     const testCases = [];
 
