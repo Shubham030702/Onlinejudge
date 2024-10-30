@@ -23,6 +23,7 @@ async function storeProblem(problemDir) {
     });
 
     const problemStatement = fs.readFileSync(path.join(problemDir, 'Problem.md'), 'utf-8');
+    const Editorial = fs.readFileSync(path.join(problemDir, 'Editorial.md'), 'utf-8');
 
     const testCases = [];
 
@@ -45,6 +46,7 @@ async function storeProblem(problemDir) {
       topics : topic,
       statement: problemStatement,
       testCases: testCases,
+      editorial: Editorial,
       createdAt: new Date(),
     };
 

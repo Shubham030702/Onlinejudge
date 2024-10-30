@@ -34,7 +34,7 @@ const Login = () => {
       isValid = false;
     }
 
-    const credentials = {
+    const credential= {
       Email :email,
       Password:password
     }
@@ -48,7 +48,8 @@ const Login = () => {
           headers: {
             'Content-Type' : 'application/json',
           },
-          body : JSON.stringify(credentials)
+          body : JSON.stringify(credential),
+          credentials:'include'
         })
         const data = await response.json()
         if(response.ok) {

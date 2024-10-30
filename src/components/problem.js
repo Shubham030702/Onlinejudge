@@ -4,20 +4,26 @@ import './problem.css'
 import Editor, { DiffEditor, useMonaco, loader } from '@monaco-editor/react';
 import { useLocation } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import { Audio } from 'react-loader-spinner';
 
 function Problems() {
   const [height, setHeight] = useState(50);
-
+  const [status, setstatus] = useState(null);
+  const [input, setinput] = useState(null);
+  const [output, setoutput] = useState(null);
+  const [expoutput, setexpoutput] = useState(null);
   const location = useLocation();
   const {problemData} = location.state;
   const [isVisible, setIsVisible] = useState(false);
   const [code,setCode] = useState("// write your code here ");
-
+  const [loading, setLoading] = useState(false); 
+  const [view , setview] = useState('Description');
   const submitprob = async() =>{
     const problemdesc={
       ProblemName : problemData.problemName,
       Code: code
     }
+    setLoading(true)
     try{  
       const response = await fetch('http://localhost:5000/api/submission',{
         method:'POST',
@@ -26,11 +32,24 @@ function Problems() {
         },
         body : JSON.stringify({problemdesc})
       })
+      const result = await response.json();
+      if(result === 0){
+        setstatus('Accepted')
+      }
+      else{
+        setstatus(result.result.status.description)
+        setinput(result.input)
+        setoutput(result.decode)
+        setexpoutput(result.output)
+      }
     }catch(error){
       alert(error)
     }
+    setLoading(false)
   }
+  const runprob=()=>{
 
+  }
   const handleMouseDown = (e) => {
     const startY = e.clientY;
     const startHeight = height;
@@ -53,18 +72,48 @@ function Problems() {
     setIsVisible(!isVisible);
   };
 
+  const changeView = (e) =>{
+    setview(e);
+  }
+
   return (
     <>
     <div className="context">
       <div className="left">
-      <h1>{problemData.problemName}</h1>
-      <h3>{problemData.difficulty}</h3>
-      <h4>{problemData.topics.map(t=>(<p>{t}</p>))}</h4>
-      <ReactMarkdown>{problemData.statement}</ReactMarkdown>
+      <div className="content">
+      <h3 onClick={() => changeView('Description')}>Description</h3>
+  	  <h3 onClick={() => changeView('Editorial')}>Editorial</h3>
+      <h3 onClick={() => changeView('Solutions')}>Solutions</h3>
+      <h3 onClick={() => changeView('Submissions')}>Submissions</h3>
+      </div>
+      <div className="leftbottom">
+      {view === 'Description' && (
+        <>
+        <h1>{problemData.problemName}</h1>
+        <h3>{problemData.difficulty}</h3>
+        <h4>{problemData.topics.map(t=>(<p>{t}</p>))}</h4>
+        <ReactMarkdown>{problemData.statement}</ReactMarkdown>
+        </>
+      )}
+      {view === 'Editorial' && (
+        <ReactMarkdown>{problemData.editorial}</ReactMarkdown>
+      )}
+      {view === 'Solutions' && (
+        problemData.solutions.map((sol,index)=>{
+          <span>sol</span>
+        })
+      )}
+      {view === 'Submission' && (
+        problemData.solutions.map((sol,index)=>{
+          <span>sol</span>
+        })
+      )}
+      </div>
       </div>
       <div className="right">
       <div className="probsubmit">
-        <button onClick={submitprob}>Submit</button>
+        <button className='submit' onClick={submitprob}>Submit</button>
+        <button onClick={runprob}>Run</button>
       </div>
       <Editor
         height={`${height}%`}
@@ -76,14 +125,26 @@ function Problems() {
       />
       <div className="resizer" onMouseDown={handleMouseDown}></div>
       <div className="tests" style={{ height: `${100 - height}%` }}>
-      {problemData.testCases.map((testCase, index) => (
+        {loading && <Audio
+          height="80"
+          width="80"
+          radius="9"
+          color="green"
+          ariaLabel="loading"
+          wrapperStyle
+          wrapperClass
+        />}
+      {status === null ? (
+    problemData.testCases.map((testCase, index) => (
       <div key={index} className="test-case">
-        <h2>Test case {index+1}: </h2>
-        <h3><strong>Input : </strong>   {testCase.input}</h3>
-        <h3><strong>Output :</strong>   {testCase.output}</h3>
-        <br/>
+        <h2>Test case {index + 1}: </h2>
+        <h3><strong>Input:</strong> {testCase.input}</h3>
+        <h3><strong>Output:</strong> {testCase.output}</h3>
+        <br />
       </div>
-      ))}
+    ))
+  ) : <><h1>{status}</h1>
+  </>}
       </div>
       
     </div>

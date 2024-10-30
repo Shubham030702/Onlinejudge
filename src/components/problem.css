@@ -1,3 +1,13 @@
+*{
+    font-family: "Chakra Petch", serif;
+}
+
+.chakra-petch-semibold {
+    font-family: "Chakra Petch", serif;
+    font-weight: 600;
+    font-style: normal;
+  }
+
 .context {
     margin: 15vh auto auto auto;
     height: 80vh;
@@ -7,18 +17,53 @@
     color: aliceblue;
 }
 
-.left, .right {
+.right {
     height: 75vh;
     width: 46vw;
     margin: 0 auto;
-    backdrop-filter: blur(5px);
-    background-color: rgb(39, 39, 39);
+    backdrop-filter: blur(1px);
     font-family: 'Times New Roman', Times, serif;
     padding: 2vh;
     overflow: scroll;
 }
 
-.right{
+.left {
+    height: 75vh;
+    width: 46vw;
+    margin: 0 auto;
+    backdrop-filter: blur(1px);
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.leftbottom {
+    background-color: #1e1e1e;
+    padding: 2vh;
+    overflow: scroll;
+}
+
+.leftbottom h3,h4{
+    color: #deab60;
+}
+
+.content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    height: 5vh;
+    color: #ffc46c;
+}
+
+.content h3 {
+    cursor: pointer;
+    border-top-right-radius: 50%;
+    border-top-left-radius: 50%;
+    background: #1e1e1e;
+    width: 10vw;
+    text-align: center;
+    padding: 1.5vh;
+}
+
+.right {
     padding: 0;
     overflow: hidden;
 }
@@ -28,19 +73,42 @@
     background-color: #4b3838;
     cursor: row-resize;
     width: 100%;
-  }
+}
 
-.left h1{
+.leftbottom h1 {
     margin-bottom: 2vh;
 }
 
-.left h3{
+.leftbottom h3 {
     margin-bottom: 2vh;
 }
-.left h4{
+
+.leftbottom h4 {
     margin-bottom: 4vh;
 }
 
-.tests{
+.tests {
     overflow: scroll;
+}
+
+.probsubmit button {
+    width: 100px;
+    height: 30px;
+    cursor: pointer;
+    margin: 4px 0;
+    background: none;
+    border: none;
+    color: aliceblue;
+    font-size: 15px;
+    border: 0 1px solid white;
+}
+
+.probsubmit button:hover {
+    text-shadow: white;
+    text-decoration: underline;
+    border: 1px solid white;
+}
+
+.submit:hover {
+    background: #fd0000af;
 }

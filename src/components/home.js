@@ -9,7 +9,10 @@ const ProblemList = () => {
   useEffect(() => {
     const fetchProblems = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/problems'); 
+        const response = await fetch('http://localhost:5000/api/problems',{
+          method : 'GET',
+          credentials:'include',
+        }); 
         if (!response.ok) {
           if(response.status === 401) {
             navigate('/')
@@ -28,11 +31,15 @@ const ProblemList = () => {
 
   const problemroute = async(id) =>{
     try {
-      const response = await fetch(`http://localhost:5000/api/problem/${id}`); 
+      const response = await fetch(`http://localhost:5000/api/problem/${id}`,{
+      method:'GET',  
+      credentials:'include'
+      }); 
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
+      console.log(data)
       if (!response.ok) {
         if(response.status === 401) navigate('/');
         else throw new Error('Network response was not ok');

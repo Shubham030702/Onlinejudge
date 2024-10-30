@@ -36,6 +36,9 @@ const problemSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  editorials:{
+    type:String,
+  }
 });
 
 const Problem = mongoose.model('Problem', problemSchema);

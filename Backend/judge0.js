@@ -6,7 +6,7 @@ class CodeSubmission {
       const options = {
         method: 'POST',
         headers: {
-          'x-rapidapi-key': 'f8aa1dc04dmshb2c71cde8f04062p1e6a0ajsnd9862ee527e2',
+          'x-rapidapi-key': '19bc8fe7aemshf7b29e849eebdb4p1eb6c9jsn35f30b186736',
           'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
           'Content-Type': 'application/json'
         },
@@ -21,8 +21,9 @@ class CodeSubmission {
       try {
         const response = await fetch(url, options);
         const result = await response.json();
+        console.log("The recieved token is :",result);
         if (result.token) {
-          await this.getSubmission(result.token);
+          return await this.getSubmission(result.token);
         } else {
           console.error("Token not received from Judge0 API.");
         }
@@ -36,21 +37,24 @@ class CodeSubmission {
       const options2 = {
         method: 'GET',
         headers: {
-          'x-rapidapi-key': 'f8aa1dc04dmshb2c71cde8f04062p1e6a0ajsnd9862ee527e2',
+          'x-rapidapi-key': '19bc8fe7aemshf7b29e849eebdb4p1eb6c9jsn35f30b186736',
           'x-rapidapi-host': 'judge0-ce.p.rapidapi.com'
         }
       };
   
       try {
-        const response = await fetch(url2, options2);
-        const result = await response.json();
-        if (result.stdout && result.expected_output) {
-          const decodedStdout = Buffer.from(result.stdout, 'base64').toString('utf-8');
-          const decodedExpectedOutput = Buffer.from(result.expected_output, 'base64').toString('utf-8');
-          console.log("Your code's output:", decodedStdout);
-          console.log("Expected output:", decodedExpectedOutput);
-        } else {
-          console.log("Submission status:", result.status.description);
+        while (true) {
+          const response = await fetch(url2, options2);
+          const result = await response.json();
+          console.log(result.status)
+            if (result.status.id === 3) {
+                return result
+            } else if (result.status.id > 3) {
+                return result
+            } else {
+                console.log("Still in queue...");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
         }
       } catch (error) {
         console.error("Error during result retrieval:", error);

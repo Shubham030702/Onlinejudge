@@ -19,9 +19,7 @@ app.use(session({
   }),
   cookie: {
     maxAge: 1000 * 60 * 60 * 24, 
-    httpOnly: true,
-    sameSite: 'None',
-    secure : true,
+    httpOnly: true
   }
 }));
 
@@ -56,6 +54,7 @@ db.on('error', (err) => {
 
 
 function isLoggedIn(req, res, next) {
+  console.log(req.session)
   if (req.session.user) {  
     return next(); 
   } else {
@@ -63,7 +62,7 @@ function isLoggedIn(req, res, next) {
   }
 }
 
-app.get('/api/problems', async (req, res) => {
+app.get('/api/problems',isLoggedIn, async (req, res) => {
   try {
     const problems = await Problem.find();
     res.json(problems);
@@ -72,7 +71,7 @@ app.get('/api/problems', async (req, res) => {
   }
 });
 
-app.get('/api/problem/:id', async (req, res) => {
+app.get('/api/problem/:id',isLoggedIn, async (req, res) => {
   try {
     const problem = await Problem.findById(req.params.id);
     if (!problem) return res.status(404).json({ message: 'Problem not found' });
@@ -167,14 +166,23 @@ app.post('/api/submission',async(req,res)=>{
       const code64inp = base64code(input);
       const code64out = base64code(output);
       try {
-        await submission.evaluation(code64inp, code64out, code64);
-        console.log("Submission successful for index:", index);
+        const result = await submission.evaluation(code64inp, code64out, code64);
+        const decode = Buffer.from(result.stdout,'base64').toString('utf-8');
+        if(result.status.id > 3){
+          return {result,output,input,decode}
+        }
       } catch (error) {
         console.error("Error in submission for index:", index, error);
       }
     }
+    return 0;
   }
-  evaluateSubmissions()
+  try {
+    const result = await evaluateSubmissions();
+    res.send(result);
+  } catch (error) {
+    res.status(500).send({ error: "An error occurred while evaluating submissions." });
+  }
 })
 
 app.listen(PORT, () => {   
