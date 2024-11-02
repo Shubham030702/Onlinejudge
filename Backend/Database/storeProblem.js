@@ -47,6 +47,7 @@ async function storeProblem(problemDir) {
       statement: problemStatement,
       testCases: testCases,
       editorial: Editorial,
+      users: [],
       createdAt: new Date(),
     };
 

@@ -30,8 +30,6 @@ app.use(cors({
 
 app.use(express.json());
 
-
-
 let Problem, User;
 mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 30000 })
   .then(() => {
@@ -54,7 +52,6 @@ db.on('error', (err) => {
 
 
 function isLoggedIn(req, res, next) {
-  console.log(req.session)
   if (req.session.user) {  
     return next(); 
   } else {
@@ -73,7 +70,7 @@ app.get('/api/problems',isLoggedIn, async (req, res) => {
 
 app.get('/api/problem/:id',isLoggedIn, async (req, res) => {
   try {
-    const problem = await Problem.findById(req.params.id);
+    const problem = await Problem.findById(req.params.id).populate('users');
     if (!problem) return res.status(404).json({ message: 'Problem not found' });
     res.json(problem);
   } catch (error) {
@@ -98,9 +95,18 @@ app.post('/api/signup', async(req, res) => {
   }
 });
 
+app.get('/api/userdata',async(req,res)=>{
+  const response = await User.findById(req.session.user.id).populate({
+    path: 'Submissions.Problem',
+  })
+  .select('-Password');
+  console.log(response)
+  if(response) res.json(response)
+  else res.status(401).json({ message: 'user not found'});
+})
+
 app.post('/api/login', async (req, res) => {
   const { Email, Password } = req.body;
-  console.log(Email);
   try {
     const useremail = await User.findOne({ Email });
     if (!useremail) {

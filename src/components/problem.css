@@ -1,10 +1,10 @@
 *{
-    font-family: "Chakra Petch", serif;
+    font-family: "Merriweather", serif;
 }
 
-.chakra-petch-semibold {
-    font-family: "Chakra Petch", serif;
-    font-weight: 600;
+.merriweather-regular {
+    font-family: "Merriweather", serif;
+    font-weight: 400;
     font-style: normal;
   }
 
@@ -65,6 +65,7 @@
 
 .right {
     padding: 0;
+    background-color: #1e1e1e;
     overflow: hidden;
 }
 

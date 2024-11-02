@@ -1,9 +1,9 @@
-*{
+* {
     margin: 0;
     padding: 0;
 }
 
-nav{
+nav {
     height: 7vh;
     width: 100vw;
     color: rgba(240, 248, 255, 0.735);
@@ -12,25 +12,35 @@ nav{
     top: 0;
     left: 0;
 }
-nav li{
+
+nav li {
     display: flex;
     flex-direction: row;
     align-items: center;
 }
 
-nav li h1{
+nav li h1 {
     margin: auto 5vh;
 }
 
-nav li a{
+nav li a {
     list-style: none;
     font-style: normal;
     text-decoration: none;
     color: aliceblue;
 }
-nav li a:hover{
+
+nav li a:hover {
     list-style: none;
     font-style: normal;
     text-decoration: none;
     color: rgba(255, 255, 255, 0.324);
+}
+
+.rightnav {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+    margin-left: 60%;
+    width: 20vw;
 }

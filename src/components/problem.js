@@ -18,6 +18,28 @@ function Problems() {
   const [code,setCode] = useState("// write your code here ");
   const [loading, setLoading] = useState(false); 
   const [view , setview] = useState('Description');
+  const [userdata, setUserdata] = useState(null);
+  const fetchuser = async() =>{
+    try{
+      const response = await fetch('http://localhost:5000/api/userdata',{
+        method:'GET',
+        credentials: 'include',
+        headers:{
+          'content-type': 'application/json'
+        }
+      })
+      if (response.ok) {
+        setUserdata(await response.json()); 
+        return setUserdata; 
+      } else {
+        const errorData = await response.json(); 
+        console.error('Error:', errorData.message);
+      }
+    } catch (error) {
+      console.error('Fetch user error:', error); 
+    }
+  }
+  fetchuser();
   const submitprob = async() =>{
     const problemdesc={
       ProblemName : problemData.problemName,
@@ -47,23 +69,22 @@ function Problems() {
     }
     setLoading(false)
   }
+
   const runprob=()=>{
 
   }
+
   const handleMouseDown = (e) => {
     const startY = e.clientY;
     const startHeight = height;
-
     const onMouseMove = (e) => {
       const newHeight = startHeight + ((e.clientY - startY) / window.innerHeight) * 100;
       setHeight(Math.min(90, Math.max(10, newHeight))); 
     };
-
     const onMouseUp = () => {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
     };
-    console.log(height)
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
   };
@@ -98,16 +119,39 @@ function Problems() {
       {view === 'Editorial' && (
         <ReactMarkdown>{problemData.editorial}</ReactMarkdown>
       )}
+      {view === 'Submissions' && (
+        <>
+        <h1>{userdata.Username}</h1>
+        </>
+      )}
       {view === 'Solutions' && (
-        problemData.solutions.map((sol,index)=>{
-          <span>sol</span>
-        })
+        <ul>
+        {problemData.users.map(user => (
+          user.Submissions.filter(submission => submission.Problem === problemData._id)
+            .map(filteredSubmission => (
+              <li key={filteredSubmission._id}>
+                <span>{user.Username}</span>
+                <span>{filteredSubmission.Status}</span>
+                <span>{new Date(filteredSubmission.Time).toLocaleString()}</span>
+                <span onClick={() => changeView('Submitted')}>Solution</span>
+              </li>
+            ))
+        ))}
+      </ul>
       )}
-      {view === 'Submission' && (
-        problemData.solutions.map((sol,index)=>{
-          <span>sol</span>
-        })
-      )}
+      {view === 'Submitted' && (
+          <>
+          {problemData.users.map(user => (
+            user.Submissions.filter(submission => submission.Problem === problemData._id)
+              .map(filteredSubmission => (
+                <li key={filteredSubmission._id}>
+                  {filteredSubmission.Solution}
+                </li>
+              ))
+          ))}
+          </>
+        )
+      }
       </div>
       </div>
       <div className="right">

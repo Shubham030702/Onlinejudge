@@ -39,7 +39,6 @@ const ProblemList = () => {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-      console.log(data)
       if (!response.ok) {
         if(response.status === 401) navigate('/');
         else throw new Error('Network response was not ok');

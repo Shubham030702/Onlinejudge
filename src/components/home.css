@@ -58,3 +58,7 @@
     text-decoration: underline;
     color: rgba(240, 248, 255, 0.523);
 }
+
+.action h4{
+    color: black;
+}

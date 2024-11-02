@@ -38,7 +38,12 @@ const problemSchema = new mongoose.Schema({
   },
   editorials:{
     type:String,
-  }
+  },
+  users:[{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', 
+    required: true
+  }]
 });
 
 const Problem = mongoose.model('Problem', problemSchema);

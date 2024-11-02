@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
 const submissionSchema = new mongoose.Schema({
-  Problem : {
-    type:String,
-    required:true
-  },
+  Problem: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Problem', 
+    required: true
+  },  
   Status :{
     type : String,
     required:true,
@@ -31,9 +32,9 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 6,
   },
-  Submissions:{
+  Submissions:[{
     type: [submissionSchema],
-  }
+  }]
 }, { timestamps: true });
 const User = mongoose.model('User', userSchema);
 
