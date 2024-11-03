@@ -37,10 +37,19 @@ nav li a:hover {
     color: rgba(255, 255, 255, 0.324);
 }
 
+.logouttag {
+    color: white;
+}
+
+.logouttag:hover {
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.324);
+}
+
 .rightnav {
     display: flex;
     justify-content: space-evenly;
     flex-direction: row;
-    margin-left: 60%;
-    width: 20vw;
+    margin-left: 68%;
+    width: 15vw;
 }

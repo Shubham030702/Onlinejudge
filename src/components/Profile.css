@@ -1,0 +1,39 @@
+.container {
+    height: auto;
+    width: 90vw;
+    margin: auto;
+    flex-direction: row;
+    display: flex;
+}
+
+.leftProfile {
+    width: 30%;
+    height: auto;
+    min-height: 50vh;
+    color: #c8d8a3;
+    -webkit-text-stroke: 0.2px rgb(0, 0, 0);
+}
+
+.leftProfile h2{
+    text-align: center;
+    margin: 10px 0;
+}
+
+.leftProfile span{
+    text-align: center;
+}
+
+.usercontent{
+    background-image: url('./images/1.png');
+    background-size: contain;
+    height: 30vh;
+    width: 14vw;
+    border-radius: 50%;
+    margin: auto;
+}
+
+.rightProfile{
+    height: auto;
+    width: 70%;
+    min-height: 50vh;
+}

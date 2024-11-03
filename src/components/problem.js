@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState , useEffect} from 'react';
 import './problem.css'
 import Editor, { DiffEditor, useMonaco, loader } from '@monaco-editor/react';
 import { useLocation } from 'react-router-dom';
@@ -19,27 +19,29 @@ function Problems() {
   const [loading, setLoading] = useState(false); 
   const [view , setview] = useState('Description');
   const [userdata, setUserdata] = useState(null);
-  const fetchuser = async() =>{
-    try{
-      const response = await fetch('http://localhost:5000/api/userdata',{
-        method:'GET',
-        credentials: 'include',
-        headers:{
-          'content-type': 'application/json'
+  useEffect(() => {
+    const fetchuser = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/userdata', {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'content-type': 'application/json'
+          }
+        });
+        if (response.ok) {
+          setUserdata(await response.json());
+        } else {
+          const errorData = await response.json();
+          console.error('Error:', errorData.message);
         }
-      })
-      if (response.ok) {
-        setUserdata(await response.json()); 
-        return setUserdata; 
-      } else {
-        const errorData = await response.json(); 
-        console.error('Error:', errorData.message);
+      } catch (error) {
+        console.error('Fetch user error:', error);
       }
-    } catch (error) {
-      console.error('Fetch user error:', error); 
-    }
-  }
-  fetchuser();
+    };
+
+    fetchuser();
+  }, []);
   const submitprob = async() =>{
     const problemdesc={
       ProblemName : problemData.problemName,
@@ -49,13 +51,15 @@ function Problems() {
     try{  
       const response = await fetch('http://localhost:5000/api/submission',{
         method:'POST',
+        credentials:'include',
         headers:{
           'content-type': 'application/json'
         },
         body : JSON.stringify({problemdesc})
       })
       const result = await response.json();
-      if(result === 0){
+      console.log(result)
+      if(result === "Accepted"){
         setstatus('Accepted')
       }
       else{
@@ -70,8 +74,34 @@ function Problems() {
     setLoading(false)
   }
 
-  const runprob=()=>{
-
+  const runprob= async()=>{
+    const problemdesc={
+      ProblemName : problemData.problemName,
+      Code: code
+    }
+    setLoading(true)
+    try{  
+      const response = await fetch('http://localhost:5000/api/runprob',{
+        method:'POST',
+        headers:{
+          'content-type': 'application/json'
+        },
+        body : JSON.stringify({problemdesc})
+      })
+      const result = await response.json();
+      if(result === "Accepted"){
+        setstatus('Accepted')
+      }
+      else{
+        setstatus(result.result.status.description)
+        setinput(result.input)
+        setoutput(result.decode)
+        setexpoutput(result.output)
+      }
+    }catch(error){
+      alert(error)
+    }
+    setLoading(false)
   }
 
   const handleMouseDown = (e) => {
@@ -96,7 +126,7 @@ function Problems() {
   const changeView = (e) =>{
     setview(e);
   }
-
+  console.log(problemData.users.Submissions)
   return (
     <>
     <div className="context">
@@ -126,17 +156,13 @@ function Problems() {
       )}
       {view === 'Solutions' && (
         <ul>
-        {problemData.users.map(user => (
-          user.Submissions.filter(submission => submission.Problem === problemData._id)
-            .map(filteredSubmission => (
-              <li key={filteredSubmission._id}>
-                <span>{user.Username}</span>
-                <span>{filteredSubmission.Status}</span>
-                <span>{new Date(filteredSubmission.Time).toLocaleString()}</span>
-                <span onClick={() => changeView('Submitted')}>Solution</span>
-              </li>
-            ))
-        ))}
+        {
+          problemData.users.map(e=>(
+            <li>
+              <p>{e.Username}</p>
+            </li>
+          ))
+        }
       </ul>
       )}
       {view === 'Submitted' && (

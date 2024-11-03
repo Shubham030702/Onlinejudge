@@ -1,13 +1,16 @@
 import React from 'react'
 import './navbar.css'
 import { useNavigate } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRightFromBracket , faUser} from '@fortawesome/free-solid-svg-icons';
+
+
 function Navbar() {
   const navigate = useNavigate()
   const handleLogout = async () => {
-    console.log('shuabhm')
     try {
       const response = await fetch('/api/logout', {
-        method: 'POST',
+        method: 'GET',
         credentials: 'include',  
       });
       if (response.ok) {
@@ -27,13 +30,12 @@ function Navbar() {
         <h1 className='site'>AcECode</h1>
         <a href="/home"><h2 className='hometag' >Home</h2></a>
         <div className="rightnav">
-        <a href="/profile"><h2 className='profile'>Profile</h2></a>
-        <a > <h2 className='logouttag'onClick={handleLogout}>Logout</h2></a>
+        <a href="/profile"><FontAwesomeIcon className='logouttag' icon={faUser} title="Profile" size="xl"/></a>
+        <a><FontAwesomeIcon className='logouttag' onClick={handleLogout} title="Logout" size="xl" icon={faRightFromBracket}/></a>
         </div>
       </li>
     </nav>
     </>
   )
 }
-
 export default Navbar

@@ -11,6 +11,26 @@ const testCaseSchema = new mongoose.Schema({
   },
 });
 
+const submissionsSchema = new mongoose.Schema({
+  users:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', 
+    required: true
+  },
+  Username:{
+    type:String,
+    required:true,
+  },
+  Status:{
+    type:String,
+    required:true
+  },
+  Time:{
+    type : Date,
+    default : Date.now
+  }
+})
+
 const problemSchema = new mongoose.Schema({
   problemName: {
     type: String,
@@ -39,11 +59,10 @@ const problemSchema = new mongoose.Schema({
   editorials:{
     type:String,
   },
-  users:[{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', 
+  users:{
+    type: [submissionsSchema],
     required: true
-  }]
+  }
 });
 
 const Problem = mongoose.model('Problem', problemSchema);

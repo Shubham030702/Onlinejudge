@@ -5,6 +5,7 @@ import Register from './components/registerpage';
 import ProblemList from './components/home';
 import './App.css'
 import Problems from './components/problem';
+import Profile from './components/Profile';
 
 function App() {
   const location = useLocation();
@@ -17,6 +18,7 @@ function App() {
         <Route path='/' element={<Login />} />
         <Route path='/home' element={<ProblemList />} />
         <Route path='/problems/:id' element={<Problems />} />
+        <Route path='/profile' element={<Profile/>}/>
       </Routes>
     </>
   );

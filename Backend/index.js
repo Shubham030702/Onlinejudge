@@ -100,7 +100,6 @@ app.get('/api/userdata',async(req,res)=>{
     path: 'Submissions.Problem',
   })
   .select('-Password');
-  console.log(response)
   if(response) res.json(response)
   else res.status(401).json({ message: 'user not found'});
 })
@@ -132,7 +131,8 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-app.post('/api/logout', (req, res) => {
+app.get('/api/logout', (req, res) => {
+  console.log('erre')
   req.session.destroy(err => {
     if (err) {
       return res.status(500).send('Failed to log out.');
@@ -150,12 +150,19 @@ function base64code(code){
   return base64
 }
 
+app.get('/profile',async(req,res)=>{
+  try{
+    const response = await User.findById(req.session.user.id).populate('Submissions');
+    console.log(response)
+    res.json(response)
+  }catch{
+    res.status(500).send({ error: "An error occurred while Extracting the data." });
+  }
+})
+
 app.post('/api/submission',async(req,res)=>{
   const {ProblemName,Code} = req.body.problemdesc
-  // storing submission in the database
-
   // checking the problem in the database and taking out the testcases
-
   const problem = await Problem.findOne({problemName:ProblemName});
   const inputs = []
   const outputs = []
@@ -163,7 +170,6 @@ app.post('/api/submission',async(req,res)=>{
     inputs.push(e.input)
     outputs.push(e.output)
   })
-
   // Judge 0 checking code's evaluation
   const code64 = base64code(Code)
   async function evaluateSubmissions() {
@@ -181,10 +187,26 @@ app.post('/api/submission',async(req,res)=>{
         console.error("Error in submission for index:", index, error);
       }
     }
-    return 0;
+    return "Accepted";
   }
   try {
     const result = await evaluateSubmissions();
+    // storing the submission in the user's database
+    const userdata = await User.findById(req.session.user.id);
+    userdata.Submissions.push({
+      Problem:problem._id,
+      Status:result.result?result.result.status.description:result,
+      Solution:Code
+    })
+    await userdata.save()
+    // storing the user in the problem database
+    const problemdata = await Problem.findById(problem._id)
+    problemdata.users.push({
+      user: req.session.user.id,
+      Username: userdata.Username,
+      Status:result.result?result.result.status.description:result,
+    })
+    await problemdata.save()
     res.send(result);
   } catch (error) {
     res.status(500).send({ error: "An error occurred while evaluating submissions." });

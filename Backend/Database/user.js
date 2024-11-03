@@ -13,6 +13,10 @@ const submissionSchema = new mongoose.Schema({
   Time : {
     type : Date,
     default : Date.now
+  },
+  Solution:{
+    type : String,
+    required :true
   }
 })
 const userSchema = new mongoose.Schema({
@@ -32,9 +36,9 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 6,
   },
-  Submissions:[{
+  Submissions:{
     type: [submissionSchema],
-  }]
+  }
 }, { timestamps: true });
 const User = mongoose.model('User', userSchema);
 

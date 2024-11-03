@@ -6,7 +6,7 @@ class CodeSubmission {
       const options = {
         method: 'POST',
         headers: {
-          'x-rapidapi-key': '19bc8fe7aemshf7b29e849eebdb4p1eb6c9jsn35f30b186736',
+          'x-rapidapi-key': 'f8aa1dc04dmshb2c71cde8f04062p1e6a0ajsnd9862ee527e2',
           'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
           'Content-Type': 'application/json'
         },
