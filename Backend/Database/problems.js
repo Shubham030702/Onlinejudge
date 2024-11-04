@@ -12,7 +12,7 @@ const testCaseSchema = new mongoose.Schema({
 });
 
 const submissionsSchema = new mongoose.Schema({
-  users:{
+  user:{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User', 
     required: true
@@ -24,6 +24,9 @@ const submissionsSchema = new mongoose.Schema({
   Status:{
     type:String,
     required:true
+  },
+  Solution:{
+    
   },
   Time:{
     type : Date,

@@ -5,6 +5,7 @@ import Editor, { DiffEditor, useMonaco, loader } from '@monaco-editor/react';
 import { useLocation } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { Audio } from 'react-loader-spinner';
+import {formatTimestamp} from './utils'
 
 function Problems() {
   const [height, setHeight] = useState(50);
@@ -19,6 +20,8 @@ function Problems() {
   const [loading, setLoading] = useState(false); 
   const [view , setview] = useState('Description');
   const [userdata, setUserdata] = useState(null);
+  const [solution, setsolution] = useState(null);
+
   useEffect(() => {
     const fetchuser = async () => {
       try {
@@ -42,6 +45,7 @@ function Problems() {
 
     fetchuser();
   }, []);
+
   const submitprob = async() =>{
     const problemdesc={
       ProblemName : problemData.problemName,
@@ -58,7 +62,6 @@ function Problems() {
         body : JSON.stringify({problemdesc})
       })
       const result = await response.json();
-      console.log(result)
       if(result === "Accepted"){
         setstatus('Accepted')
       }
@@ -123,19 +126,22 @@ function Problems() {
     setIsVisible(!isVisible);
   };
 
-  const changeView = (e) =>{
+  const changeView = (e,s) =>{
+    if(e === 'Submitted'){
+      setsolution(s)
+    }
     setview(e);
   }
-  console.log(problemData.users.Submissions)
+
   return (
     <>
     <div className="context">
       <div className="left">
       <div className="content">
-      <h3 onClick={() => changeView('Description')}>Description</h3>
-  	  <h3 onClick={() => changeView('Editorial')}>Editorial</h3>
-      <h3 onClick={() => changeView('Solutions')}>Solutions</h3>
-      <h3 onClick={() => changeView('Submissions')}>Submissions</h3>
+      <h3 onClick={() => changeView('Description',null)}>Description</h3>
+  	  <h3 onClick={() => changeView('Editorial',null)}>Editorial</h3>
+      <h3 onClick={() => changeView('Solutions',null)}>Solutions</h3>
+      <h3 onClick={() => changeView('Submissions',null)}>Submissions</h3>
       </div>
       <div className="leftbottom">
       {view === 'Description' && (
@@ -151,33 +157,57 @@ function Problems() {
       )}
       {view === 'Submissions' && (
         <>
-        <h1>{userdata.Username}</h1>
-        </>
-      )}
-      {view === 'Solutions' && (
-        <ul>
-        {
-          problemData.users.map(e=>(
-            <li>
-              <p>{e.Username}</p>
-            </li>
-          ))
+        {userdata && 
+         <div className="listsubmissions">
+         <ul>
+         {userdata.Submissions.map((submission, index) => {
+          if (submission.Problem._id === problemData._id) {
+              return (
+                  <div className='listitem' key={index}>
+                      <h3>{submission.Status}</h3>    
+                      <h3 className="itemSolution" style={{ color: 'seashell'}} onClick={() => changeView('Submitted',submission.Solution)}>Solution</h3>  
+                      <h3>{formatTimestamp(submission.Time)}</h3> 
+                  </div>
+              );
+          }
+          return "No Submission Made Yet {NSMY} :)";
+          })}
+         </ul>
+     </div>
         }
-      </ul>
+        </>
       )}
       {view === 'Submitted' && (
           <>
-          {problemData.users.map(user => (
-            user.Submissions.filter(submission => submission.Problem === problemData._id)
-              .map(filteredSubmission => (
-                <li key={filteredSubmission._id}>
-                  {filteredSubmission.Solution}
-                </li>
-              ))
-          ))}
+          <Editor
+          height="100%"
+          width="100%" 
+          defaultValue={solution}
+          theme="vs-dark"
+          />
           </>
         )
       }
+      {view === 'Solutions' && (
+        <>
+          {problemData && 
+         <div className="listsubmissions">
+         <ul>
+         {problemData.users.map((user, index) => {
+              return (
+                  <div className='listitem' key={index}>
+                      <h3>{user.Username}</h3>    
+                      <h3>{user.Status}</h3>    
+                      <h3 className="itemSolution" style={{ color: 'seashell'}} onClick={() => changeView('Submitted',user.Solution)}>Solution</h3>  
+                      <h3>{formatTimestamp(user.Time)}</h3> 
+                  </div>
+              );
+          })}
+         </ul>
+     </div>
+        }
+      </>
+      )}
       </div>
       </div>
       <div className="right">

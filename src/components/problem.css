@@ -18,7 +18,6 @@
 }
 
 .right {
-    height: 75vh;
     width: 46vw;
     margin: 0 auto;
     backdrop-filter: blur(1px);
@@ -39,6 +38,7 @@
     background-color: #1e1e1e;
     padding: 2vh;
     overflow: scroll;
+    height: 100%;
 }
 
 .leftbottom h3,h4{
@@ -64,9 +64,9 @@
 }
 
 .right {
+    height: 100%;
     padding: 0;
     background-color: #1e1e1e;
-    overflow: hidden;
 }
 
 .resizer {
@@ -112,4 +112,14 @@
 
 .submit:hover {
     background: #fd0000af;
+}
+
+.listsubmissions{
+    margin-top: 2vh;
+}
+
+.itemSolution{
+    text-decoration: underline;
+    cursor: pointer;
+    font-style: oblique;
 }
