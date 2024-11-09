@@ -27,7 +27,7 @@ const ProblemList = () => {
     };
 
     fetchProblems();
-  }, []);
+  }, [navigate]);
 
   const problemroute = async(id) =>{
     try {

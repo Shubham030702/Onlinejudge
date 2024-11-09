@@ -132,3 +132,9 @@ h4 {
     justify-content: center;
     align-items: center;
 }
+
+nav li button{
+    background: none;
+    scale: 1.4;
+    border: none;
+}

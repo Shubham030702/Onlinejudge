@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState , useEffect} from 'react';
 import './problem.css'
-import Editor, { DiffEditor, useMonaco, loader } from '@monaco-editor/react';
+import Editor from '@monaco-editor/react';
 import { useLocation } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import {formatTimestamp} from './utils'
@@ -15,7 +15,6 @@ function Problems() {
   const [expoutput, setexpoutput] = useState(null);
   const location = useLocation();
   const {problemData} = location.state;
-  const [isVisible, setIsVisible] = useState(false);
   const [code,setCode] = useState("// write your code here ");
   const [loading, setLoading] = useState(false); 
   const [view , setview] = useState('Description');
@@ -132,10 +131,6 @@ function Problems() {
     };
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
-  };
-  
-  const toggleVisibility = () => {
-    setIsVisible(!isVisible);
   };
 
   const changeView = (e,s) =>{

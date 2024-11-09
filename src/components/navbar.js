@@ -31,7 +31,7 @@ function Navbar() {
         <a href="/home"><h2 className='hometag' >Home</h2></a>
         <div className="rightnav">
         <a href="/profile"><FontAwesomeIcon className='logouttag' icon={faUser} title="Profile" size="xl"/></a>
-        <a><FontAwesomeIcon className='logouttag' onClick={handleLogout} title="Logout" size="xl" icon={faRightFromBracket}/></a>
+        <button><FontAwesomeIcon className='logouttag' onClick={handleLogout} title="Logout" size="xl" icon={faRightFromBracket}/></button>
         </div>
       </li>
     </nav>
