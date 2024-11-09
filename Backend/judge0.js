@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 class CodeSubmission {
     constructor() {}
   
@@ -6,7 +8,7 @@ class CodeSubmission {
       const options = {
         method: 'POST',
         headers: {
-          'x-rapidapi-key': 'f8aa1dc04dmshb2c71cde8f04062p1e6a0ajsnd9862ee527e2',
+          'x-rapidapi-key': process.env.Submissionkey,
           'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
           'Content-Type': 'application/json'
         },
@@ -37,7 +39,7 @@ class CodeSubmission {
       const options2 = {
         method: 'GET',
         headers: {
-          'x-rapidapi-key': '19bc8fe7aemshf7b29e849eebdb4p1eb6c9jsn35f30b186736',
+          'x-rapidapi-key': process.env.Getsubmissionkey,
           'x-rapidapi-host': 'judge0-ce.p.rapidapi.com'
         }
       };
