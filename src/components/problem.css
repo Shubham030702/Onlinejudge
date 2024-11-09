@@ -1,4 +1,4 @@
-*{
+* {
     font-family: "Merriweather", serif;
 }
 
@@ -6,7 +6,7 @@
     font-family: "Merriweather", serif;
     font-weight: 400;
     font-style: normal;
-  }
+}
 
 .context {
     margin: 15vh auto auto auto;
@@ -41,7 +41,8 @@
     height: 100%;
 }
 
-.leftbottom h3,h4{
+.leftbottom h3,
+h4 {
     color: #deab60;
 }
 
@@ -114,12 +115,20 @@
     background: #fd0000af;
 }
 
-.listsubmissions{
+.listsubmissions {
     margin-top: 2vh;
 }
 
-.itemSolution{
+.itemSolution {
     text-decoration: underline;
     cursor: pointer;
     font-style: oblique;
+}
+
+.loading {
+    height: 70vh;
+    width: 44vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

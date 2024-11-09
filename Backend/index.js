@@ -7,7 +7,8 @@ const bcrypt = require('bcrypt');
 const session = require('express-session');
 const MongoStore = require('connect-mongo'); 
 require('dotenv').config();
-const CodeSubmission = require('./judge0')
+const CodeSubmission = require('./judge0');
+const { faLessThanEqual } = require('@fortawesome/free-solid-svg-icons');
 
 app.use(session({
   secret: 'secret',             
@@ -162,7 +163,6 @@ app.get('/profile',async(req,res)=>{
 
 app.post('/api/submission',async(req,res)=>{
   const {ProblemName,Code} = req.body.problemdesc
-  // checking the problem in the database and taking out the testcases
   const problem = await Problem.findOne({problemName:ProblemName});
   const inputs = []
   const outputs = []
@@ -170,9 +170,9 @@ app.post('/api/submission',async(req,res)=>{
     inputs.push(e.input)
     outputs.push(e.output)
   })
-  // Judge 0 checking code's evaluation
   const code64 = base64code(Code)
   async function evaluateSubmissions() {
+    let Time=0;
     for (const [index, input] of inputs.entries()) {
       const output = outputs[index];
       const code64inp = base64code(input);
@@ -180,6 +180,8 @@ app.post('/api/submission',async(req,res)=>{
       try {
         const result = await submission.evaluation(code64inp, code64out, code64);
         const decode = Buffer.from(result.stdout,'base64').toString('utf-8');
+        let d = parseFloat(result.time);
+        Time+=d;
         if(result.status.id > 3){
           return {result,output,input,decode}
         }
@@ -187,15 +189,14 @@ app.post('/api/submission',async(req,res)=>{
         console.error("Error in submission for index:", index, error);
       }
     }
-    return "Accepted";
+    return {status:"Accepted",time:Time};
   }
   try {
     const result = await evaluateSubmissions();
-    // storing the submission in the user's database
     const userdata = await User.findById(req.session.user.id);
     userdata.Submissions.push({
       Problem:problem._id,
-      Status:result.result?result.result.status.description:result,
+      Status:result.result?result.result.status.description:result.status,
       Solution:Code
     })
     await userdata.save()
@@ -204,9 +205,51 @@ app.post('/api/submission',async(req,res)=>{
     problemdata.users.push({
       user: req.session.user.id,
       Username: userdata.Username,
-      Status:result.result?result.result.status.description:result,
+      Status:result.result?result.result.status.description:result.status,
+      Solution:Code
     })
     await problemdata.save()
+    res.send(result);
+  } catch (error) {
+    console.log(error)
+    res.status(500).send({ error: "An error occurred while evaluating submissions." });
+  }
+})
+
+app.post('/api/runprob',async(req,res)=>{
+  const {ProblemName,Code} = req.body.problemdesc
+  // checking the problem in the database and taking out the testcases
+  const problem = await Problem.findOne({problemName:ProblemName});
+  const inputs = []
+  const outputs = []
+  problem.testCases.splice(0,2).forEach(e=>{
+    inputs.push(e.input)
+    outputs.push(e.output)
+  })
+  // Judge 0 checking code's evaluation
+  const code64 = base64code(Code)
+  async function evaluateSubmissions() {
+    let Time=0;
+    for (const [index, input] of inputs.entries()) {
+      const output = outputs[index];
+      const code64inp = base64code(input);
+      const code64out = base64code(output);
+      try {
+        const result = await submission.evaluation(code64inp, code64out, code64);
+        const decode = Buffer.from(result.stdout,'base64').toString('utf-8');
+        let d = parseFloat(result.time);
+        Time+=d;
+        if(result.status.id > 3){
+          return {result,output,input,decode}
+        }
+      } catch (error) {
+        console.error("Error in submission for index:", index, error);
+      }
+    }
+    return {status:"Accepted",time:Time};
+  }
+  try {
+    const result = await evaluateSubmissions();
     res.send(result);
   } catch (error) {
     res.status(500).send({ error: "An error occurred while evaluating submissions." });

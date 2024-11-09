@@ -26,7 +26,8 @@ const submissionsSchema = new mongoose.Schema({
     required:true
   },
   Solution:{
-    
+    type:String,
+    required:true
   },
   Time:{
     type : Date,

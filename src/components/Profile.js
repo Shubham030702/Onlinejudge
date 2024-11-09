@@ -73,11 +73,11 @@ function Profile() {
                     {probData && userData && (
                         <div className="listsubmission">
                             <ul>
+                                <h1>Submissions</h1>
                             {userData.Submissions.map((submission, index) => {
                                 const problem = probData.find(p => p._id === submission.Problem);
                                 return (
                                     <>
-                                    <h1>Submissions</h1>
                                     <div className='listitem' key={index}>
                                         <h3>{problem ? problem.problemName : "Problem not found"}</h3>
                                         <h3>{submission.Status}</h3>

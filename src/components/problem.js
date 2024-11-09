@@ -4,8 +4,8 @@ import './problem.css'
 import Editor, { DiffEditor, useMonaco, loader } from '@monaco-editor/react';
 import { useLocation } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import { Audio } from 'react-loader-spinner';
 import {formatTimestamp} from './utils'
+import Loader from './loader.js'
 
 function Problems() {
   const [height, setHeight] = useState(50);
@@ -21,6 +21,7 @@ function Problems() {
   const [view , setview] = useState('Description');
   const [userdata, setUserdata] = useState(null);
   const [solution, setsolution] = useState(null);
+  const [time,settime] = useState(null);
 
   useEffect(() => {
     const fetchuser = async () => {
@@ -47,10 +48,14 @@ function Problems() {
   }, []);
 
   const submitprob = async() =>{
+    setview('Evaluation');
     const problemdesc={
       ProblemName : problemData.problemName,
       Code: code
     }
+    setinput(null);
+    setoutput(null);
+    setexpoutput(null);
     setLoading(true)
     try{  
       const response = await fetch('http://localhost:5000/api/submission',{
@@ -62,8 +67,10 @@ function Problems() {
         body : JSON.stringify({problemdesc})
       })
       const result = await response.json();
-      if(result === "Accepted"){
-        setstatus('Accepted')
+      console.log(result)
+      if(!result.result){
+        setstatus(result.status)
+        settime(result.time);
       }
       else{
         setstatus(result.result.status.description)
@@ -78,10 +85,14 @@ function Problems() {
   }
 
   const runprob= async()=>{
+    setview('Evaluation');
     const problemdesc={
       ProblemName : problemData.problemName,
       Code: code
     }
+    setinput(null);
+    setoutput(null);
+    setexpoutput(null);
     setLoading(true)
     try{  
       const response = await fetch('http://localhost:5000/api/runprob',{
@@ -92,8 +103,9 @@ function Problems() {
         body : JSON.stringify({problemdesc})
       })
       const result = await response.json();
-      if(result === "Accepted"){
-        setstatus('Accepted')
+      if(!result.result){
+        setstatus(result.status)
+        settime(result.time);
       }
       else{
         setstatus(result.result.status.description)
@@ -208,6 +220,23 @@ function Problems() {
         }
       </>
       )}
+      {
+        view === 'Evaluation' && (
+          <>
+          { loading? <div className="loading">
+          <Loader/>
+          </div>:
+          <div className="evaluation">
+          <h3>Time Took : {time} s</h3>
+          <h1>{status}</h1>
+            {input && <h2>Input: {input}</h2>}
+            {output && <h2>Your Output: {output}</h2>}
+            {expoutput && <h2>Expected Output: {expoutput}</h2>}
+          </div>      
+          }
+          </>
+        )
+      }
       </div>
       </div>
       <div className="right">
@@ -225,26 +254,15 @@ function Problems() {
       />
       <div className="resizer" onMouseDown={handleMouseDown}></div>
       <div className="tests" style={{ height: `${100 - height}%` }}>
-        {loading && <Audio
-          height="80"
-          width="80"
-          radius="9"
-          color="green"
-          ariaLabel="loading"
-          wrapperStyle
-          wrapperClass
-        />}
-      {status === null ? (
-    problemData.testCases.map((testCase, index) => (
+      {
+    problemData.testCases.slice(0, 2).map((testCase, index) => (
       <div key={index} className="test-case">
         <h2>Test case {index + 1}: </h2>
         <h3><strong>Input:</strong> {testCase.input}</h3>
         <h3><strong>Output:</strong> {testCase.output}</h3>
         <br />
       </div>
-    ))
-  ) : <><h1>{status}</h1>
-  </>}
+    ))}
       </div>
       
     </div>

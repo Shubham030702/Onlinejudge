@@ -19,6 +19,7 @@ const submissionSchema = new mongoose.Schema({
     required :true
   }
 })
+
 const userSchema = new mongoose.Schema({
   Username: {
     type: String,
@@ -41,6 +42,5 @@ const userSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 const User = mongoose.model('User', userSchema);
-
 
 module.exports = User;
