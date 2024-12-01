@@ -54,7 +54,7 @@ const Register = () => {
 
     if (isValid) {
       try{
-        const response = await fetch('http://localhost:5000/api/signup',{
+        const response = await fetch('https://onlinejudge-3.onrender.com/api/signup',{
           method: 'POST',
           headers: {
             'Content-Type' : 'application/json',
