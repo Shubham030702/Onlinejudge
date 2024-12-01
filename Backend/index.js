@@ -24,7 +24,7 @@ app.use(session({
 }));
 
 app.use(cors({
-  origin: 'http://localhost:3000', 
+  origin: 'https://acecode10.netlify.app', 
   credentials: true, 
 }));
 
