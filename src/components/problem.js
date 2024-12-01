@@ -21,6 +21,7 @@ function Problems() {
   const [userdata, setUserdata] = useState(null);
   const [solution, setsolution] = useState(null);
   const [time,settime] = useState(null);
+  const [language, setLanguage] = useState(52);
 
   useEffect(() => {
     const fetchuser = async () => {
@@ -46,12 +47,14 @@ function Problems() {
     fetchuser();
   }, []);
 
+  const problemdesc={
+    ProblemName : problemData.problemName,
+    Language : language,
+    Code: code
+  }
+
   const submitprob = async() =>{
     setview('Evaluation');
-    const problemdesc={
-      ProblemName : problemData.problemName,
-      Code: code
-    }
     setinput(null);
     setoutput(null);
     setexpoutput(null);
@@ -85,10 +88,6 @@ function Problems() {
 
   const runprob= async()=>{
     setview('Evaluation');
-    const problemdesc={
-      ProblemName : problemData.problemName,
-      Code: code
-    }
     setinput(null);
     setoutput(null);
     setexpoutput(null);
@@ -118,6 +117,25 @@ function Problems() {
     setLoading(false)
   }
 
+  const handleChange = (event) => {
+    if(event.target.value === "cpp"){ 
+      console.log(52);
+      setLanguage(52); 
+    }
+    else if(event.target.value === "java"){ 
+      console.log(62);
+      setLanguage(62); 
+    }
+    else if(event.target.value === "python"){ 
+      console.log(71);
+      setLanguage(71); 
+    }
+    else if(event.target.value === "javascript"){ 
+      console.log(63);
+      setLanguage(63); 
+    }
+  };
+  
   const handleMouseDown = (e) => {
     const startY = e.clientY;
     const startHeight = height;
@@ -238,6 +256,15 @@ function Problems() {
       <div className="probsubmit">
         <button className='submit' onClick={submitprob}>Submit</button>
         <button onClick={runprob}>Run</button>
+        <div className='language'>
+        <select id="language" onChange={(event) => handleChange(event)} name="language">
+          <option value="cpp">C++</option>
+          <option value="javascript">JavaScript</option>
+          <option value="python">Python</option>
+          <option value="java">Java</option>
+        </select>
+
+        </div>
       </div>
       <Editor
         height={`${height}%`}

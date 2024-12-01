@@ -8,7 +8,6 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo'); 
 require('dotenv').config();
 const CodeSubmission = require('./judge0');
-const { faLessThanEqual } = require('@fortawesome/free-solid-svg-icons');
 
 app.use(session({
   secret: 'secret',             
@@ -133,7 +132,6 @@ app.post('/api/login', async (req, res) => {
 });
 
 app.get('/api/logout', (req, res) => {
-  console.log('erre')
   req.session.destroy(err => {
     if (err) {
       return res.status(500).send('Failed to log out.');
@@ -154,7 +152,6 @@ function base64code(code){
 app.get('/profile',async(req,res)=>{
   try{
     const response = await User.findById(req.session.user.id).populate('Submissions');
-    console.log(response)
     res.json(response)
   }catch{
     res.status(500).send({ error: "An error occurred while Extracting the data." });
@@ -162,7 +159,7 @@ app.get('/profile',async(req,res)=>{
 })
 
 app.post('/api/submission',async(req,res)=>{
-  const {ProblemName,Code} = req.body.problemdesc
+  const {ProblemName,Language,Code} = req.body.problemdesc
   const problem = await Problem.findOne({problemName:ProblemName});
   const inputs = []
   const outputs = []
@@ -178,7 +175,7 @@ app.post('/api/submission',async(req,res)=>{
       const code64inp = base64code(input);
       const code64out = base64code(output);
       try {
-        const result = await submission.evaluation(code64inp, code64out, code64);
+        const result = await submission.evaluation(code64inp,Language,code64out, code64);
         const decode = Buffer.from(result.stdout,'base64').toString('utf-8');
         let d = parseFloat(result.time);
         Time+=d;
@@ -186,7 +183,7 @@ app.post('/api/submission',async(req,res)=>{
           return {result,output,input,decode}
         }
       } catch (error) {
-        console.error("Error in submission for index:", index, error);
+        return {status:"Runtime Error",time:Time};
       }
     }
     return {status:"Accepted",time:Time};
@@ -217,7 +214,8 @@ app.post('/api/submission',async(req,res)=>{
 })
 
 app.post('/api/runprob',async(req,res)=>{
-  const {ProblemName,Code} = req.body.problemdesc
+  const {ProblemName,Language,Code} = req.body.problemdesc
+  console.log(Language);
   // checking the problem in the database and taking out the testcases
   const problem = await Problem.findOne({problemName:ProblemName});
   const inputs = []
@@ -235,7 +233,7 @@ app.post('/api/runprob',async(req,res)=>{
       const code64inp = base64code(input);
       const code64out = base64code(output);
       try {
-        const result = await submission.evaluation(code64inp, code64out, code64);
+        const result = await submission.evaluation(code64inp,Language, code64out, code64);
         const decode = Buffer.from(result.stdout,'base64').toString('utf-8');
         let d = parseFloat(result.time);
         Time+=d;
@@ -243,7 +241,7 @@ app.post('/api/runprob',async(req,res)=>{
           return {result,output,input,decode}
         }
       } catch (error) {
-        console.error("Error in submission for index:", index, error);
+        return {status:"Runtime Error",time:Time};
       }
     }
     return {status:"Accepted",time:Time};

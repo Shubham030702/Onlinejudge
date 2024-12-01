@@ -3,7 +3,7 @@ require('dotenv').config();
 class CodeSubmission {
     constructor() {}
   
-    async evaluation(input, output, code) {
+    async evaluation(input,Language,output, code) {
       const url = 'https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&wait=false&fields=*';
       const options = {
         method: 'POST',
@@ -13,7 +13,7 @@ class CodeSubmission {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          language_id: 52,
+          language_id: Language,
           source_code: code,
           stdin: input,
           expected_output: output

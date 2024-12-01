@@ -93,6 +93,10 @@ h4 {
     overflow: scroll;
 }
 
+.probsubmit{
+    display: flex;
+}
+
 .probsubmit button {
     width: 100px;
     height: 30px;
@@ -133,8 +137,37 @@ h4 {
     align-items: center;
 }
 
-nav li button{
+nav li button {
     background: none;
     scale: 1.4;
     border: none;
+}
+
+.language {
+    width: 100px;
+    height: 30px;
+    cursor: pointer;
+    margin: 4px 0;
+    margin-left: 0px;
+    background: none;
+    border: none;
+    color: aliceblue;
+    font-size: 20px;
+    margin-left: 45vh;
+}
+
+#language-select{
+    width: 10vw;
+    background: none;
+    color: white;
+    font-size: 17px;
+    padding: 5px;
+    border: none;
+    background: #1e1e1e;
+}
+
+#language{
+    background: none;
+  border: none;
+  color: white;
 }
