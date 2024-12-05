@@ -9,7 +9,7 @@ function Navbar() {
   const navigate = useNavigate()
   const handleLogout = async () => {
     try {
-      const response = await fetch('/api/logout', {
+      const response = await fetch('https://onlinejudge-k1s3.onrender.com/api/logout', {
         method: 'GET',
         credentials: 'include',  
       });

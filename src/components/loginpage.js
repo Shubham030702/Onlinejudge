@@ -43,7 +43,7 @@ const Login = () => {
 
     if (isValid) {
       try{
-        const response = await fetch('https://onlinejudge-3.onrender.com/api/login',{
+        const response = await fetch('https://onlinejudge-k1s3.onrender.com/api/login',{
           method:'POST',
           headers: {
             'Content-Type' : 'application/json',
