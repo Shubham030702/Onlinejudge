@@ -24,10 +24,10 @@ app.use(session({
 }));
 
 app.use(cors({
-  origin: 'https://acecode10.netlify.app/', 
+  origin: 'https://acecode10.netlify.app', 
   credentials: true, 
 }));
-
+app.options('*', cors());
 app.use(express.json());
 
 let Problem, User;
