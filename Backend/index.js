@@ -27,7 +27,13 @@ app.use(cors({
   origin: 'http://localhost:3000', 
   credentials: true, 
 }));
-
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', 'https://acecode10.netlify.app');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.sendStatus(204); // No content
+});
 app.use(express.json());
 
 let Problem, User, Contest,Register;
