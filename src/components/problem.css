@@ -27,11 +27,12 @@
 }
 
 .left {
-    height: 75vh;
+    height: 100%;
     width: 46vw;
     margin: 0 auto;
     backdrop-filter: blur(1px);
     font-family: 'Times New Roman', Times, serif;
+    overflow: hidden;
 }
 
 .leftbottom {
@@ -68,6 +69,7 @@ h4 {
     height: 100%;
     padding: 0;
     background-color: #1e1e1e;
+    overflow: hidden;
 }
 
 .resizer {
@@ -77,9 +79,6 @@ h4 {
     width: 100%;
 }
 
-.leftbottom h1 {
-    margin-bottom: 2vh;
-}
 
 .leftbottom h3 {
     margin-bottom: 2vh;
@@ -93,7 +92,7 @@ h4 {
     overflow: scroll;
 }
 
-.probsubmit{
+.probsubmit {
     display: flex;
 }
 
@@ -156,7 +155,7 @@ nav li button {
     margin-left: 45vh;
 }
 
-#language-select{
+#language-select {
     width: 10vw;
     background: none;
     color: white;
@@ -166,8 +165,16 @@ nav li button {
     background: #1e1e1e;
 }
 
-#language{
+#language {
     background: none;
-  border: none;
-  color: white;
+    border: none;
+    color: white;
+}
+
+.problemtitle {
+    text-align: center;
+    margin: 4vh;
+    font-size: 42px;
+    margin-bottom: 6vh;
+    color: #ffc46c;
 }

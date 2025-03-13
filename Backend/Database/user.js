@@ -39,6 +39,10 @@ const userSchema = new mongoose.Schema({
   },
   Submissions:{
     type: [submissionSchema],
+  },
+  Rating:{
+    type : Number,
+    default : 1500
   }
 }, { timestamps: true });
 const User = mongoose.model('User', userSchema);

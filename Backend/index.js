@@ -24,17 +24,18 @@ app.use(session({
 }));
 
 app.use(cors({
-  origin: 'https://acecode10.netlify.app', 
+  origin: 'http://localhost:3000', 
   credentials: true, 
 }));
 
 app.use(express.json());
 
-let Problem, User;
+let Problem, User, Contest,Register;
 mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 30000 })
   .then(() => {
     Problem = require('./Database/problems'); 
     User = require('./Database/user');
+    Contest = require('./Database/contest');
   })
   .catch((error) => {
     console.error("Error connecting to the database:", error);
@@ -61,7 +62,10 @@ function isLoggedIn(req, res, next) {
 
 app.get('/api/problems',isLoggedIn, async (req, res) => {
   try {
-    const problems = await Problem.find();
+    const problems = await Problem.find({contestOnly : false});
+    if (!problems) {
+      return res.status(404).json({ message: "No problems found" });
+    }
     res.json(problems);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -77,6 +81,45 @@ app.get('/api/problem/:id',isLoggedIn, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+app.get('/api/contest',isLoggedIn, async (req, res) => {
+  try {
+    const contest = await Contest.find();
+    res.json(contest);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get('/api/contest/:id', isLoggedIn, async (req, res) => {
+  try {
+    const contest = await Contest.findById(req.params.id).populate('problems').populate('standings.user');
+    if (!contest) return res.status(404).json({ message: 'Contest not found' });
+    const userStanding = contest.standings.find(
+      (entry) => entry.user._id.toString() === req.session.user.id
+    );
+    res.json({contest,userStanding});
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+app.get('/api/contestRegistration/:id', isLoggedIn, async (req, res) => {
+  try {
+    const contest = await Contest.findById(req.params.id).populate('problems').populate('standings');
+    if (!contest) return res.status(404).json({ message: 'Contest not found' });
+    const data = {
+      user : new mongoose.Types.ObjectId(req.session.user.id),
+      score : 0,
+      penalties : 0
+    }
+    contest.standings.push(data)
+    await contest.save()
+    res.json({ message: "User registered successfully", contest });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 app.post('/api/signup', async(req, res) => {
   const { Email, Username, Password } = req.body;
@@ -128,6 +171,7 @@ app.post('/api/login', async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
+    console.log("error");
   }
 });
 
@@ -198,14 +242,13 @@ app.post('/api/submission',async(req,res)=>{
     })
     await userdata.save()
     // storing the user in the problem database
-    const problemdata = await Problem.findById(problem._id)
-    problemdata.users.push({
+    problem.users.push({
       user: req.session.user.id,
       Username: userdata.Username,
       Status:result.result?result.result.status.description:result.status,
       Solution:Code
     })
-    await problemdata.save()
+    await problem.save()
     res.send(result);
   } catch (error) {
     console.log(error)
@@ -215,7 +258,6 @@ app.post('/api/submission',async(req,res)=>{
 
 app.post('/api/runprob',async(req,res)=>{
   const {ProblemName,Language,Code} = req.body.problemdesc
-  console.log(Language);
   // checking the problem in the database and taking out the testcases
   const problem = await Problem.findOne({problemName:ProblemName});
   const inputs = []

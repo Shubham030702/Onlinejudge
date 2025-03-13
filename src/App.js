@@ -6,10 +6,14 @@ import ProblemList from './components/home';
 import './App.css'
 import Problems from './components/problem';
 import Profile from './components/Profile';
+import Contest from './components/contest';
+import ContestProblem from './components/contestProblem';
+import ProblemDesc from './components/ProblemDesc';
+import RegisterContest from './components/registerContest';
 
 function App() {
-  const location = useLocation();
   
+  const location = useLocation();
   return (
     <>
       {location.pathname !== '/' && location.pathname !== '/signup' && <Navbar />}
@@ -17,7 +21,11 @@ function App() {
         <Route path='/signup' element={<Register />} />
         <Route path='/' element={<Login />} />
         <Route path='/home' element={<ProblemList />} />
+        <Route path='/contest' element={<Contest />} />
+        <Route path='/registerContest' element={<RegisterContest />} />
+        <Route path='/contest/:id' element={<ContestProblem/>} />
         <Route path='/problems/:id' element={<Problems />} />
+        <Route path='/problemdesc/:id' element={<ProblemDesc/>} />
         <Route path='/profile' element={<Profile/>}/>
       </Routes>
     </>

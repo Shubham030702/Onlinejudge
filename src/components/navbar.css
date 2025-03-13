@@ -50,6 +50,10 @@ nav li a:hover {
     display: flex;
     justify-content: space-evenly;
     flex-direction: row;
-    margin-left: 68%;
+    margin-left: 50%;
     width: 15vw;
+}
+
+.hometag{
+    margin: 0 4px;
 }

@@ -43,7 +43,7 @@ const Login = () => {
 
     if (isValid) {
       try{
-        const response = await fetch('https://onlinejudge-k1s3.onrender.com/api/login',{
+        const response = await fetch('http://localhost:5000/api/login',{
           method:'POST',
           headers: {
             'Content-Type' : 'application/json',
@@ -52,6 +52,7 @@ const Login = () => {
           credentials:'include'
         })
         const data = await response.json()
+        console.log(data)
         if(response.ok) {
           navigate('/home')
         }

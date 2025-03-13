@@ -9,7 +9,7 @@ function Navbar() {
   const navigate = useNavigate()
   const handleLogout = async () => {
     try {
-      const response = await fetch('https://onlinejudge-k1s3.onrender.com/api/logout', {
+      const response = await fetch('./api/logout', {
         method: 'GET',
         credentials: 'include',  
       });
@@ -29,6 +29,10 @@ function Navbar() {
       <li>
         <h1 className='site'>AcECode</h1>
         <a href="/home"><h2 className='hometag' >Home</h2></a>
+        <div className="hometag">|</div>
+        <a href="/contest"><h2 className='hometag' >Contest</h2></a>
+        <div className="hometag">|</div>
+        <a href="/LeaderBoard"><h2 className='hometag' >Leaderboard</h2></a>
         <div className="rightnav">
         <a href="/profile"><FontAwesomeIcon className='logouttag' icon={faUser} title="Profile" size="xl"/></a>
         <button><FontAwesomeIcon className='logouttag' onClick={handleLogout} title="Logout" size="xl" icon={faRightFromBracket}/></button>

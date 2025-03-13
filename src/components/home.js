@@ -9,7 +9,7 @@ const ProblemList = () => {
   useEffect(() => {
     const fetchProblems = async () => {
       try {
-        const response = await fetch('https://onlinejudge-k1s3.onrender.com/api/problems',{
+        const response = await fetch('http://localhost:5000/api/problems',{
           method : 'GET',
           credentials:'include',
         }); 
@@ -27,11 +27,11 @@ const ProblemList = () => {
     };
 
     fetchProblems();
-  }, [navigate]);
+  }, []);
 
   const problemroute = async(id) =>{
     try {
-      const response = await fetch(`https://onlinejudge-k1s3.onrender.com/api/problem/${id}`,{
+      const response = await fetch(`http://localhost:5000/api/problem/${id}`,{
       method:'GET',  
       credentials:'include'
       }); 
@@ -52,21 +52,24 @@ const ProblemList = () => {
   return (
     <>
       <div className="home">
-        {problems.map(problem => (
-          <li key={problem._id} onClick={() => problemroute(problem._id)}>
-            <div class="card">
-        <div class="title">
-            <h1>{problem.problemName}</h1>
-        </div>
-        <div class="price">
-            <h2>{problem.difficulty}</h2>
-        </div>
-        <div class="action">
-            {problem.topics.map(t=>(<h4>{t}</h4>))}
-        </div>
-    </div>
-          </li>
+      {problems.map(problem => (
+  <li key={problem._id} onClick={() => problemroute(problem._id)}>
+    <div className="card">
+      <div className="title">
+        <h1>{problem.problemName}</h1>
+      </div>
+      <div className="price">
+        <h2>{problem.difficulty}</h2>
+      </div>
+      <div className="action">
+        {problem.topics.map((t, index) => (
+          <h4 key={index}>{t}</h4>
         ))}
+      </div>
+    </div>
+  </li>
+))}
+
       </div>
     </>
   );

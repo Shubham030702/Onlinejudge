@@ -66,6 +66,14 @@ const problemSchema = new mongoose.Schema({
   users:{
     type: [submissionsSchema],
     required: true
+  },
+  contestOnly :{
+    type : Boolean,
+    default : false
+  },
+  contestId : {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'contest', 
   }
 });
 

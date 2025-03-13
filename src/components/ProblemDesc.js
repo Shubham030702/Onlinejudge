@@ -19,7 +19,6 @@ function Problems() {
   const [loading, setLoading] = useState(false); 
   const [view , setview] = useState('Description');
   const [userdata, setUserdata] = useState(null);
-  const [solution, setsolution] = useState(null);
   const [time,settime] = useState(null);
   const [language, setLanguage] = useState(52);
 
@@ -152,9 +151,6 @@ function Problems() {
   };
 
   const changeView = (e,s) =>{
-    if(e === 'Submitted'){
-      setsolution(s)
-    }
     setview(e);
   }
 
@@ -164,74 +160,13 @@ function Problems() {
       <div className="left">
       <div className="content">
       <h3 onClick={() => changeView('Description',null)}>Description</h3>
-  	  <h3 onClick={() => changeView('Editorial',null)}>Editorial</h3>
-      <h3 onClick={() => changeView('Solutions',null)}>Solutions</h3>
-      <h3 onClick={() => changeView('Submissions',null)}>Submissions</h3>
       </div>
       <div className="leftbottom">
       {view === 'Description' && (
         <>
-        <h1>{problemData.problemName}</h1>
-        <h3>{problemData.difficulty}</h3>
-        <h4>{problemData.topics.map(t=>(<p>{t}</p>))}</h4>
+        <h1 className='problemtitle'>{problemData.problemName}</h1>
         <ReactMarkdown>{problemData.statement}</ReactMarkdown>
         </>
-      )}
-      {view === 'Editorial' && (
-        <ReactMarkdown>{problemData.editorial}</ReactMarkdown>
-      )}
-      {view === 'Submissions' && (
-        <>
-        {userdata && 
-         <div className="listsubmissions">
-         <ul>
-         {userdata.Submissions.map((submission, index) => {
-          if (submission.Problem._id === problemData._id) {
-              return (
-                  <div className='listitem' key={index}>
-                      <h3>{submission.Status}</h3>    
-                      <h3 className="itemSolution" style={{ color: 'seashell'}} onClick={() => changeView('Submitted',submission.Solution)}>Solution</h3>  
-                      <h3>{formatTimestamp(submission.Time)}</h3> 
-                  </div>
-              );
-          }
-          return "No Submission Made Yet {NSMY} :)";
-          })}
-         </ul>
-     </div>
-        }
-        </>
-      )}
-      {view === 'Submitted' && (
-          <>
-          <Editor
-          height="100%"
-          width="100%" 
-          defaultValue={solution}
-          theme="vs-dark"
-          />
-          </>
-        )
-      }
-      {view === 'Solutions' && (
-        <>
-          {problemData && 
-         <div className="listsubmissions">
-         <ul>
-         {problemData.users.map((user, index) => {
-              return (
-                  <div className='listitem' key={index}>
-                      <h3>{user.Username}</h3>    
-                      <h3>{user.Status}</h3>    
-                      <h3 className="itemSolution" style={{ color: 'seashell'}} onClick={() => changeView('Submitted',user.Solution)}>Solution</h3>  
-                      <h3>{formatTimestamp(user.Time)}</h3> 
-                  </div>
-              );
-          })}
-         </ul>
-     </div>
-        }
-      </>
       )}
       {
         view === 'Evaluation' && (
