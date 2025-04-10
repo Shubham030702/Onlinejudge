@@ -24,6 +24,6 @@ lines.forEach(line => {
   }
 });
 
-console.log("Function Name:", functionName);
-console.log("Input Fields:", inputFields);
-console.log("Output Field:", outputField);
+console.log(functionName);
+console.log(inputFields);
+console.log(outputField);
