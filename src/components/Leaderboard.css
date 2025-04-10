@@ -1,0 +1,73 @@
+
+.rankings {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    min-width: 60vw;
+    background: linear-gradient(135deg, #1e3b726e, #3f4042);
+    color: white;
+    font-family: "Arial", sans-serif;
+    top: 25vh;
+    right: 20vw;
+    height: 73vh;
+}
+
+.rankings h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.rankings ul {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 60%;
+    max-width: 800px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.rankings li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    margin: 10px 0;
+    backdrop-filter: blur(5px);
+    transition: transform 0.2s, background 0.3s;
+}
+
+.rankings li:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.rankings li h2:first-child {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffcc00;
+}
+
+.rankings li h2:nth-child(2) {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.rankings li h2:last-child {
+    font-size: 1.3rem;
+    color: #00ff99;
+}
+
+.highlight {
+    background: rgba(255, 215, 0, 0.4);
+    border: 2px solid #ffcc00;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    font-weight: bold;
+}

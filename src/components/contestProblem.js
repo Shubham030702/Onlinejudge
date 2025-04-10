@@ -1,11 +1,13 @@
 import React from 'react'
 import { useLocation , useNavigate } from 'react-router-dom'
-import "./home.css"
+import "./contestProblem.css"
 
 function ContestProblem() {
   const location = useLocation();
   const navigate = useNavigate();
+  const contest = location.state.cont.standings
   const problems = location.state.cont.problems
+  console.log(location.state.cont)
   async function problemInter(id){
     try {
       const response = await fetch(`http://localhost:5000/api/problem/${id}`,{
@@ -27,16 +29,35 @@ function ContestProblem() {
   }
   return (
     <>
-    <div className="home">
-        {problems.map(problem => (
+    <div className="timer">
+    <h1 style={{"color":"White"}}>Contest time</h1>
+    </div>
+    <div className="ContestProblemPage">
+      <div className="leftContest">
+       {problems.map(problem => (
           <li key={problem._id} onClick={()=>problemInter(problem._id)}>
-            <div class="card">
-        <div class="title">
+            <div class="problems">
+        <div class="problemtitle">
             <h1>{problem.problemName}</h1>
+        </div>
+        <div className="stat">
+        <h3>Status</h3>
         </div>
     </div>
           </li>
         ))}
+      </div>
+        <div className="rightContest">
+        <h1>Standings</h1>
+        { 
+        contest.map(e=>(
+          <li key={e._id}>
+            <h2>{e.user.Username}</h2>
+            <h2>{e.user.Rating}</h2>
+          </li>
+        ))
+        }
+    </div>
       </div>
     </>
   )

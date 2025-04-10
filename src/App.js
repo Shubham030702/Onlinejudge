@@ -10,6 +10,7 @@ import Contest from './components/contest';
 import ContestProblem from './components/contestProblem';
 import ProblemDesc from './components/ProblemDesc';
 import RegisterContest from './components/registerContest';
+import Leaderboard from './components/Leaderboard';
 
 function App() {
   
@@ -27,6 +28,7 @@ function App() {
         <Route path='/problems/:id' element={<Problems />} />
         <Route path='/problemdesc/:id' element={<ProblemDesc/>} />
         <Route path='/profile' element={<Profile/>}/>
+        <Route path='/Leaderboard' element={<Leaderboard/>}/>
       </Routes>
     </>
   );

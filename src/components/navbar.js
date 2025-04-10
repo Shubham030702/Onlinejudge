@@ -9,7 +9,7 @@ function Navbar() {
   const navigate = useNavigate()
   const handleLogout = async () => {
     try {
-      const response = await fetch('./api/logout', {
+      const response = await fetch('http://localhost:5000/api/logout', {
         method: 'GET',
         credentials: 'include',  
       });
@@ -32,7 +32,7 @@ function Navbar() {
         <div className="hometag">|</div>
         <a href="/contest"><h2 className='hometag' >Contest</h2></a>
         <div className="hometag">|</div>
-        <a href="/LeaderBoard"><h2 className='hometag' >Leaderboard</h2></a>
+        <a href="/Leaderboard"><h2 className='hometag' >Leaderboard</h2></a>
         <div className="rightnav">
         <a href="/profile"><FontAwesomeIcon className='logouttag' icon={faUser} title="Profile" size="xl"/></a>
         <button><FontAwesomeIcon className='logouttag' onClick={handleLogout} title="Logout" size="xl" icon={faRightFromBracket}/></button>

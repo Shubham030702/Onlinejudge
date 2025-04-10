@@ -10,7 +10,7 @@ require('dotenv').config();
 const CodeSubmission = require('./judge0');
 
 app.use(session({
-  secret: 'secret',             
+  secret: process.env.SecretKey,             
   resave: false,                
   saveUninitialized: false,     
   store: MongoStore.create({
@@ -32,11 +32,11 @@ app.options('*', (req, res) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.header('Access-Control-Allow-Credentials', 'true');
-  res.sendStatus(204); // No content
+  res.sendStatus(204); // 
 });
 app.use(express.json());
 
-let Problem, User, Contest,Register;
+let Problem, User, Contest;
 mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 30000 })
   .then(() => {
     Problem = require('./Database/problems'); 
@@ -153,6 +153,16 @@ app.get('/api/userdata',async(req,res)=>{
   else res.status(401).json({ message: 'user not found'});
 })
 
+app.get('/api/leaderboard',async(req,res)=>{
+  try{
+    const response = await User.find({},"Username Rating").sort({Rating:-1}).lean();
+    const UserRank = await response.findIndex(user=>user._id.toString()===req.session.user.id)+1
+    res.json({response,rank:UserRank})
+  }catch(error){
+    res.status(500).json({ error: "Failed to fetch leaderboard" });
+  }
+})
+
 app.post('/api/login', async (req, res) => {
   const { Email, Password } = req.body;
   try {
@@ -165,8 +175,7 @@ app.post('/api/login', async (req, res) => {
         return res.status(401).json({ message: 'Incorrect password' });
       }
       req.session.user = {
-        id: useremail._id,
-        username: useremail.Username
+        id: useremail._id
       };
       req.session.save((err) => {
         if (err) {
@@ -208,9 +217,99 @@ app.get('/profile',async(req,res)=>{
   }
 })
 
+app.post('/api/Contestsubmission',async(req,res)=>{
+  const {ProblemName,Language,Code} = req.body.problemdesc
+  const problem = await Problem.findOne({problemName:ProblemName});
+  const userdata = await User.findById(req.session.user.id);
+  if (!problem || !userdata) {
+    return res.status(404).json({ error: "Problem, contest, or user not found." });
+  }
+  const alreadySubmitted = userdata.Submissions.some(sub => sub.Problem.equals(problem._id));
+  const inputs = []
+  const outputs = []
+  problem.testCases.forEach(e=>{
+    inputs.push(e.input)
+    outputs.push(e.output)
+  })
+  const code64 = base64code(Code)
+  async function evaluateSubmissions() {
+    let Time=0;
+    for (const [index, input] of inputs.entries()) {
+      const output = outputs[index];
+      const code64inp = base64code(input);
+      const code64out = base64code(output);
+      try {
+        const result = await submission.evaluation(code64inp,Language,code64out, code64);
+        const decode = Buffer.from(result.stdout,'base64').toString('utf-8');
+        let d = parseFloat(result.time);
+        Time+=d;
+        if(result.status.id > 3){
+          if (!alreadySubmitted) {
+            await Contest.findOneAndUpdate(
+              { _id: problem.contestId, "standings.user": new mongoose.Types.ObjectId(req.session.user.id) },
+              { 
+                $inc: { "standings.$.penalties": 1 },
+              },
+              { new: true }
+            );            
+          }
+          return {result,output,input,decode}
+        }
+      } catch (error) {
+        if (!alreadySubmitted) {
+          await Contest.findOneAndUpdate(
+            { _id: problem.contestId, "standings.user": new mongoose.Types.ObjectId(req.session.user.id) },
+            { 
+              $inc: { "standings.$.penalties": 1 },
+            },
+            { new: true }
+          );            
+        }
+        return {status:"Runtime Error",time:Time};
+      } 
+    }
+    if (!alreadySubmitted) {
+      await Contest.findOneAndUpdate(
+        { _id: problem.contestId, "standings.user": new mongoose.Types.ObjectId(req.session.user.id) },
+        { 
+          $inc: { "standings.$.score": 1 },
+        },
+        { new: true }
+      );            
+    }
+    return {status:"Accepted",time:Time};
+  }
+  try {
+    const result = await evaluateSubmissions();
+    if(result.status === "Accepted"){
+      userdata.Submissions.push({
+        Problem:problem._id,
+        Status:result.result?result.result.status.description:result.status,
+        Solution:Code
+      })
+    }
+    await userdata.save()
+    problem.users.push({
+      user: req.session.user.id,
+      Username: userdata.Username,
+      Status:result.result?result.result.status.description:result.status,
+      Solution:Code
+    })
+    await problem.save()
+    res.send(result);
+  } catch (error) {
+    console.log(error)
+    res.status(500).send({ error: "An error occurred while evaluating submissions." });
+  }
+})
+
 app.post('/api/submission',async(req,res)=>{
   const {ProblemName,Language,Code} = req.body.problemdesc
   const problem = await Problem.findOne({problemName:ProblemName});
+  const userdata = await User.findById(req.session.user.id);
+  if (!problem || !userdata) {
+    return res.status(404).json({ error: "Problem, contest, or user not found." });
+  }
   const inputs = []
   const outputs = []
   problem.testCases.forEach(e=>{
@@ -232,22 +331,20 @@ app.post('/api/submission',async(req,res)=>{
         if(result.status.id > 3){
           return {result,output,input,decode}
         }
-      } catch (error) {
+      } catch (error) {        
         return {status:"Runtime Error",time:Time};
-      }
+      } 
     }
     return {status:"Accepted",time:Time};
   }
   try {
     const result = await evaluateSubmissions();
-    const userdata = await User.findById(req.session.user.id);
     userdata.Submissions.push({
       Problem:problem._id,
       Status:result.result?result.result.status.description:result.status,
       Solution:Code
     })
     await userdata.save()
-    // storing the user in the problem database
     problem.users.push({
       user: req.session.user.id,
       Username: userdata.Username,

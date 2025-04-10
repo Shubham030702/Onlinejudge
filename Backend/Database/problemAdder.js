@@ -62,7 +62,6 @@ async function problemAdder(problemDir, contestId) {
       contestOnly: true,
       contestId: new ObjectId(contestId)
     };
-
     const result = await problemCollection.insertOne(problemData);
     console.log(`New problem created with id: ${result.insertedId}`);
 

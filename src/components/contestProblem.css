@@ -1,0 +1,67 @@
+.ContestProblemPage {
+    display: flex;
+    background: none;
+    min-height: 60vh;
+}
+
+.timer {
+    text-align: center;
+    width: 80vw;
+    margin: 5vh 0;
+}
+
+.leftContest {
+    width: 60%;
+}
+
+.rightContest {
+    width: 40%;
+    background: linear-gradient(135deg, #1e3b726e, #3f4042);
+}
+
+.leftContest li {
+    color: white;
+    height: 25%;
+    text-decoration: none;
+    list-style: none;
+}
+
+.problems {
+    background: #ffffff5c;
+    margin: 2vh 1vw;
+    border-bottom-left-radius: -6%;
+    border-radius: 30px;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+}
+.problems:hover {
+    scale: 1.01;    
+    cursor: pointer;
+}
+
+.stat {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: yellowgreen;
+}
+
+.rightContest {
+    overflow: scroll;
+}
+
+.rightContest li {
+    display: flex;
+    justify-content: space-around;
+    color: black;
+    background: #ffffff9c;
+    height: 5vh;
+    margin: 3px 1vw;
+}
+
+.rightContest h1 {
+    text-align: center;
+    color: white;
+    margin: 3vh;
+}

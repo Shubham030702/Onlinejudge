@@ -1,11 +1,12 @@
 import React from 'react'
-import { useState , useEffect} from 'react';
+import { useState } from 'react';
 import './problem.css'
 import Editor from '@monaco-editor/react';
 import { useLocation } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import {formatTimestamp} from './utils'
 import Loader from './loader.js'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 
 function Problems() {
   const [height, setHeight] = useState(50);
@@ -18,34 +19,9 @@ function Problems() {
   const [code,setCode] = useState("// write your code here ");
   const [loading, setLoading] = useState(false); 
   const [view , setview] = useState('Description');
-  const [userdata, setUserdata] = useState(null);
   const [time,settime] = useState(null);
   const [language, setLanguage] = useState(52);
-
-  useEffect(() => {
-    const fetchuser = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/userdata', {
-          method: 'GET',
-          credentials: 'include',
-          headers: {
-            'content-type': 'application/json'
-          }
-        });
-        if (response.ok) {
-          setUserdata(await response.json());
-        } else {
-          const errorData = await response.json();
-          console.error('Error:', errorData.message);
-        }
-      } catch (error) {
-        console.error('Fetch user error:', error);
-      }
-    };
-
-    fetchuser();
-  }, []);
-
+  const [Accepted,setAccepted] = useState(null)
   const problemdesc={
     ProblemName : problemData.problemName,
     Language : language,
@@ -59,7 +35,7 @@ function Problems() {
     setexpoutput(null);
     setLoading(true)
     try{  
-      const response = await fetch('http://localhost:5000/api/submission',{
+      const response = await fetch('http://localhost:5000/api/Contestsubmission',{
         method:'POST',
         credentials:'include',
         headers:{
@@ -68,7 +44,6 @@ function Problems() {
         body : JSON.stringify({problemdesc})
       })
       const result = await response.json();
-      console.log(result)
       if(!result.result){
         setstatus(result.status)
         settime(result.time);
@@ -118,19 +93,15 @@ function Problems() {
 
   const handleChange = (event) => {
     if(event.target.value === "cpp"){ 
-      console.log(52);
       setLanguage(52); 
     }
     else if(event.target.value === "java"){ 
-      console.log(62);
       setLanguage(62); 
     }
     else if(event.target.value === "python"){ 
-      console.log(71);
       setLanguage(71); 
     }
     else if(event.target.value === "javascript"){ 
-      console.log(63);
       setLanguage(63); 
     }
   };
@@ -164,7 +135,8 @@ function Problems() {
       <div className="leftbottom">
       {view === 'Description' && (
         <>
-        <h1 className='problemtitle'>{problemData.problemName}</h1>
+        <div className="NameProblem"><h1 style={{"color":"wheat"}}>{problemData.problemName}</h1>{Accepted && <FontAwesomeIcon icon={faCircleCheck} size="xl" style={{color: "#FFD43B",}}/>}
+        </div>
         <ReactMarkdown>{problemData.statement}</ReactMarkdown>
         </>
       )}

@@ -6,6 +6,8 @@ import { useLocation } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import {formatTimestamp} from './utils'
 import Loader from './loader.js'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 
 function Problems() {
   const [height, setHeight] = useState(50);
@@ -22,7 +24,7 @@ function Problems() {
   const [solution, setsolution] = useState(null);
   const [time,settime] = useState(null);
   const [language, setLanguage] = useState(52);
-
+  const [Accepted,setAccepted] = useState(null)
   useEffect(() => {
     const fetchuser = async () => {
       try {
@@ -171,7 +173,7 @@ function Problems() {
       <div className="leftbottom">
       {view === 'Description' && (
         <>
-        <h1>{problemData.problemName}</h1>
+        <div className="NameProblem"><h1 style={{"color":"wheat"}}>{problemData.problemName}</h1>{Accepted && <FontAwesomeIcon icon={faCircleCheck} size="xl" style={{color: "#FFD43B",}}/>} </div>
         <h3>{problemData.difficulty}</h3>
         <h4>{problemData.topics.map(t=>(<p>{t}</p>))}</h4>
         <ReactMarkdown>{problemData.statement}</ReactMarkdown>
@@ -186,6 +188,9 @@ function Problems() {
          <div className="listsubmissions">
          <ul>
          {userdata.Submissions.map((submission, index) => {
+          if (!submission.Problem) {
+            return null;
+          }
           if (submission.Problem._id === problemData._id) {
               return (
                   <div className='listitem' key={index}>
@@ -195,7 +200,6 @@ function Problems() {
                   </div>
               );
           }
-          return "No Submission Made Yet {NSMY} :)";
           })}
          </ul>
      </div>
