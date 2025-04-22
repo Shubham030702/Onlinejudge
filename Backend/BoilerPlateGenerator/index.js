@@ -30,6 +30,8 @@ if (!fs.existsSync(outputDir2)) {
 
 const CppCodeFull = Generator2.generateCpp();
 const JsCodeFull = Generator2.generateJs();
+const JavaFullCode = Generator2.generateJava();
+const PyCodeFull = Generator2.generatePython();
 
 const cppFilePath = path.join(outputDir, "boilerplate.cpp");
 const pythonFilePath = path.join(outputDir, "boilerplate.py");
@@ -42,8 +44,12 @@ fs.writeFileSync(jsFilePath, JsCode);
 
 const cppFilePathFull = path.join(outputDir2, "boilerplate.cpp");
 const jsFilePathFull = path.join(outputDir2, "boilerplate.js");
+const JavaFilePathFull = path.join(outputDir2, "boilerplate.java");
+const PyFilePathFull = path.join(outputDir2, "boilerplate.py");
 fs.writeFileSync(cppFilePathFull, CppCodeFull);
 fs.writeFileSync(jsFilePathFull, JsCodeFull);
+fs.writeFileSync(JavaFilePathFull, JavaFullCode);
+fs.writeFileSync(PyFilePathFull, PyCodeFull);
 
 
 console.log("Boilerplate files generated successfully!");

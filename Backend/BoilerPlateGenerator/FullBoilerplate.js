@@ -87,8 +87,73 @@ ${functioncall}
 ${output}
 `;
 }
+generateJava(){
+    const input = this.inputFields
+    .map((field,i) => {
+            if(field.startsWith("list<")) {
+                return `int size_${this.inputFieldsName[i]};
+                Scanner sc = new Scanner(System.in);
+                size_${this.inputFieldsName[i]} = sc.nextInt();
+                ${this.mapTypeToJava(field)} ${this.inputFieldsName[i]} = new ${this.mapTypeToJava(field)}(size_${this.inputFieldsName[i]});
+                for(int i=0;i<size_${this.inputFieldsName[i]};i++){
+                    ${this.inputFieldsName[i]}[i] = sc.nextInt();
+                }`;
+            }
+            else{
+                return `${this.mapTypeToJava(field)} ${this.inputFieldsName[i]} = sc.nextInt();`;
+            }
+        }).join('\n')
+        const functioncall = `${this.mapTypeToJava(this.outputField)} ${this.outputFieldName} = ${this.functionName}(${this.inputFieldsName.join(",")});`
+        const output = this.outputField.startsWith("list<") ? `for(int i=0;i<${this.outputFieldName}.size();i++){\n System.out.print(${this.outputFieldName}[i]+" "); \n }` : `System.out.println(${this.outputFieldName});`
+        return `
+import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList; 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Stack;
+import java.util.LinkedList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Iterator;
 
+##Enter Code Here ##
 
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        ${input}
+        ${functioncall}
+        ${output}
+    }
+}
+`
+}
+
+generatePython(){  
+    const input = this.inputFields
+    .map((field,i) => {
+            if(field.startsWith("list<")) {
+                return `size_${this.inputFieldsName[i]} = int(input())\n${this.inputFieldsName[i]} = []\nfor i in range(size_${this.inputFieldsName[i]}):\n\t${this.inputFieldsName[i]}.append(int(input()))`;
+            }
+            else{
+                return `${this.inputFieldsName[i]} = int(input())`;
+            }
+        }).join('\n')
+        const functioncall = `${this.outputFieldName} = ${this.functionName}(${this.inputFieldsName.join(",")})`
+        const output = this.outputField.startsWith("list<") ? `for i in range(len(${this.outputFieldName})):
+    print(${this.outputFieldName}[i], end=" ")` : `print(${this.outputFieldName})`
+        return `
+## Enter Code Here ##   
+${input}
+${functioncall}
+${output}
+`
+}   
     mapTypeToCpp(type) {
         switch (type) {
           case "int": return "int";

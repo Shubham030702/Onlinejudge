@@ -40,6 +40,36 @@ async function storeProblem(problemDir) {
       testCases.push({ input, output });
     });
 
+    const boilerplateDir = path.join(problemDir, 'BoilerPlate');
+    const boilerplateFullDir = path.join(problemDir, 'BoilerPlateFull');
+    const cppFilePath = path.join(boilerplateDir, 'boilerplate.cpp');
+    const pythonFilePath = path.join(boilerplateDir, 'boilerplate.py');   
+    const javaFilePath = path.join(boilerplateDir, 'boilerplate.java');
+    const jsFilePath = path.join(boilerplateDir, 'boilerplate.js');
+    const cppCode = fs.readFileSync(cppFilePath, 'utf-8');  
+    const pythonCode = fs.readFileSync(pythonFilePath, 'utf-8');
+    const javaCode = fs.readFileSync(javaFilePath, 'utf-8');
+    const jsCode = fs.readFileSync(jsFilePath, 'utf-8');
+    const cppFilePath2 = path.join(boilerplateFullDir, 'boilerplate.cpp');
+    const pythonFilePath2 = path.join(boilerplateFullDir, 'boilerplate.py');   
+    const javaFilePath2 = path.join(boilerplateFullDir, 'boilerplate.java');
+    const jsFilePath2 = path.join(boilerplateFullDir, 'boilerplate.js');
+    const cppFullCode = fs.readFileSync(cppFilePath2, 'utf-8');  
+    const pythonFullCode = fs.readFileSync(pythonFilePath2, 'utf-8');
+    const javaFullCode = fs.readFileSync(javaFilePath2, 'utf-8');
+    const jsFullCode = fs.readFileSync(jsFilePath2, 'utf-8');
+    const boilerplate = {
+      cpp: cppCode,
+      python: pythonCode,
+      java: javaCode,
+      js: jsCode
+    };
+    const boilerplateFull = {
+      cpp: cppFullCode,
+      python: pythonFullCode,
+      java: javaFullCode,
+      js: jsFullCode
+    };
     const problemData = {
       problemName : problemname,
       difficulty : difficulty,
@@ -48,6 +78,8 @@ async function storeProblem(problemDir) {
       testCases: testCases,
       editorial: Editorial,
       users: [],
+      boilerplate: boilerplate,
+      boilerplateFull: boilerplateFull,
       createdAt: new Date(),
       contestOnly: false,
     };

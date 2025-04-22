@@ -13,7 +13,7 @@ using namespace std;
 int main() {
     int size_arr;
 cin>>size_arr;
-vector<int> arr(size_arr);
+vector<string> arr(size_arr);
 for(int i=0;i<size_arr;i++){
  cin>>arr[i]; 
 }

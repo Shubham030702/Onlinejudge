@@ -35,6 +35,44 @@ const submissionsSchema = new mongoose.Schema({
   }
 })
 
+const boilerplateSchema = new mongoose.Schema({ 
+  cpp: {
+    type: String,
+    required: true, 
+  },
+  python: {
+    type: String,
+    required: true, 
+  },
+  java: {
+    type: String,
+    required: true, 
+  },
+  js: {
+    type: String,
+    required: true, 
+  }
+});
+
+const boilerplateFullSchema = new mongoose.Schema({ 
+  cpp: {
+    type: String,
+    required: true, 
+  },
+  python: {
+    type: String,
+    required: true, 
+  },
+  java: {
+    type: String,
+    required: true, 
+  },
+  js: {
+    type: String,
+    required: true, 
+  }
+});
+
 const problemSchema = new mongoose.Schema({
   problemName: {
     type: String,
@@ -66,6 +104,14 @@ const problemSchema = new mongoose.Schema({
   users:{
     type: [submissionsSchema],
     required: true
+  },
+  boilerplate: {
+    type: boilerplateSchema,
+    required: true,
+  },
+  boilerplateFull: {
+    type: boilerplateFullSchema,
+    required: true,
   },
   contestOnly :{
     type : Boolean,
