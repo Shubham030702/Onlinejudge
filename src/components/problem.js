@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState , useEffect} from 'react';
+import { useState , useEffect ,useRef} from 'react';
 import './problem.css'
 import Editor from '@monaco-editor/react';
 import { useLocation } from 'react-router-dom';
@@ -17,7 +17,7 @@ function Problems() {
   const [expoutput, setexpoutput] = useState(null);
   const location = useLocation();
   const {problemData} = location.state;
-  const [code,setCode] = useState("// write your code here ");
+  const [code,setCode] = useState(problemData.boilerplate.cpp);
   const [loading, setLoading] = useState(false); 
   const [view , setview] = useState('Description');
   const [userdata, setUserdata] = useState(null);
@@ -25,6 +25,8 @@ function Problems() {
   const [time,settime] = useState(null);
   const [language, setLanguage] = useState(52);
   const [Accepted,setAccepted] = useState(null)
+  const editorRef = useRef(null);
+  const monacoRef = useRef(null);
   useEffect(() => {
     const fetchuser = async () => {
       try {
@@ -119,23 +121,39 @@ function Problems() {
     setLoading(false)
   }
 
+  const handleEditorDidMount = (editor, monaco) => {
+    editorRef.current = editor;
+    monacoRef.current = monaco;
+  };
+
   const handleChange = (event) => {
+    let newCode = "";
+    let newLang = "";
     if(event.target.value === "cpp"){ 
-      console.log(52);
+      newCode = problemData.boilerplate.cpp;
       setLanguage(52); 
+      newLang = "cpp";
     }
     else if(event.target.value === "java"){ 
-      console.log(62);
+      newCode = problemData.boilerplate.java;
       setLanguage(62); 
+      newLang = "java";
     }
     else if(event.target.value === "python"){ 
-      console.log(71);
+      newCode = problemData.boilerplate.python;
       setLanguage(71); 
+      newLang = "python";
     }
     else if(event.target.value === "javascript"){ 
-      console.log(63);
+      newCode = problemData.boilerplate.js;
       setLanguage(63); 
+      newLang = "javascript";
     }
+    setCode(newCode);
+    const newModel = monacoRef.current.editor.createModel(newCode, newLang);
+    const oldModel = editorRef.current.getModel();
+    editorRef.current.setModel(newModel);
+    oldModel.dispose();
   };
   
   const handleMouseDown = (e) => {
@@ -273,8 +291,9 @@ function Problems() {
       <Editor
         height={`${height}%`}
         width="100%" 
-        defaultLanguage="cpp"
-        defaultValue={code}
+        defaultLanguage="cpp"        
+        onMount = {handleEditorDidMount}
+        defaultValue = {code}
         theme="vs-dark"
         onChange={(value)=>setCode(value)}
       />
