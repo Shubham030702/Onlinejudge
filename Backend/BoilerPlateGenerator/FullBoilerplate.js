@@ -41,12 +41,7 @@ class FullBoilerPlate{
         const functioncall = `${this.mapTypeToCpp(this.outputField)} ${this.outputFieldName} = ${this.functionName}(${this.inputFieldsName.join(",")});`
         const output = this.outputField.startsWith("list<") ? `for(int i=0;i<${this.outputFieldName}.size();i++){\n cout<<${this.outputFieldName}[i]<<" "; \n }` : `cout<<${this.outputFieldName}<<endl;`
         return `
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include <sstream>
-#include <climits>
+#include <bits/stdc++.h>
 
 using namespace std;
                 

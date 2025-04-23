@@ -24,6 +24,7 @@ function Problems() {
   const [solution, setsolution] = useState(null);
   const [time,settime] = useState(null);
   const [language, setLanguage] = useState(52);
+  const [languageName, setLanguageName] = useState("cpp");
   const [Accepted,setAccepted] = useState(null)
   const editorRef = useRef(null);
   const monacoRef = useRef(null);
@@ -52,8 +53,9 @@ function Problems() {
   }, []);
 
   const problemdesc={
-    ProblemName : problemData.problemName,
+    id : problemData._id,
     Language : language,
+    LanguageName : languageName,
     Code: code
   }
 
@@ -149,6 +151,7 @@ function Problems() {
       setLanguage(63); 
       newLang = "javascript";
     }
+    setLanguageName(newLang==="javascript"?"js":newLang)
     setCode(newCode);
     const newModel = monacoRef.current.editor.createModel(newCode, newLang);
     const oldModel = editorRef.current.getModel();

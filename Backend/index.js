@@ -360,17 +360,18 @@ app.post('/api/submission',async(req,res)=>{
 })
 
 app.post('/api/runprob',async(req,res)=>{
-  const {ProblemName,Language,Code} = req.body.problemdesc
-  // checking the problem in the database and taking out the testcases
-  const problem = await Problem.findOne({problemName:ProblemName});
+  const {id,Language,LanguageName,Code} = req.body.problemdesc
+  const problem = await Problem.findOne({_id:id});
   const inputs = []
   const outputs = []
   problem.testCases.splice(0,2).forEach(e=>{
     inputs.push(e.input)
     outputs.push(e.output)
   })
-  // Judge 0 checking code's evaluation
-  const code64 = base64code(Code)
+  const boilerplate = problem.boilerplateFull[LanguageName];
+  const FullCode = boilerplate.replace("## Enter Code Here ##",Code)
+  console.log(FullCode)
+  const code64 = base64code(FullCode)
   async function evaluateSubmissions() {
     let Time=0;
     for (const [index, input] of inputs.entries()) {

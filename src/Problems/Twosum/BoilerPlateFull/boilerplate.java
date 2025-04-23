@@ -22,7 +22,7 @@ public class Main {
         int size_arr;
                 Scanner sc = new Scanner(System.in);
                 size_arr = sc.nextInt();
-                List<String> arr = new List<String>(size_arr);
+                List<Integer> arr = new List<Integer>(size_arr);
                 for(int i=0;i<size_arr;i++){
                     arr[i] = sc.nextInt();
                 }

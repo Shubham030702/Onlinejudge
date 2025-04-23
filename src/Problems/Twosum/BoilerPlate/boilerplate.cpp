@@ -1,3 +1,3 @@
-vector<int> twosum(vector<string> arr, int target) {
+vector<int> twosum(vector<int> arr, int target) {
  //Write your code here 
 }

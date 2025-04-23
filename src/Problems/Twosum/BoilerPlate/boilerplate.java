@@ -1,4 +1,4 @@
-public static Object twosum(List<String> arr, int target) {
+public static Object twosum(List<Integer> arr, int target) {
     // Implementation goes here
   
 }
