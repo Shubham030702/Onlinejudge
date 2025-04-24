@@ -10,7 +10,6 @@ async function problemAdder(problemDir, contestId) {
   try {
     await client.connect();
     const db = client.db(dbName);
-    
     const contestCollection = db.collection('contests');
     const contest = await contestCollection.findOne({ _id: new ObjectId(contestId) });
     if (!contest) {
@@ -19,7 +18,6 @@ async function problemAdder(problemDir, contestId) {
     }
 
     const problemCollection = db.collection('problems');
-
     const description = fs.readFileSync(path.join(problemDir, 'Structure.md'), 'utf-8');
     const lines = description.split('\n');
 
@@ -79,13 +77,4 @@ async function problemAdder(problemDir, contestId) {
   }
 }
 
-const args = process.argv.slice(2);
-if (args.length !== 2) {
-  console.error('Usage: node storeProblem.js <problemDir> <contestId>');
-  process.exit(1);
-}
-
-const problemDir = args[0];
-const contestId = args[1];
-
-problemAdder(problemDir, contestId);
+module.exports = problemAdder
