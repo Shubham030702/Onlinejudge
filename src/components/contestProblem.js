@@ -7,7 +7,6 @@ function ContestProblem() {
   const navigate = useNavigate();
   const contest = location.state.cont.standings
   const problems = location.state.cont.problems
-  console.log(location.state.cont)
   async function problemInter(id){
     try {
       const response = await fetch(`http://localhost:5000/api/problem/${id}`,{

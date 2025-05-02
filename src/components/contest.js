@@ -7,6 +7,7 @@ const Contest = () => {
     const [contest,setContest] = useState([]);
     const [Loading,setLoading] = useState(true);
     const [error,setError] = useState(true);
+    
     useEffect(()=>{
         const contestFetch = async() => {
            try{
@@ -39,7 +40,25 @@ const Contest = () => {
                 navigate(`/registerContest`,{state:{cont : result.contest}});    
             }
             else{
-                navigate(`/contest/${id}`,{state:{cont : result.contest}});    
+              if (result.contest?.status === 'Ended') {
+                navigate('/contestUpdate', {
+                  state: {
+                    cont: result.contest,
+                    status: "Ended"
+                  }
+                });
+              } else if (result.contest?.status === 'Upcoming') {
+                navigate('/contestUpdate', {
+                  state: {
+                    cont: result.contest,
+                    status: "Upcoming"
+                  }
+                });
+              }
+              
+             else {
+                navigate(`/contest/${id}`, { state: { cont: result.contest } });
+              }              
             }
             }catch(error){
                 setError(true);
@@ -57,22 +76,31 @@ const Contest = () => {
     return(
     <> 
     <div className="home">
-        {contest.map(cont =>(
-          <li key={cont._id} onClick={() => contestroute(cont._id)}>
-            <div class="card">
-            <div class="title">
-                <h1>Contest :- {cont.contestNo}</h1>
-            </div>
-            <div class="price">
-                <h2>{cont.starttime}</h2>
-            </div>
-            <div class="action">
-                <h2>{cont.status}</h2>
-            </div>
-            </div>
-         </li>
-        ))}
-      </div>
+  {contest.map(cont => {
+    const utcTime = new Date(cont.starttime);
+    const istTime = utcTime.toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      hour12: true,
+    });
+
+    return (
+      <li key={cont._id} onClick={() => contestroute(cont._id)}>
+        <div className="card">
+          <div className="title">
+            <h1>Contest :- {cont.contestNo}</h1>
+          </div>
+          <div className="price">
+            <h3>Starts at :</h3>
+            <h3>{istTime}</h3>
+          </div>
+          <div className="action">
+            <h2>{cont.status}</h2>
+          </div>
+        </div>
+      </li>
+    );
+  })}
+</div>
     </>
     )
 }

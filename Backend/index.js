@@ -8,6 +8,9 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo'); 
 require('dotenv').config();
 const CodeSubmission = require('./judge0');
+const scheduler = require('./ProblemAdder/contestScheduler')
+
+scheduler.startContestCron();
 
 app.use(session({
   secret: process.env.SecretKey,             
