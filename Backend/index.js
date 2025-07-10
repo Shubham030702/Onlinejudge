@@ -22,7 +22,8 @@ app.use(session({
   }),
   cookie: {
     maxAge: 1000 * 60 * 60 * 24, 
-    httpOnly: true
+    httpOnly: true,
+    secure : false
   }
 }));
 
@@ -63,7 +64,7 @@ db.on('error', (err) => {
 
 function isLoggedIn(req, res, next) {
   if (req.session.user) {  
-    return next(); 
+    next(); 
   } else {
     res.status(401).send('Please log in to access this resource.');
   }
@@ -129,6 +130,69 @@ app.get('/api/contestRegistration/:id', isLoggedIn, async (req, res) => {
   }
 });
 
+const nodemailer = require('nodemailer')
+const otpModel = require('./Database/otp')
+
+const otpSender = async(email,otp)=>{
+  const transporter = nodemailer.createTransport({
+    service : 'gmail',
+        auth : {
+            user : process.env.Email,
+            pass :  process.env.PassEmail,
+        }
+  });
+    const info = await transporter.sendMail({
+      from: '"AceCode"',
+      to: email,
+      subject: "Authentication to AceCode via OTP",
+      text: "Hello User",
+      html: `<h2>🔐 AceCode OTP Verification</h2>
+      <p>Your One-Time Password (OTP) is:</p>
+      <h3 style="color: #2e86de;">${otp}</h3>
+      <p>This code will expire in <strong>5 minutes</strong>.</p>
+      <p>Please do not share this OTP with anyone.</p>
+      <br>
+      <p>— Team AceCode</p>`, 
+    });
+    console.log("Message sent:", info.messageId);
+}
+
+app.post('/api/otpManager',async(req,res)=>{
+    const {email} = req.body;
+    try{
+      const exist = await User.findOne({Email : email})
+      if(exist){
+        return res.send({success:false,message:"This Email is already in use!"})
+      }
+      await otpModel.deleteMany({email})
+      const otpgenerated = Math.floor(100000 + Math.random() * 900000).toString();  
+      const newOtp = new otpModel({
+        email : email,
+        otp : otpgenerated
+      })
+      await newOtp.save();
+      await otpSender(email,otpgenerated)
+      res.send({success:true, message : "Otp sent successfully"})
+    }
+    catch(error){
+      res.send({success:false,message :error})
+    }
+})
+
+app.post('/api/otpVerify',async(req,res)=>{
+    const {email,otp} = req.body;
+    try{
+      const result = await otpModel.findOne({email});
+      if(otp === result.otp){
+        res.send({success:true,message:"Otp is verified!"})
+      }
+      else{
+        res.send({success:false,message:"Incorrect Otp!"})
+      }
+    }catch(error){
+      res.send({success:false,message:error})  
+    }
+})
 
 app.post('/api/signup', async(req, res) => {
   const { Email, Username, Password } = req.body;
@@ -139,6 +203,7 @@ app.post('/api/signup', async(req, res) => {
       return res.status(409).json({ message: 'Username or Email already taken!' });
     }
     const hashPassword = await bcrypt.hash(Password, 10);
+
     const newUser = new User({ Username, Email, Password: hashPassword });
     await newUser.save();
     res.status(201).json({ message: 'User created successfully' });
@@ -187,6 +252,7 @@ app.post('/api/login', async (req, res) => {
         res.status(201).json({ message: 'User logged in successfully' });
       });
     });
+    console.log(req.session)
   } catch (error) {
     res.status(500).json({ message: error.message });
     console.log("error");

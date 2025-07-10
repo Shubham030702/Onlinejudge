@@ -90,30 +90,6 @@ function ContestUpdate() {
       </div>
     );
   }
-  else{
-    return (
-      <div className="contest-update-container">
-        <div className="contest-card">
-          <h1 className="contest-title">Timer</h1>
-          <ul>
-          {problems.map((prob,index)=>{
-              return (
-                  <li key={index}>
-                    <div className="problemlist" onClick={()=>problemControute(prob._id)}>
-                      <h2>{prob.problemName}</h2>
-                    </div>
-                  </li>
-                );
-          })}
-          </ul>
-        </div>
-      <div className="leftContest-card">
-          <h1>Standings</h1>
-
-      </div>
-      </div>
-    );
-  }
 } 
 
 export default ContestUpdate;

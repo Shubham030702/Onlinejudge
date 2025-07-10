@@ -28,6 +28,7 @@ async function contestProblem(date,time) {
       starttime : startiso,
       endtime : endiso,
       status : "Upcoming",
+      processed : false
     }
     const result = await contestCollection.insertOne(contestData);
     ContestId = result.insertedId;
@@ -63,6 +64,11 @@ function askQuestion(query) {
 (async () => {
   const date = await askQuestion('Enter contest date (YYYY-MM-DD): ');
   const time = await askQuestion('Enter contest time (HH:MM in 24hr format): ');
+  const currTime = new Date();
+  const contdate = new Date(`${date}T${time}:00`);
+  if(currTime > contdate){
+    throw new Error("Schedule time is in the past please schedule contest for the future");
+  }
   const dirs = await askQuestion('Enter problem directory paths (comma-separated): ');
   await contestProblem(date,time)
   await Addproblems(dirs)

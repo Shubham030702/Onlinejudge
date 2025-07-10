@@ -45,6 +45,10 @@ const contestSchema = new mongoose.Schema({
         },
     },
     status : String,
+    processed : {
+        type : Boolean,
+        default : false
+    }
 })
 
 const contest = mongoose.model('Contest',contestSchema)

@@ -82,6 +82,9 @@ const problemSchema = new mongoose.Schema({
     type: String,
     required: true, 
   },
+  score : {
+    type : String
+  },
   topics: {
     type: [String], 
     required: true, 

@@ -12,6 +12,7 @@ async function storeProblem(problemDir) {
     const problemsCollection = db.collection('problems');
     const description = fs.readFileSync(path.join(problemDir, 'Structure.md'), 'utf-8');
     const lines = description.split('\n');
+    let problemname = '', difficulty = '', topic = [];
     lines.forEach(line => {
       if (line.startsWith('Problem Name:')) {
         problemname = line.replace('Problem Name:', '').trim(); 
@@ -70,6 +71,7 @@ async function storeProblem(problemDir) {
       java: javaFullCode,
       js: jsFullCode
     };
+    
     const problemData = {
       problemName : problemname,
       difficulty : difficulty,

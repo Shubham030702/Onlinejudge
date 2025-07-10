@@ -78,11 +78,21 @@ async function problemAdder(problemDir, contestId) {
       java: javaFullCode,
       js: jsFullCode
     };
-
+    let score = 0;
+    if(difficulty === "Easy"){
+      score = 3;
+    }
+    else if(difficulty === "Medium"){
+      score = 4;
+    }
+    else{
+      score = 6;
+    } 
     const problemData = {
       problemName: problemname,
       difficulty: difficulty,
       topics: topic,
+      score : score,
       statement: problemStatement,
       testCases: testCases,
       editorial: Editorial,
