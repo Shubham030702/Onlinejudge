@@ -70,6 +70,14 @@ function isLoggedIn(req, res, next) {
   }
 }
 
+app.get('/api/checkUser',(req,res)=>{
+  if (req.session.user) {  
+    res.json({Success:true,message:"User was already logged in!"}) 
+  } else {
+    res.json({Success:false,message:"User was not already logged in!"}) 
+  }
+})
+
 app.get('/api/problems',isLoggedIn, async (req, res) => {
   try {
     const problems = await Problem.find({contestOnly : false});
@@ -252,7 +260,6 @@ app.post('/api/login', async (req, res) => {
         res.status(201).json({ message: 'User logged in successfully' });
       });
     });
-    console.log(req.session)
   } catch (error) {
     res.status(500).json({ message: error.message });
     console.log("error");
@@ -265,7 +272,6 @@ app.get('/api/logout', (req, res) => {
       return res.status(500).send('Failed to log out.');
     }
     res.clearCookie('connect.sid'); 
-    console.log('User logged out successfully');
     res.status(200).json({ message: 'User logged out' });
   });
 });

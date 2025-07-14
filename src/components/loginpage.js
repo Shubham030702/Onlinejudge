@@ -95,7 +95,7 @@ const Login = () => {
         </div>
         <div className="actions">
           <button type="submit">Log In</button>
-        <button type='submit' onClick={handleloginroute}>Sign up</button>
+        <button type='submit' onClick={handleloginroute}>New User! Sign up</button>
         </div>
       </form>
     </div>

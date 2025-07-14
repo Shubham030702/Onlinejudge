@@ -168,7 +168,7 @@ const Register = () => {
             </div>
             <div className="actions">
               <button type="submit">Verify Email!</button>
-              <button type="button" onClick={handleLoginRoute}>Login</button>
+              <button type="button" onClick={handleLoginRoute}>Already exist user..Login</button>
             </div>
           </form>
         )}
@@ -188,7 +188,6 @@ const Register = () => {
             </div>
             <div className="actions">
               <button type="submit">Verify Otp!</button>
-              <button type="button" onClick={handleLoginRoute}>Login</button>
             </div>
           </form>
         )}
@@ -236,7 +235,7 @@ const Register = () => {
             </div>
             <div className="actions">
               <button type="submit">Sign Up</button>
-              <button type="button" onClick={handleLoginRoute}>Login</button>
+              <button type="button" onClick={handleLoginRoute}>Already exist User..Login</button>
             </div>
           </form>
         )}
