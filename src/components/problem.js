@@ -218,6 +218,7 @@ function Problems() {
                   </div>
               );
           }
+          return null;
           })}
          </ul>
      </div>

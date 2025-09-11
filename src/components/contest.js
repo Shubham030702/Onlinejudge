@@ -6,8 +6,7 @@ const Contest = () => {
     const navigate = useNavigate();
     const [contest,setContest] = useState([]);
     const [Loading,setLoading] = useState(true);
-    const [error,setError] = useState(true);
-    
+
     useEffect(()=>{
         const contestFetch = async() => {
            try{

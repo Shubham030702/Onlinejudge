@@ -5,8 +5,6 @@ import Editor from '@monaco-editor/react';
 import { useLocation } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import Loader from './loader.js'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 
 function Problems() {
   const [height, setHeight] = useState(50);

@@ -25,9 +25,8 @@ const ProblemList = () => {
         console.error('Error fetching problems:', error);
       }
     };
-
     fetchProblems();
-  }, []);
+  });
 
   const problemroute = async(id) =>{
     try {

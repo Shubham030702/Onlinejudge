@@ -5,7 +5,6 @@ import "./registerContest.css"
 function RegisterContest() {
   const location = useLocation()
   const navigate = useNavigate()
-  const contestDet = location.state.cont
   const id = location.state.cont._id
   const register = async(id) =>{
     try{
