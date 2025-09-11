@@ -32,6 +32,11 @@ app.use(cors({
   credentials: true, 
 }));
 
+app.options('*', cors({
+  origin: 'https://acecodecp.netlify.app',
+  credentials: true,
+}));
+
 app.use(express.json());
 
 let Problem, User, Contest;
