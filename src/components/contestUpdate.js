@@ -17,29 +17,10 @@ function ContestUpdate() {
       }
       const data = await response.json();
       if (!response.ok) {
-        if(response.status === 401) navigate('/');
+        if(response.status === 401) navigate('/home');
         else throw new Error('Network response was not ok');
       }
       navigate(`/problems/${id}`, { state: { problemData: data } });
-    } catch (error) {
-      console.error('Error fetching problems:', error);
-    }
-  }
-  const problemControute = async(id) =>{
-    try {
-      const response = await fetch(`http://localhost:5000/api/problem/${id}`,{
-      method:'GET',  
-      credentials:'include'
-      }); 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      if (!response.ok) {
-        if(response.status === 401) navigate('/');
-        else throw new Error('Network response was not ok');
-      }
-      navigate(`/problemdesc/${id}`, { state: { problemData: data } });
     } catch (error) {
       console.error('Error fetching problems:', error);
     }

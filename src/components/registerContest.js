@@ -14,7 +14,7 @@ function RegisterContest() {
         credentials : "include"
       })  
       if (!response.ok) throw new Error(`Error: ${response.statusText}`);
-      navigate(`/contest/${id}`,{state:{cont : contestDet}}); 
+      navigate(`/contest`); 
     }catch(error){
       console.error(error)
     }

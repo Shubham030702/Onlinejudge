@@ -113,11 +113,14 @@ app.get('/api/contest/:id', isLoggedIn, async (req, res) => {
   try {
     const contest = await Contest.findById(req.params.id).populate('problems').populate('standings.user');
     if (!contest) return res.status(404).json({ message: 'Contest not found' });
+    console.log(req.session.user);
+    console.log(contest.standings);
     const userStanding = contest.standings.find(
       (entry) => entry.user._id.toString() === req.session.user.id
-    );
-    res.json({contest,userStanding});
-  } catch (error) {
+      );
+      console.log("this is user standing",userStanding);
+      res.json({contest,userStanding});
+    } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });

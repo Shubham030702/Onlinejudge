@@ -21,7 +21,6 @@ function Problems() {
   const [view , setview] = useState('Description');
   const [time,settime] = useState(null);
   const [language, setLanguage] = useState(52);
-  const [Accepted,setAccepted] = useState(null)
   const problemdesc={
     ProblemName : problemData.problemName,
     Language : language,
@@ -135,7 +134,7 @@ function Problems() {
       <div className="leftbottom">
       {view === 'Description' && (
         <>
-        <div className="NameProblem"><h1 style={{"color":"wheat"}}>{problemData.problemName}</h1>{Accepted && <FontAwesomeIcon icon={faCircleCheck} size="xl" style={{color: "#FFD43B",}}/>}
+        <div className="NameProblem"><h1 style={{"color":"wheat"}}>{problemData.problemName}</h1>
         </div>
         <ReactMarkdown>{problemData.statement}</ReactMarkdown>
         </>

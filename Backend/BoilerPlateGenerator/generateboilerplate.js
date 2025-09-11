@@ -53,7 +53,7 @@ class Generateboilerplate{
         const inputs = this.inputFields
         .map((field,i) => `${this.mapTypeToJava(field)} ${this.inputFieldsName[i]}`)
         .join(", ");
-        return `public static ${this.mapTypeToJava(this.outputFields)} ${this.functionName}(${inputs}) {\n    // Implementation goes here\n  \n}`
+        return `public static ${this.mapTypeToJava(this.outputFields)} ${this.functionName}(${inputs}) {\n    // Implementation goes here \n}`
     }
 
     mapTypeToCpp(type) {

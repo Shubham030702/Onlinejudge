@@ -6,8 +6,6 @@ import { useLocation } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import {formatTimestamp} from './utils'
 import Loader from './loader.js'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 
 function Problems() {
   const [height, setHeight] = useState(50);
@@ -25,7 +23,6 @@ function Problems() {
   const [time,settime] = useState(null);
   const [language, setLanguage] = useState(52);
   const [languageName, setLanguageName] = useState("cpp");
-  const [Accepted,setAccepted] = useState(null)
   const editorRef = useRef(null);
   const monacoRef = useRef(null);
   useEffect(() => {
@@ -194,7 +191,7 @@ function Problems() {
       <div className="leftbottom">
       {view === 'Description' && (
         <>
-        <div className="NameProblem"><h1 style={{"color":"wheat"}}>{problemData.problemName}</h1>{Accepted && <FontAwesomeIcon icon={faCircleCheck} size="xl" style={{color: "#FFD43B",}}/>} </div>
+        <div className="NameProblem"><h1 style={{"color":"wheat"}}>{problemData.problemName}</h1></div>
         <h3>{problemData.difficulty}</h3>
         <h4>{problemData.topics.map(t=>(<p>{t}</p>))}</h4>
         <ReactMarkdown>{problemData.statement}</ReactMarkdown>

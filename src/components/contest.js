@@ -19,7 +19,6 @@ const Contest = () => {
             const result = await response.json();
             setContest(result);
             }catch(error){
-                setError(true);
                 console.log(error.message);
             }finally{
                 setLoading(false)
@@ -61,7 +60,6 @@ const Contest = () => {
               }              
             }
             }catch(error){
-                setError(true);
                 console.log(error.message);
             }finally{
                 setLoading(false)
