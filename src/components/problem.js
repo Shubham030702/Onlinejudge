@@ -28,7 +28,7 @@ function Problems() {
   useEffect(() => {
     const fetchuser = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/userdata', {
+        const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/userdata', {
           method: 'GET',
           credentials: 'include',
           headers: {
@@ -63,7 +63,7 @@ function Problems() {
     setexpoutput(null);
     setLoading(true)
     try{  
-      const response = await fetch('http://localhost:5000/api/submission',{
+      const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/submission',{
         method:'POST',
         credentials:'include',
         headers:{
@@ -96,7 +96,7 @@ function Problems() {
     setexpoutput(null);
     setLoading(true)
     try{  
-      const response = await fetch('http://localhost:5000/api/runprob',{
+      const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/runprob',{
         method:'POST',
         headers:{
           'content-type': 'application/json'

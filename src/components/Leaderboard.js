@@ -8,7 +8,7 @@ function Leaderboard() {
     useEffect(() => {
         const extractUser = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/leaderboard', {
+                const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/leaderboard', {
                     method: 'GET',
                     credentials: 'include',
                     headers: {

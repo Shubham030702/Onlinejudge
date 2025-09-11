@@ -59,7 +59,7 @@ const Register = () => {
 
     if (isValid) {
       try{
-        const response = await fetch('http://localhost:5000/api/signup',{
+        const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/signup',{
           method: 'POST',
           headers: {
             'Content-Type' : 'application/json',
@@ -92,7 +92,7 @@ const Register = () => {
     setErrors(tempErrors);
     if(isValid){
       try{
-        const response = await fetch('http://localhost:5000/api/otpManager',{
+        const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/otpManager',{
           method: 'POST',
           headers: {
             'Content-Type' : 'application/json',
@@ -122,7 +122,7 @@ const Register = () => {
     setLoading(true)
     if(isValid){
       try{
-        const response = await fetch('http://localhost:5000/api/otpVerify',{
+        const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/otpVerify',{
           method: 'POST',
           headers: {
             'Content-Type' : 'application/json',

@@ -8,7 +8,7 @@ function ContestUpdate() {
   const problems = location.state.cont.problems
   const problemroute = async(id) =>{
     try {
-      const response = await fetch(`http://localhost:5000/api/problem/${id}`,{
+      const response = await fetch(`https://onlinejudge-1-y4g1.onrender.com/api/problem/${id}`,{
       method:'GET',  
       credentials:'include'
       }); 

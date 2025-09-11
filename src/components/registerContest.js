@@ -8,7 +8,7 @@ function RegisterContest() {
   const id = location.state.cont._id
   const register = async(id) =>{
     try{
-      const response = await fetch(`http://localhost:5000/api/contestRegistration/${id}`,{
+      const response = await fetch(`https://onlinejudge-1-y4g1.onrender.com/api/contestRegistration/${id}`,{
         method : 'GET',
         credentials : "include"
       })  

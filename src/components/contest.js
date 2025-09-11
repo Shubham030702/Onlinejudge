@@ -10,7 +10,7 @@ const Contest = () => {
     useEffect(()=>{
         const contestFetch = async() => {
            try{
-            const response = await fetch('http://localhost:5000/api/contest',{
+            const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/contest',{
                 method : 'GET',
                 credentials : "include"
             })
@@ -28,7 +28,7 @@ const Contest = () => {
 
     const contestroute = async(id)=>{
         try{
-            const response = await fetch(`http://localhost:5000/api/contest/${id}`,{
+            const response = await fetch(`https://onlinejudge-1-y4g1.onrender.com/api/contest/${id}`,{
                 method : 'GET',
                 credentials : "include"
             })

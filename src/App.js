@@ -21,7 +21,7 @@ function App() {
   useEffect(()=>{
     const isloggedin = async()=>{
       try{
-        const response = await fetch('http://localhost:5000/api/checkUser',{
+        const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/checkUser',{
           method : 'GET',
           credentials : 'include'
         })
