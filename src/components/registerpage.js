@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import RegisterLoader from './RegisterLoader'
 
 const Register = () => {
+  const API_URL = "http://localhost:5000"
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [username, setUsername] = useState(''); 
@@ -59,7 +60,7 @@ const Register = () => {
 
     if (isValid) {
       try{
-        const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/signup',{
+        const response = await fetch(`${API_URL}/api/signup`,{
           method: 'POST',
           headers: {
             'Content-Type' : 'application/json',
@@ -92,7 +93,7 @@ const Register = () => {
     setErrors(tempErrors);
     if(isValid){
       try{
-        const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/otpManager',{
+        const response = await fetch(`${API_URL}/api/otpManager`,{
           method: 'POST',
           headers: {
             'Content-Type' : 'application/json',
@@ -122,7 +123,7 @@ const Register = () => {
     setLoading(true)
     if(isValid){
       try{
-        const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/otpVerify',{
+        const response = await fetch(`${API_URL}/api/otpVerify`,{
           method: 'POST',
           headers: {
             'Content-Type' : 'application/json',

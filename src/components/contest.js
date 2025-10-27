@@ -1,8 +1,9 @@
 import React,{useEffect,useState} from 'react';
 import {useNavigate} from "react-router-dom"
- 
 import './contest.css'
+
 const Contest = () => {
+    const API_URL = "http://localhost:5000"
     const navigate = useNavigate();
     const [contest,setContest] = useState([]);
     const [Loading,setLoading] = useState(true);
@@ -10,7 +11,7 @@ const Contest = () => {
     useEffect(()=>{
         const contestFetch = async() => {
            try{
-            const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/contest',{
+            const response = await fetch(`${API_URL}/api/contest`,{
                 method : 'GET',
                 credentials : "include"
             })
@@ -28,13 +29,13 @@ const Contest = () => {
 
     const contestroute = async(id)=>{
         try{
-            const response = await fetch(`https://onlinejudge-1-y4g1.onrender.com/api/contest/${id}`,{
+            const response = await fetch(`${API_URL}/api/contest/${id}`,{
                 method : 'GET',
                 credentials : "include"
             })
             if (!response.ok) throw new Error(`Error: ${response.statusText}`);
             const result = await response.json();
-            if(!result.userStanding){
+            if(result.contest.status!=='Ended' && !result.exists){
                 navigate(`/registerContest`,{state:{cont : result.contest}});    
             }
             else{
@@ -53,7 +54,6 @@ const Contest = () => {
                   }
                 });
               }
-              
              else {
                 navigate(`/contest/${id}`, { state: { cont: result.contest } });
               }              

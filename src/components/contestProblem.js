@@ -3,13 +3,14 @@ import { useLocation , useNavigate } from 'react-router-dom'
 import "./contestProblem.css"
 
 function ContestProblem() {
+  const API_URL = "http://localhost:5000"
   const location = useLocation();
   const navigate = useNavigate();
   const contest = location.state.cont.standings
   const problems = location.state.cont.problems
   async function problemInter(id){
     try {
-      const response = await fetch(`https://onlinejudge-1-y4g1.onrender.com/api/problem/${id}`,{
+      const response = await fetch(`${API_URL}/api/problem/${id}`,{
       method:'GET',  
       credentials:'include'
       }); 

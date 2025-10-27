@@ -4,6 +4,7 @@ class CodeSubmission {
     constructor() {}
   
     async evaluation(input,Language,output, code) {
+      console.log(code);
       const url = 'https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&wait=false&fields=*';
       const options = {
         method: 'POST',

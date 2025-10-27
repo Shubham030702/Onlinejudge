@@ -3,21 +3,28 @@ import { useLocation,useNavigate } from 'react-router-dom'
 import "./registerContest.css"
 
 function RegisterContest() {
+  const API_URL = "http://localhost:5000"
   const location = useLocation()
   const navigate = useNavigate()
   const id = location.state.cont._id
-  const register = async(id) =>{
-    try{
-      const response = await fetch(`https://onlinejudge-1-y4g1.onrender.com/api/contestRegistration/${id}`,{
-        method : 'GET',
-        credentials : "include"
-      })  
+  const register = async (id) => {
+    try {
+      const response = await fetch(`${API_URL}/contest/register`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          contestId: id
+        })
+      });
       if (!response.ok) throw new Error(`Error: ${response.statusText}`);
-      navigate(`/contest`); 
-    }catch(error){
-      console.error(error)
+      navigate(`/contest`);
+    } catch (error) {
+      console.error(error);
     }
-  }
+  };  
   return (
     <>
     <div className="contest-container">

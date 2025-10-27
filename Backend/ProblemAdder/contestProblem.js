@@ -62,8 +62,8 @@ function askQuestion(query) {
 }
 
 (async () => {
-  const date = await askQuestion('Enter contest date (YYYY-MM-DD): ');
-  const time = await askQuestion('Enter contest time (HH:MM in 24hr format): ');
+  const date = await askQuestion('Enter contest date (YYYY-MM-DD) Add date as 7==>07:: ');
+  const time = await askQuestion('Enter contest time (HH:MM in 24hr format)  Add time as 7==>07: ');
   const currTime = new Date();
   const contdate = new Date(`${date}T${time}:00`);
   if(currTime > contdate){

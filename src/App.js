@@ -15,18 +15,18 @@ import ContestUpdate from './components/contestUpdate';
 import { useEffect, useState } from 'react';
 
 function App() {
+  const API_URL = "http://localhost:5000"
 
   const [Already,setAlready] = useState(false);
 
   useEffect(()=>{
     const isloggedin = async()=>{
       try{
-        const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/checkUser',{
+        const response = await fetch(`${API_URL}/api/checkUser`,{
           method : 'GET',
           credentials : 'include'
         })
         const data = await response.json();
-        console.log(data);
         if(data.Success){
           setAlready(true);
         }

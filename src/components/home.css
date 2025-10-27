@@ -4,13 +4,17 @@
     margin: 25vh auto 10vh auto;
     background-color: rgba(240, 255, 255, 0.345);
     overflow: scroll;
-    overflow-x: hidden;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .home li{
     list-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0vh auto;
 }
 
 .card {

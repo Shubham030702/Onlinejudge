@@ -3,12 +3,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import './contestUpdate.css';
 
 function ContestUpdate() {
+  const API_URL = "http://localhost:5000"
   const navigate = useNavigate();
   const location = useLocation();
+  console.log(location);
   const problems = location.state.cont.problems
   const problemroute = async(id) =>{
     try {
-      const response = await fetch(`https://onlinejudge-1-y4g1.onrender.com/api/problem/${id}`,{
+      const response = await fetch(`${API_URL}/api/problem/${id}`,{
       method:'GET',  
       credentials:'include'
       }); 

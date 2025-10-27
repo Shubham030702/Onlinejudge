@@ -8,6 +8,7 @@ import {formatTimestamp} from './utils'
 import Loader from './loader.js'
 
 function Problems() {
+  const API_URL = "http://localhost:5000"
   const [height, setHeight] = useState(50);
   const [status, setstatus] = useState(null);
   const [input, setinput] = useState(null);
@@ -28,7 +29,7 @@ function Problems() {
   useEffect(() => {
     const fetchuser = async () => {
       try {
-        const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/userdata', {
+        const response = await fetch(`${API_URL}/api/userdata`, {
           method: 'GET',
           credentials: 'include',
           headers: {
@@ -63,7 +64,8 @@ function Problems() {
     setexpoutput(null);
     setLoading(true)
     try{  
-      const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/submission',{
+      console.log(problemdesc);
+      const response = await fetch(`${API_URL}/api/submission`,{
         method:'POST',
         credentials:'include',
         headers:{
@@ -72,7 +74,6 @@ function Problems() {
         body : JSON.stringify({problemdesc})
       })
       const result = await response.json();
-      console.log(result)
       if(!result.result){
         setstatus(result.status)
         settime(result.time);
@@ -96,7 +97,7 @@ function Problems() {
     setexpoutput(null);
     setLoading(true)
     try{  
-      const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/runprob',{
+      const response = await fetch(`${API_URL}/api/runprob`,{
         method:'POST',
         headers:{
           'content-type': 'application/json'

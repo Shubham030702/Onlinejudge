@@ -3,12 +3,13 @@ import { useEffect,useState } from 'react'
 import "./Leaderboard.css"
 
 function Leaderboard() {
+    const API_URL = "http://localhost:5000"
     const [users,setusers] = useState([])
     const [currentInd,setcurrentInd] = useState()
     useEffect(() => {
         const extractUser = async () => {
             try {
-                const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/leaderboard', {
+                const response = await fetch(`${API_URL}/api/leaderboard`, {
                     method: 'GET',
                     credentials: 'include',
                     headers: {

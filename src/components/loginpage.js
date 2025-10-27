@@ -3,6 +3,7 @@ import './loginpage.css'
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const API_URL = "http://localhost:5000"
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
@@ -43,7 +44,7 @@ const Login = () => {
 
     if (isValid) {
       try{
-        const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/login',{
+        const response = await fetch(`${API_URL}/api/login`,{
           method:'POST',
           headers: {
             'Content-Type' : 'application/json',
@@ -57,6 +58,7 @@ const Login = () => {
           navigate('/home')
         }
         else {
+          setErrors({notfound:data.message});
           console.log(data.message);
         }
       }catch(error){
@@ -76,9 +78,10 @@ const Login = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-          />
+            />
           <label htmlFor="email">Email</label>
           {errors.email && <div className="error-message">{errors.email}</div>}
+          {errors.notfound && <div className="error-message">{errors.notfound}</div>}
         </div>
         <div className="input-group">
           <input

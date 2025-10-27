@@ -2,13 +2,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors'); 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const MongoStore = require('connect-mongo'); 
 require('dotenv').config();
 const CodeSubmission = require('./judge0');
 const scheduler = require('./ProblemAdder/contestScheduler')
+const contestRegister = require('./redisCode');
 
 scheduler.startContestCron();
 
@@ -28,12 +29,12 @@ app.use(session({
 }));
 
 app.use(cors({
-  origin: 'https://acecodecp.netlify.app', 
+  origin: 'http://localhost:3000', 
   credentials: true, 
 }));
 
 app.options('*', cors({
-  origin: 'https://acecodecp.netlify.app',
+  origin: 'http://localhost:3000',
   credentials: true,
 }));
 
@@ -103,38 +104,6 @@ app.get('/api/contest',isLoggedIn, async (req, res) => {
   try {
     const contest = await Contest.find();
     res.json(contest);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-app.get('/api/contest/:id', isLoggedIn, async (req, res) => {
-  try {
-    const contest = await Contest.findById(req.params.id).populate('problems').populate('standings.user');
-    if (!contest) return res.status(404).json({ message: 'Contest not found' });
-    console.log(req.session.user);
-    console.log(contest.standings);
-    const userStanding = contest.standings.find(
-      (entry) => entry.user._id.toString() === req.session.user.id
-      );
-      console.log("this is user standing",userStanding);
-      res.json({contest,userStanding});
-    } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-app.get('/api/contestRegistration/:id', isLoggedIn, async (req, res) => {
-  try {
-    const contest = await Contest.findById(req.params.id).populate('problems').populate('standings');
-    if (!contest) return res.status(404).json({ message: 'Contest not found' });
-    const data = {
-      user : new mongoose.Types.ObjectId(req.session.user.id),
-      score : 0,
-      penalties : 0
-    }
-    contest.standings.push(data)
-    await contest.save()
-    res.json({ message: "User registered successfully", contest });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -294,95 +263,10 @@ app.get('/profile',async(req,res)=>{
   }
 })
 
-app.post('/api/Contestsubmission',async(req,res)=>{
-  const {ProblemName,Language,Code} = req.body.problemdesc
-  const problem = await Problem.findOne({problemName:ProblemName});
-  const userdata = await User.findById(req.session.user.id);
-  if (!problem || !userdata) {
-    return res.status(404).json({ error: "Problem, contest, or user not found." });
-  }
-  const alreadySubmitted = userdata.Submissions.some(sub => sub.Problem.equals(problem._id));
-  const inputs = []
-  const outputs = []
-  problem.testCases.forEach(e=>{
-    inputs.push(e.input)
-    outputs.push(e.output)
-  })
-  const code64 = base64code(Code)
-  async function evaluateSubmissions() {
-    let Time=0;
-    for (const [index, input] of inputs.entries()) {
-      const output = outputs[index];
-      const code64inp = base64code(input);
-      const code64out = base64code(output);
-      try {
-        const result = await submission.evaluation(code64inp,Language,code64out, code64);
-        const decode = Buffer.from(result.stdout,'base64').toString('utf-8');
-        let d = parseFloat(result.time);
-        Time+=d;
-        if(result.status.id > 3){
-          if (!alreadySubmitted) {
-            await Contest.findOneAndUpdate(
-              { _id: problem.contestId, "standings.user": new mongoose.Types.ObjectId(req.session.user.id) },
-              { 
-                $inc: { "standings.$.penalties": 1 },
-              },
-              { new: true }
-            );            
-          }
-          return {result,output,input,decode}
-        }
-      } catch (error) {
-        if (!alreadySubmitted) {
-          await Contest.findOneAndUpdate(
-            { _id: problem.contestId, "standings.user": new mongoose.Types.ObjectId(req.session.user.id) },
-            { 
-              $inc: { "standings.$.penalties": 1 },
-            },
-            { new: true }
-          );            
-        }
-        return {status:"Runtime Error",time:Time};
-      } 
-    }
-    if (!alreadySubmitted) {
-      await Contest.findOneAndUpdate(
-        { _id: problem.contestId, "standings.user": new mongoose.Types.ObjectId(req.session.user.id) },
-        { 
-          $inc: { "standings.$.score": 1 },
-        },
-        { new: true }
-      );            
-    }
-    return {status:"Accepted",time:Time};
-  }
-  try {
-    const result = await evaluateSubmissions();
-    if(result.status === "Accepted"){
-      userdata.Submissions.push({
-        Problem:problem._id,
-        Status:result.result?result.result.status.description:result.status,
-        Solution:Code
-      })
-    }
-    await userdata.save()
-    problem.users.push({
-      user: req.session.user.id,
-      Username: userdata.Username,
-      Status:result.result?result.result.status.description:result.status,
-      Solution:Code
-    })
-    await problem.save()
-    res.send(result);
-  } catch (error) {
-    console.log(error)
-    res.status(500).send({ error: "An error occurred while evaluating submissions." });
-  }
-})
-
 app.post('/api/submission',async(req,res)=>{
-  const {ProblemName,Language,Code} = req.body.problemdesc
-  const problem = await Problem.findOne({problemName:ProblemName});
+  const {id,Language,LanguageName,Code} = req.body.problemdesc
+  console.log(req.body.problemdesc)
+  const problem = await Problem.findById({_id:id});
   const userdata = await User.findById(req.session.user.id);
   if (!problem || !userdata) {
     return res.status(404).json({ error: "Problem, contest, or user not found." });
@@ -393,7 +277,9 @@ app.post('/api/submission',async(req,res)=>{
     inputs.push(e.input)
     outputs.push(e.output)
   })
-  const code64 = base64code(Code)
+  const boilerplate = problem.boilerplateFull[LanguageName];
+  const FullCode = boilerplate.replace("## Enter Code Here ##",Code)
+  const code64 = base64code(FullCode)
   async function evaluateSubmissions() {
     let Time=0;
     for (const [index, input] of inputs.entries()) {
@@ -409,6 +295,7 @@ app.post('/api/submission',async(req,res)=>{
           return {result,output,input,decode}
         }
       } catch (error) {        
+        console.log(error);
         return {status:"Runtime Error",time:Time};
       } 
     }
@@ -447,7 +334,6 @@ app.post('/api/runprob',async(req,res)=>{
   })
   const boilerplate = problem.boilerplateFull[LanguageName];
   const FullCode = boilerplate.replace("## Enter Code Here ##",Code)
-  console.log(FullCode)
   const code64 = base64code(FullCode)
   async function evaluateSubmissions() {
     let Time=0;
@@ -475,6 +361,42 @@ app.post('/api/runprob',async(req,res)=>{
   } catch (error) {
     res.status(500).send({ error: "An error occurred while evaluating submissions." });
   }
+})
+
+app.get('/api/contest/:id',isLoggedIn,async(req,res)=>{
+  try{
+    const contestId = req.params.id;
+    const contest = await Contest.findById(contestId.toString()).populate('problems')
+    const userId = req.session.user.id.toString();
+    const exists = await contestRegister.ChkUser(contestId.toString(),userId);
+    res.send({contest:contest,exists})
+  }catch(err){
+    res.send(err);
+  }
+})
+
+app.post('/contest/register',async(req,res)=>{
+  const {contestId} = req.body
+  const userId = req.session.user
+  const user = await User.findById(userId.id);
+  const result = await contestRegister.Addredis(contestId.toString(),user._id.toString(),user.Username,user.Email)
+  res.send(result)
+})
+
+app.post('/contest/IncrzScore',async(req,res)=>{
+  const {contestId,userId,score} = req.body
+  const result = await contestRegister.IncrzScore(contestId,userId,score)
+  res.send({score:result.newScore})
+})
+app.post('/contest/IncrzPenalty',async(req,res)=>{
+  const {contestId,userId,penalty} = req.body
+  const result = await contestRegister.IncrzPenalty(contestId,userId,penalty)
+  res.send({penaltyAdded:result.penaltyAdded})
+})
+app.get('/contest/GetLeaderBoard',async(req,res)=>{
+  const {contestId} = req.body
+  const result = await contestRegister.getLeaderboard(contestId,2)
+  res.send(result)
 })
 
 app.listen(PORT, () => {   

@@ -5,14 +5,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightFromBracket, faUser } from '@fortawesome/free-solid-svg-icons';
 
 function Navbar() {
+  const API_URL = "http://localhost:5000"
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/logout', {
+      const response = await fetch(`${API_URL}/api/logout`, {
         method: 'GET',
         credentials: 'include',
       });
+      console.log(response);
       if (response.ok) {
         navigate('/');
       } else {

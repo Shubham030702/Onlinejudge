@@ -4,11 +4,11 @@ import {formatTimestamp} from './utils'
 function Profile() {
     const [userData, setUserData] = useState(null);
     const [probData, setprobData] = useState(null);
-
+    const API_URL = "http://localhost:5000"
     useEffect(() => {
         const extractUser = async () => {
             try {
-                const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/profile', {
+                const response = await fetch(`${API_URL}/profile`, {
                     method: 'GET',
                     credentials: 'include',
                     headers: {
@@ -33,7 +33,7 @@ function Profile() {
     useEffect(() => {
         const extractProb = async () => {
             try {
-                const response = await fetch('https://onlinejudge-1-y4g1.onrender.com/api/problems', {
+                const response = await fetch(`${API_URL}/api/problems`, {
                     method: 'GET',
                     credentials: 'include',
                     headers: {
