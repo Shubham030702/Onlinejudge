@@ -1,68 +1,96 @@
 .home {
+    width: 90vw;
+    padding: 2%;
+    list-style: none;
+    background-color: #bdbdbd73;
     height: 80vh;
-    width: 95vw;
-    margin: 25vh auto 10vh auto;
-    background-color: rgba(240, 255, 255, 0.345);
+    position: absolute;
+    top: 20%;
+    left: 5%;
+    scroll-behavior: smooth;
     overflow: scroll;
+}
+  
+  .home li {
+    margin: auto;
+    width: 100%; 
+    margin-bottom: 15px;
+  }
+  
+  .card {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-
-.home li{
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0vh auto;
-}
-
-.card {
-    margin: 2vh;
-    position: relative;
-    height: 200px;
-    width: 300px;
-    background-color: #ffffff72;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 5px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
-    transition: all ease-in;
-    cursor: pointer;
-}
-
-.card:hover{
-    scale: 1.1;
-}
-
-.title {
-    padding: 5px;
-    background-color: #5a5151;
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: #1e1e1e6f;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 15px 20px;
     color: #fff;
-    font-size: 12px;
-    font-weight: 600;
-    width: 100%;
-    text-align: center;
-}
-.smallnav{
-    display: flex;
-    flex-direction: row;
-}
-.smallnav li{
-    list-style: none;
-    margin: 2.2vh;
-    font-size: 22px;
-    margin-bottom: 10vh;
-    color: aliceblue;
+    transition: all 0.3s ease;
     cursor: pointer;
-}
-.smallnav li:hover{
-    text-decoration: underline;
-    color: rgba(240, 248, 255, 0.523);
-}
-
-.action h4{
-    color: black;
-}
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .card:hover {
+    background-color: #292929;
+    transform: translateY(-2px);
+  }
+  
+  .title {
+    flex: 1;
+  }
+  
+  .title h1 {
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+    color: #e0e0e0;
+  }
+  
+  .action {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .action h4 {
+    background-color: #323232;
+    color: #bdbdbd;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  
+  .price {
+    width: 100px;
+    text-align: right;
+  }
+  
+  .price h2 {
+    font-size: 1rem;
+    color: #ffcc00;
+  }
+  
+  .status {
+    width: 140px;
+    text-align: right;
+  }
+  
+  .status span {
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 15px;
+  }
+  
+  .status .attempted {
+    background-color: #28a745;
+    color: #fff;
+  }
+  
+  .status .not-attempted {
+    background-color: #dc3545;
+    color: #fff;
+  }
+  

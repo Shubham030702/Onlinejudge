@@ -43,7 +43,7 @@ function Profile() {
 
                 if (response.ok) {
                     const data = await response.json();
-                    setprobData(data); 
+                    setprobData(data.problems); 
                 } else {
                     console.error("Failed to fetch probData:", response.status);
                 }

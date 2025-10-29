@@ -72,19 +72,19 @@ function isLoggedIn(req, res, next) {
 
 app.get('/api/checkUser',(req,res)=>{
   if (req.session.user) {  
-    res.json({Success:true,message:"User was already logged in!"}) 
-  } else {
-    res.json({Success:false,message:"User was not already logged in!"}) 
-  }
+    return res.json({Success:true,message:"User was already logged in!"}) 
+  } 
+  return res.json({Success:false,message:"User was not already logged in!"}) 
 })
 
 app.get('/api/problems',isLoggedIn, async (req, res) => {
   try {
     const problems = await Problem.find({contestOnly : false});
+    const attempted = req.session.user.submission.map(item=>item.Problem);
     if (!problems) {
       return res.status(404).json({ message: "No problems found" });
     }
-    res.json(problems);
+    res.json({problems,attempted});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -222,7 +222,8 @@ app.post('/api/login', async (req, res) => {
         return res.status(401).json({ message: 'Incorrect password' });
       }
       req.session.user = {
-        id: useremail._id
+        id: useremail._id,
+        submission: useremail.Submissions
       };
       req.session.save((err) => {
         if (err) {
@@ -303,19 +304,21 @@ app.post('/api/submission',async(req,res)=>{
   }
   try {
     const result = await evaluateSubmissions();
-    userdata.Submissions.push({
-      Problem:problem._id,
-      Status:result.result?result.result.status.description:result.status,
-      Solution:Code
-    })
-    await userdata.save()
-    problem.users.push({
-      user: req.session.user.id,
-      Username: userdata.Username,
-      Status:result.result?result.result.status.description:result.status,
-      Solution:Code
-    })
-    await problem.save()
+    if(result.status === "Accepted"){
+      userdata.Submissions.push({
+        Problem:problem._id,
+        Status:result.result?result.result.status.description:result.status,
+        Solution:Code
+      })
+      await userdata.save()
+      problem.users.push({
+        user: req.session.user.id,
+        Username: userdata.Username,
+        Status:result.result?result.result.status.description:result.status,
+        Solution:Code
+      })
+      await problem.save()
+    }
     res.send(result);
   } catch (error) {
     console.log(error)

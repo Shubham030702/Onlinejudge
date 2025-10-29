@@ -1,12 +1,14 @@
 import React from 'react'
 import { useLocation , useNavigate } from 'react-router-dom'
 import "./contestProblem.css"
+import ContestTimer from "./ContestTimer.js"
 
 function ContestProblem() {
   const API_URL = "http://localhost:5000"
   const location = useLocation();
   const navigate = useNavigate();
-  const contest = location.state.cont.standings
+  const startTime = location.state.cont.starttime
+  const endTime = location.state.cont.endtime
   const problems = location.state.cont.problems
   async function problemInter(id){
     try {
@@ -29,9 +31,10 @@ function ContestProblem() {
   }
   return (
     <>
-    <div className="timer">
-    <h1 style={{"color":"White"}}>Contest time</h1>
-    </div>
+    <ContestTimer 
+      startTime={startTime}
+      endTime={endTime} 
+    />
     <div className="ContestProblemPage">
       <div className="leftContest">
        {problems.map(problem => (
@@ -48,15 +51,7 @@ function ContestProblem() {
         ))}
       </div>
         <div className="rightContest">
-        <h1>Standings</h1>
-        { 
-        contest.map(e=>(
-          <li key={e._id}>
-            <h2>{e.user.Username}</h2>
-            <h2>{e.user.Rating}</h2>
-          </li>
-        ))
-        }
+        
     </div>
       </div>
     </>

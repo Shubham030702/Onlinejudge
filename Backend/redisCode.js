@@ -39,7 +39,6 @@ const IncrzPenalty = async (contestId, userId, penalty=1) => {
 
 const getLeaderboard = async(contestId,top)=>{
     const raw = await client.zRangeWithScores(leaderKey(contestId),0,top-1,{REV:true});
-    console.log(raw)
     const result = [];
     for(let i=0;i<raw.length;i++){
         const userId = raw[i].value;

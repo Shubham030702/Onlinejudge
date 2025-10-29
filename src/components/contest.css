@@ -1,3 +1,61 @@
+.card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 20px;
+    color: #fff;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .card:hover {
+    background-color: #292929;
+    transform: translateY(-2px);
+  }
+  
+  .title {
+    flex: 1;
+    text-align: left;
+  }
+  
+  .title h1 {
+    font-size: 1.4rem;
+    margin: 0;
+    color: #e0e0e0;
+  }
+  
+  .price {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .price h3 {
+    margin: 4px 0;
+    font-weight: 500;
+    color: #ffcc00;
+  }
+  
+  .action {
+    flex: 1;
+    text-align: right;
+  }
+  
+  .action h2 {
+    background-color: #323232;
+    padding: 6px 14px;
+    border-radius: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #00e676;
+    display: inline-block;
+  }
+  
+
 .spin {
     display: inline-block;
     animation-name: spin;

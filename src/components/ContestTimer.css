@@ -1,0 +1,21 @@
+.timer {
+    text-align: center;
+    color: white;
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 10px;
+    width: fit-content;
+    position: relative;
+    margin: 15vh auto 5vh auto;
+  }
+  
+  .timer h1 {
+    font-size: 2rem;
+    color: #00e676;
+  }
+  
+  .timer h2 {
+    font-size: 1.2rem;
+    color: #ffcc00;
+  }
+  

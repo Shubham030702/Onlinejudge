@@ -4,6 +4,9 @@
     margin: auto;
     flex-direction: row;
     display: flex;
+    position: absolute;
+    top: 20%;
+    left: 5%;
 }
 
 .leftProfile {

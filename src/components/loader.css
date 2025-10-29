@@ -3,6 +3,7 @@
     height: 40px;
     position: relative;
     scale: 2;
+    margin: 20% auto;
   }
   .loader::after {
     content: "";

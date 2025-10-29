@@ -3,18 +3,20 @@ import './navbar.css';
 import { useNavigate, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightFromBracket, faUser } from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react';
 
 function Navbar() {
   const API_URL = "http://localhost:5000"
   const navigate = useNavigate();
-
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const handleLogout = async () => {
+    if (isLoggingOut) return; 
+    setIsLoggingOut(true);
     try {
       const response = await fetch(`${API_URL}/api/logout`, {
         method: 'GET',
         credentials: 'include',
       });
-      console.log(response);
       if (response.ok) {
         navigate('/');
       } else {
@@ -22,8 +24,11 @@ function Navbar() {
       }
     } catch (error) {
       console.error('Error logging out:', error);
+    } finally {
+      setIsLoggingOut(false);
     }
   };
+  
 
   return (
     <>
