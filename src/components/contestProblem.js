@@ -2,6 +2,7 @@ import React from 'react'
 import { useLocation , useNavigate } from 'react-router-dom'
 import "./contestProblem.css"
 import ContestTimer from "./ContestTimer.js"
+import {useState} from 'react'
 
 function ContestProblem() {
   const API_URL = "http://localhost:5000"
@@ -10,12 +11,20 @@ function ContestProblem() {
   const startTime = location.state.cont.starttime
   const endTime = location.state.cont.endtime
   const problems = location.state.cont.problems
+  const [standings,setStandings] = useState([]);
   async function problemInter(id){
     try {
       const response = await fetch(`${API_URL}/api/problem/${id}`,{
       method:'GET',  
       credentials:'include'
       }); 
+      const response2 = await fetch(`${API_URL}/contest/GetLeaderBoard`,{
+      method:'GET',  
+      credentials:'include',
+      body : JSON.stringify(location.state.cont._id)
+      }); 
+      setStandings(response2)
+      console.log(response2);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -50,9 +59,18 @@ function ContestProblem() {
           </li>
         ))}
       </div>
-        <div className="rightContest">
-        
-    </div>
+      <div className="rightContest">
+        <h1>🏆 Standings</h1>
+        <ul>
+          {standings.map((user, index) => (
+            <li key={user._id || index}>
+              <span className="rank">#{index + 1}</span>
+              <span className="username">{user.username}</span>
+              <span className="score">{user.score}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
       </div>
     </>
   )
