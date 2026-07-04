@@ -1,68 +1,224 @@
-.container {
-    height: auto;
-    width: 90vw;
-    margin: auto;
-    flex-direction: row;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+.profile-wrapper {
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding-top: 100px;
     display: flex;
-    position: absolute;
-    top: 20%;
-    left: 5%;
+    justify-content: center;
+    color: #f4f4f5;
+}
+
+.profile-container {
+    width: 90vw;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    height: calc(100vh - 140px);
 }
 
 .leftProfile {
-    width: 30%;
-    height: auto;
-    min-height: 50vh;
-    color: #c8d8a3;
-    -webkit-text-stroke: 0.2px rgb(0, 0, 0);
+    width: 35%;
+    height: 100%;
 }
 
-.leftProfile h2 {
-    text-align: center;
-    margin: 10px 0;
-}
-
-.leftProfile span {
-    text-align: center;
+.user-card {
+    background: linear-gradient(145deg, rgba(30,30,30,0.6) 0%, rgba(20,20,20,0.8) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    height: 100%;
+    box-sizing: border-box;
 }
 
 .usercontent {
     background-image: url('./images/1.png');
-    background-size: contain;
-    height: 30vh;
-    width: 14vw;
+    background-size: cover;
+    background-position: center;
+    height: 150px;
+    width: 150px;
     border-radius: 50%;
-    margin: auto;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    margin-bottom: 25px;
 }
 
+.user-info {
+    width: 100%;
+    text-align: center;
+}
+
+.username {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 5px 0;
+    display: inline-block;
+    background: linear-gradient(90deg, #10b981 0%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.email {
+    font-size: 1rem;
+    color: #a1a1aa;
+    margin-bottom: 40px;
+}
+
+.stats-container {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    background: rgba(0,0,0,0.3);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.stat-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #f4f4f5;
+}
+
+.stat-value.rating {
+    color: #38bdf8;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #a1a1aa;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Right Profile - Submissions */
 .rightProfile {
-    height: auto;
-    width: 70%;
-    min-height: 50vh;
+    width: 65%;
+    height: 100%;
 }
 
 .listsubmission {
-    margin: 0 2.5vw;
+    background: linear-gradient(145deg, rgba(30,30,30,0.6) 0%, rgba(20,20,20,0.8) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     height: 100%;
-    overflow: scroll;
-    background: #352828;
-    border-radius: 10px;
-    padding: 2vw;
-
-}
-.listsubmission h1{
-    margin: 2vh 0;
-    color: wheat;
-}
-
-.listitem{
-    padding: 2vh;
-    background: rgba(79, 79, 79, 0.678);
-    color: aliceblue;
     display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.submission-header {
+    padding: 24px 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(0,0,0,0.2);
+}
+
+.submission-header h1 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0;
+    color: #f4f4f5;
+}
+
+.submission-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.submission-list::-webkit-scrollbar {
+    width: 6px;
+}
+.submission-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
     border-radius: 10px;
 }
 
-.listitem h3{
-    margin: auto;
+.listitem {
+    background: rgba(0,0,0,0.3);
+    padding: 16px 24px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.2s ease;
+}
+
+.listitem:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.1);
+}
+
+.prob-name {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #e4e4e7;
+    font-weight: 500;
+    flex: 1;
+}
+
+.status-badge {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0 20px;
+    min-width: 80px;
+    text-align: center;
+}
+
+.status-badge.accepted {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-badge.rejected {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Fallback for other statuses */
+.status-badge:not(.accepted):not(.rejected) {
+    background: rgba(255, 255, 255, 0.1);
+    color: #a1a1aa;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.timestamp {
+    color: #71717a;
+    font-size: 0.9rem;
+    min-width: 150px;
+    text-align: right;
+}
+
+.loading-user, .no-submissions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #a1a1aa;
+    font-size: 1.1rem;
 }

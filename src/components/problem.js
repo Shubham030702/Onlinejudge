@@ -2,10 +2,11 @@ import React from 'react'
 import { useState , useEffect ,useRef} from 'react';
 import './problem.css'
 import Editor from '@monaco-editor/react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import {formatTimestamp} from './utils'
 import Loader from './loader.js'
+import CustomDropdown from './CustomDropdown';
 
 function Problems() {
   const API_URL = "http://localhost:5000"
@@ -15,8 +16,10 @@ function Problems() {
   const [output, setoutput] = useState(null);
   const [expoutput, setexpoutput] = useState(null);
   const location = useLocation();
-  const {problemData} = location.state;
-  const [code,setCode] = useState(problemData.boilerplate.cpp);
+  const navigate = useNavigate();
+  const {problemData} = location.state || {};
+  
+  const [code,setCode] = useState(problemData ? problemData.boilerplate.cpp : "");
   const [loading, setLoading] = useState(false); 
   const [view , setview] = useState('Description');
   const [userdata, setUserdata] = useState(null);
@@ -26,7 +29,12 @@ function Problems() {
   const [languageName, setLanguageName] = useState("cpp");
   const editorRef = useRef(null);
   const monacoRef = useRef(null);
+
   useEffect(() => {
+    if (!problemData) {
+        navigate('/');
+        return;
+    }
     const fetchuser = async () => {
       try {
         const response = await fetch(`${API_URL}/api/userdata`, {
@@ -48,10 +56,10 @@ function Problems() {
     };
 
     fetchuser();
-  }, []);
+  }, [navigate, problemData]);
 
   const problemdesc={
-    id : problemData._id,
+    id : problemData?._id,
     Language : language,
     LanguageName : languageName,
     Code: code
@@ -64,7 +72,6 @@ function Problems() {
     setexpoutput(null);
     setLoading(true)
     try{  
-      console.log(problemdesc);
       const response = await fetch(`${API_URL}/api/submission`,{
         method:'POST',
         credentials:'include',
@@ -179,140 +186,150 @@ function Problems() {
     setview(e);
   }
 
+  if (!problemData) return null;
+
   return (
     <>
     <div className="context">
       <div className="left">
-      <div className="content">
-      <h3 onClick={() => changeView('Description',null)}>Description</h3>
-  	  <h3 onClick={() => changeView('Editorial',null)}>Editorial</h3>
-      <h3 onClick={() => changeView('Solutions',null)}>Solutions</h3>
-      <h3 onClick={() => changeView('Submissions',null)}>Submissions</h3>
-      </div>
-      <div className="leftbottom">
-      {view === 'Description' && (
-        <>
-        <div className="NameProblem"><h1 style={{"color":"wheat"}}>{problemData.problemName}</h1></div>
-        <h3>{problemData.difficulty}</h3>
-        <h4>{problemData.topics.map(t=>(<p>{t}</p>))}</h4>
-        <ReactMarkdown>{problemData.statement}</ReactMarkdown>
-        </>
-      )}
-      {view === 'Editorial' && (
-        <ReactMarkdown>{problemData.editorial}</ReactMarkdown>
-      )}
-      {view === 'Submissions' && (
-        <>
-        {userdata && 
-         <div className="listsubmissions">
-         <ul>
-         {userdata.Submissions.map((submission, index) => {
-          if (!submission.Problem) {
-            return null;
-          }
-          if (submission.Problem._id === problemData._id) {
-              return (
-                  <div className='listitem' key={index}>
-                      <h3>{submission.Status}</h3>    
-                      <h3 className="itemSolution" style={{ color: 'seashell'}} onClick={() => changeView('Submitted',submission.Solution)}>Solution</h3>  
-                      <h3>{formatTimestamp(submission.Time)}</h3> 
-                  </div>
-              );
-          }
-          return null;
-          })}
-         </ul>
-     </div>
-        }
-        </>
-      )}
-      {view === 'Submitted' && (
-          <>
-          <Editor
-          height="100%"
-          width="100%" 
-          defaultValue={solution}
-          theme="vs-dark"
-          />
+        <div className="content">
+          {['Description', 'Editorial', 'Solutions', 'Submissions'].map((tab) => (
+            <h3 
+              key={tab} 
+              className={view === tab ? 'active-tab' : ''} 
+              onClick={() => changeView(tab, null)}
+            >
+              {tab}
+            </h3>
+          ))}
+        </div>
+        <div className="leftbottom">
+          {view === 'Description' && (
+            <>
+            <div className="NameProblem">
+              <h1>{problemData.problemName}</h1>
+            </div>
+            <div className="badges">
+              <span className="badge-difficulty" style={{
+                color: problemData.difficulty === "Easy" ? "#00e676" : problemData.difficulty === "Medium" ? "#ffcc00" : "#ff4444"
+              }}>{problemData.difficulty}</span>
+              {problemData.topics.map((t, idx) => (
+                <span key={idx} className="badge-topic">{t}</span>
+              ))}
+            </div>
+            <ReactMarkdown>{problemData.statement}</ReactMarkdown>
+            </>
+          )}
+          {view === 'Editorial' && (
+            <ReactMarkdown>{problemData.editorial}</ReactMarkdown>
+          )}
+          {view === 'Submissions' && (
+            <>
+            {userdata && 
+             <div className="listsubmissions">
+             <ul>
+             {userdata.Submissions.map((submission, index) => {
+              if (!submission.Problem) return null;
+              if (submission.Problem._id === problemData._id) {
+                  return (
+                      <div className='listitem' key={index}>
+                          <h3>{submission.Status}</h3>    
+                          <h3 className="itemSolution" onClick={() => changeView('Submitted',submission.Solution)}>Solution</h3>  
+                          <h3>{formatTimestamp(submission.Time)}</h3> 
+                      </div>
+                  );
+              }
+              return null;
+              })}
+             </ul>
+            </div>
+            }
+            </>
+          )}
+          {view === 'Submitted' && (
+              <Editor
+              height="100%"
+              width="100%" 
+              defaultValue={solution}
+              theme="vs-dark"
+              options={{ readOnly: true }}
+              />
+          )}
+          {view === 'Solutions' && (
+            <>
+              {problemData && 
+             <div className="listsubmissions">
+             <ul>
+             {problemData.users.map((user, index) => {
+                  return (
+                      <div className='listitem' key={index}>
+                          <h3>{user.Username}</h3>    
+                          <h3>{user.Status}</h3>    
+                          <h3 className="itemSolution" onClick={() => changeView('Submitted',user.Solution)}>Solution</h3>  
+                          <h3>{formatTimestamp(user.Time)}</h3> 
+                      </div>
+                  );
+              })}
+             </ul>
+             </div>
+            }
           </>
-        )
-      }
-      {view === 'Solutions' && (
-        <>
-          {problemData && 
-         <div className="listsubmissions">
-         <ul>
-         {problemData.users.map((user, index) => {
-              return (
-                  <div className='listitem' key={index}>
-                      <h3>{user.Username}</h3>    
-                      <h3>{user.Status}</h3>    
-                      <h3 className="itemSolution" style={{ color: 'seashell'}} onClick={() => changeView('Submitted',user.Solution)}>Solution</h3>  
-                      <h3>{formatTimestamp(user.Time)}</h3> 
-                  </div>
-              );
-          })}
-         </ul>
-     </div>
-        }
-      </>
-      )}
-      {
-        view === 'Evaluation' && (
-          <>
-          { loading? <div className="loading">
-          <Loader/>
-          </div>:
-          <div className="evaluation">
-          <h3>Time Took : {time} s</h3>
-          <h1>{status}</h1>
-            {input && <h2>Input: {input}</h2>}
-            {output && <h2>Your Output: {output}</h2>}
-            {expoutput && <h2>Expected Output: {expoutput}</h2>}
-          </div>      
-          }
-          </>
-        )
-      }
-      </div>
-      </div>
-      <div className="right">
-      <div className="probsubmit">
-        <button className='submit' onClick={submitprob}>Submit</button>
-        <button onClick={runprob}>Run</button>
-        <div className='language'>
-        <select id="language" onChange={(event) => handleChange(event)} name="language">
-          <option value="cpp">C++</option>
-          <option value="javascript">JavaScript</option>
-          <option value="python">Python</option>
-          <option value="java">Java</option>
-        </select>
-
+          )}
+          {view === 'Evaluation' && (
+              <>
+              { loading ? <div className="loading"><Loader/></div> :
+              <div className="evaluation">
+                <h3>Time Took: {time} s</h3>
+                <h1>{status}</h1>
+                {input && <h2>Input: {input}</h2>}
+                {output && <h2>Your Output: {output}</h2>}
+                {expoutput && <h2>Expected Output: {expoutput}</h2>}
+              </div>      
+              }
+              </>
+          )}
         </div>
       </div>
-      <Editor
-        height={`${height}%`}
-        width="100%" 
-        defaultLanguage="cpp"        
-        onMount = {handleEditorDidMount}
-        defaultValue = {code}
-        theme="vs-dark"
-        onChange={(value)=>setCode(value)}
-      />
-      <div className="resizer" onMouseDown={handleMouseDown}></div>
-      <div className="tests" style={{ height: `${100 - height}%` }}>
-      {
-    problemData.testCases.slice(0, 2).map((testCase, index) => (
-      <div key={index} className="test-case">
-        <h2>Test case {index + 1}: </h2>
-        <h3><strong>Input:</strong> {testCase.input}</h3>
-        <h3><strong>Output:</strong> {testCase.output}</h3>
-        <br />
+      <div className="right">
+        <div className="probsubmit">
+          <div className='language'>
+            <CustomDropdown 
+              options={[
+                { value: "cpp", label: "C++" },
+                { value: "javascript", label: "JavaScript" },
+                { value: "python", label: "Python" },
+                { value: "java", label: "Java" }
+              ]}
+              value={languageName === "js" ? "javascript" : languageName}
+              onChange={(val) => handleChange({ target: { value: val } })}
+              placeholder="Select Language"
+            />
+          </div>
+          <div className="action-buttons">
+            <button className='run-btn' onClick={runprob}>Run</button>
+            <button className='submit-btn' onClick={submitprob}>Submit</button>
+          </div>
+        </div>
+        <Editor
+          height={`${height}%`}
+          width="100%" 
+          defaultLanguage="cpp"        
+          onMount = {handleEditorDidMount}
+          defaultValue = {code}
+          theme="vs-dark"
+          onChange={(value)=>setCode(value)}
+        />
+        <div className="resizer" onMouseDown={handleMouseDown}></div>
+        <div className="tests" style={{ height: `${100 - height}%` }}>
+          {problemData.testCases.slice(0, 2).map((testCase, index) => (
+            <div key={index} className="test-case">
+              <h2>Testcase {index + 1}</h2>
+              <h3><strong>Input:</strong> {testCase.input}</h3>
+              <h3><strong>Output:</strong> {testCase.output}</h3>
+            </div>
+          ))}
+        </div>
       </div>
-    ))}
-      </div>
-      
-    </div>
     </div>
     </>
   )

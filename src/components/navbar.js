@@ -1,6 +1,6 @@
 import React from 'react';
 import './navbar.css';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightFromBracket, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
@@ -8,7 +8,9 @@ import { useState } from 'react';
 function Navbar() {
   const API_URL = "http://localhost:5000"
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  
   const handleLogout = async () => {
     if (isLoggingOut) return; 
     setIsLoggingOut(true);
@@ -29,28 +31,27 @@ function Navbar() {
     }
   };
   
+  const isActive = (path) => location.pathname === path;
 
   return (
-    <>
-      <nav>
-        <li>
-          <h1 className='site'>AcECode</h1>
-          <Link to="/home"><h2 className='hometag'>Home</h2></Link>
-          <div className="hometag">|</div>
-          <Link to="/contest"><h2 className='hometag'>Contest</h2></Link>
-          <div className="hometag">|</div>
-          <Link to="/Leaderboard"><h2 className='hometag'>Leaderboard</h2></Link>
-          <div className="rightnav">
-            <Link to="/profile">
-              <FontAwesomeIcon className='logouttag' icon={faUser} title="Profile" size="xl" />
-            </Link>
-            <button onClick={handleLogout}>
-              <FontAwesomeIcon className='logouttag' title="Logout" size="xl" icon={faRightFromBracket} />
-            </button>
-          </div>
-        </li>
-      </nav>
-    </>
+    <nav className="navbar">
+      <div className="nav-left">
+        <Link to="/home" style={{ textDecoration: 'none' }}><h1 className='site'>AcECode</h1></Link>
+        <div className="nav-links">
+          <Link to="/home" className={isActive('/home') ? 'active-link' : ''}>Home</Link>
+          <Link to="/contest" className={isActive('/contest') ? 'active-link' : ''}>Contest</Link>
+          <Link to="/Leaderboard" className={isActive('/Leaderboard') ? 'active-link' : ''}>Leaderboard</Link>
+        </div>
+      </div>
+      <div className="nav-right">
+        <Link to="/profile" className="icon-btn">
+          <FontAwesomeIcon icon={faUser} title="Profile" size="lg" />
+        </Link>
+        <button onClick={handleLogout} className="icon-btn">
+          <FontAwesomeIcon title="Logout" size="lg" icon={faRightFromBracket} />
+        </button>
+      </div>
+    </nav>
   );
 }
 

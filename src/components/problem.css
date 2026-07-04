@@ -1,184 +1,419 @@
-* {
-    font-family: "Merriweather", serif;
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-.merriweather-regular {
-    font-family: "Merriweather", serif;
-    font-weight: 400;
-    font-style: normal;
+* {
+    font-family: 'Inter', sans-serif;
 }
 
 .context {
-    margin: 15vh auto auto auto;
-    height: 80vh;
-    width: 95vw;
+    margin: 10vh auto 2vh auto;
+    height: 85vh;
+    width: 98vw;
     display: flex;
     flex-direction: row;
-    color: aliceblue;
+    gap: 16px;
+    color: #e4e4e7;
 }
 
-.right {
-    width: 46vw;
-    margin: 0 auto;
-    backdrop-filter: blur(1px);
-    font-family: 'Times New Roman', Times, serif;
-    padding: 2vh;
-    overflow: scroll;
-}
-
+/* Left Pane (Description/Tabs) */
 .left {
     height: 100%;
-    width: 46vw;
-    margin: 0 auto;
-    backdrop-filter: blur(1px);
-    font-family: 'Times New Roman', Times, serif;
+    width: 50%;
+    background: linear-gradient(145deg, rgba(30,30,30,0.6) 0%, rgba(20,20,20,0.8) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
-}
-
-.leftbottom {
-    background-color: #1e1e1e;
-    padding: 2vh;
-    overflow: scroll;
-    height: 100%;
-}
-
-.leftbottom h3,
-h4 {
-    color: #deab60;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 .content {
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
-    height: 5vh;
-    color: #ffc46c;
+    background: transparent;
+    padding: 16px 24px;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .content h3 {
     cursor: pointer;
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
-    border-top: 1px solid whitesmoke;
-    border-right: 1px solid whitesmoke;
-    border-left: 1px solid whitesmoke;
-    background: #1e1e1e;
-    width: 10vw;
-    text-align: center;
-    padding: 1.5vh;
+    padding: 8px 18px;
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #a1a1aa;
+    transition: all 0.3s ease;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid transparent;
 }
 
-.right {
-    height: 100%;
-    padding: 0;
-    background-color: #1e1e1e;
-    overflow: hidden;
+.content h3:hover {
+    color: #f4f4f5;
+    background: rgba(255, 255, 255, 0.08);
 }
 
-.resizer {
-    height: 10px;
-    background-color: #4b3838;
-    cursor: row-resize;
-    width: 100%;
+.content h3.active-tab {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
+.leftbottom {
+    flex: 1;
+    padding: 24px 32px;
+    overflow-y: auto;
+}
+
+.leftbottom::-webkit-scrollbar {
+    width: 6px;
+}
+.leftbottom::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+/* Typography in Markdown / Description */
+.NameProblem h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-top: 0 !important;
+    margin-bottom: 20px;
+    color: #f4f4f5 !important;
+    border-left: 4px solid #38bdf8;
+    padding-left: 16px;
+    line-height: 1.2;
+}
+
+.badges {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.badge-difficulty {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.08);
+}
+.badge-topic {
+    font-size: 0.75rem;
+    padding: 5px 14px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.04);
+    color: #a1a1aa;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.leftbottom p {
+    line-height: 1.7;
+    color: #d4d4d8;
+    font-size: 0.95rem;
+}
+
+.leftbottom code {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-family: 'Consolas', monospace;
+    color: #e4e4e7;
+    font-size: 0.85rem;
+}
+
+.leftbottom pre {
+    background: linear-gradient(to right, rgba(40,40,40,0.4), rgba(20,20,20,0.4)) !important;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-left: 3px solid #10b981;
+    overflow-x: auto;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+/* Enhanced Markdown Elements Styling */
+.leftbottom h1,
+.leftbottom h2,
+.leftbottom h3,
+.leftbottom h4 {
+    color: #f4f4f5;
+    margin-top: 2em;
+    margin-bottom: 1em;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.leftbottom h1 {
+    font-size: 1.7rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5em;
+}
+
+.leftbottom h2 {
+    font-size: 1.4rem;
+    color: #38bdf8;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 0.4em;
+}
 
 .leftbottom h3 {
-    margin-bottom: 2vh;
+    font-size: 1.15rem;
+    color: #10b981;
 }
 
-.leftbottom h4 {
-    margin-bottom: 4vh;
+.leftbottom ul,
+.leftbottom ol {
+    margin-top: 1em;
+    margin-bottom: 1.5em;
+    padding-left: 1.5em;
+    color: #d4d4d8;
 }
 
-.tests {
-    overflow: scroll;
+.leftbottom li {
+    margin-bottom: 0.6em;
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+.leftbottom li > ul,
+.leftbottom li > ol {
+    margin-top: 0.5em;
+    margin-bottom: 0;
+}
+
+.leftbottom hr {
+    border: none;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 2.5em 0;
+}
+
+.leftbottom strong {
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Right Pane (Editor/Console) */
+.right {
+    height: 100%;
+    width: 50%;
+    background: linear-gradient(145deg, rgba(30,30,30,0.6) 0%, rgba(20,20,20,0.8) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 .probsubmit {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: transparent;
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.probsubmit button {
-    width: 100px;
-    height: 30px;
+.language {
+    display: flex;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.action-buttons button {
     cursor: pointer;
-    margin: 4px 0;
-    background: none;
     border: none;
-    color: aliceblue;
-    font-size: 15px;
-    border: 0 1px solid white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 8px 22px;
+    border-radius: 20px; /* Pill shaped buttons */
+    transition: all 0.2s ease;
 }
 
-.probsubmit button:hover {
-    text-shadow: white;
-    text-decoration: underline;
-    border: 1px solid white;
+.run-btn {
+    background: rgba(255, 255, 255, 0.08);
+    color: #e4e4e7;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.submit:hover {
-    background: #fd0000af;
+.run-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
 }
 
-.listsubmissions {
-    margin-top: 2vh;
+.submit-btn {
+    background: #10b981;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
 }
 
-.itemSolution {
-    text-decoration: underline;
-    cursor: pointer;
-    font-style: oblique;
+.submit-btn:hover {
+    background: #059669;
+    box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
+}
+
+.resizer {
+    height: 8px;
+    background: transparent;
+    cursor: row-resize;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.2s;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.resizer:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+.resizer::after {
+    content: '';
+    width: 30px;
+    height: 3px;
+    background: #71717a;
+    border-radius: 3px;
+}
+
+.tests {
+    background: transparent;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.tests::-webkit-scrollbar {
+    width: 6px;
+}
+.tests::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+.test-case {
+    background: rgba(0,0,0,0.2);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.test-case h2 {
+    font-size: 0.95rem;
+    color: #a1a1aa;
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.test-case h3 {
+    font-size: 0.9rem;
+    margin: 6px 0;
+    font-family: 'Consolas', monospace;
+    background: rgba(0,0,0,0.3);
+    padding: 10px;
+    border-radius: 8px;
+    color: #e4e4e7;
+}
+
+.test-case h3 strong {
+    color: #71717a;
+    font-family: 'Inter', sans-serif;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
 }
 
 .loading {
-    height: 70vh;
-    width: 44vw;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-nav li button {
-    background: none;
-    scale: 1.4;
-    border: none;
+.evaluation {
+    background: rgba(0,0,0,0.2);
+    border-radius: 16px;
+    padding: 24px;
+    margin: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
 }
 
-.language {
-    width: 100px;
-    height: 30px;
-    cursor: pointer;
-    margin: 4px 0;
-    margin-left: 0px;
-    background: none;
-    border: none;
-    color: aliceblue;
-    font-size: 20px;
-    margin-left: 45vh;
+.evaluation h1 {
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+    margin-top: 0;
+    color: #10b981;
 }
 
-#language-select {
-    width: 10vw;
-    background: none;
-    color: white;
-    font-size: 17px;
-    padding: 5px;
-    border: none;
-    background: #1e1e1e;
+.evaluation h3 {
+    color: #a1a1aa;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    font-weight: 400;
 }
 
-#language {
-    background: none;
-    border: none;
-    color: white;
+.evaluation h2 {
+    font-size: 0.9rem;
+    margin: 10px 0;
+    font-family: 'Consolas', monospace;
+    background: rgba(0,0,0,0.3);
+    padding: 12px;
+    border-radius: 8px;
+    color: #e4e4e7;
+    font-weight: normal;
 }
 
-.NameProblem {
+/* Submission List Styling */
+.listsubmissions {
+    margin-top: 10px;
+}
+
+.listsubmissions ul {
+    padding: 0;
+    margin: 0;
+}
+
+.listitem {
+    background: rgba(0,0,0,0.2);
+    padding: 14px 20px;
+    border-radius: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 15vh;
-    padding-right: 2vw;
-    padding-left: 0;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.listitem h3 {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #e4e4e7;
+    font-weight: 500;
+}
+
+.itemSolution {
+    color: #38bdf8 !important;
+    cursor: pointer;
+    text-decoration: none;
+    background: rgba(56, 189, 248, 0.1);
+    padding: 5px 14px;
+    border-radius: 16px;
+    transition: all 0.2s;
+}
+
+.itemSolution:hover {
+    background: rgba(56, 189, 248, 0.2);
 }
