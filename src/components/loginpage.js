@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import './loginpage.css'
 import { useNavigate } from 'react-router-dom';
+import Loader from './loader';
 
 const Login = () => {
   const API_URL = "http://localhost:5000"
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();       
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -43,6 +45,7 @@ const Login = () => {
     setErrors(tempErrors);
 
     if (isValid) {
+      setLoading(true);
       try{
         const response = await fetch(`${API_URL}/api/login`,{
           method:'POST',
@@ -63,12 +66,16 @@ const Login = () => {
         }
       }catch(error){
         console.log(error);
+      } finally {
+        setLoading(false);
       }
   }
   };
 
   return (
-    <div className="login-container">
+    <>
+      {loading && <Loader messages={["Logging in...", "Verifying Credentials...", "Accessing AceCode..."]} />}
+      <div className="login-container">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <div className="input-group">
@@ -102,6 +109,7 @@ const Login = () => {
         </div>
       </form>
     </div>
+    </>
   );
 };
 

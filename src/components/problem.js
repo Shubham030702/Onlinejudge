@@ -277,7 +277,7 @@ function Problems() {
           )}
           {view === 'Evaluation' && (
               <>
-              { loading ? <div className="loading"><Loader/></div> :
+              { loading ? <div className="loading"><Loader messages={["Compiling Code...", "Running Test Cases...", "Evaluating Submission...", "Finishing evaluation..."]}/></div> :
               <div className="evaluation">
                 <h3>Time Took: {time} s</h3>
                 <h1>{status}</h1>

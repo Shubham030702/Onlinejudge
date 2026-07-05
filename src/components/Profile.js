@@ -1,64 +1,49 @@
 import React, { useEffect, useState } from 'react';
 import './Profile.css';
 import {formatTimestamp} from './utils'
+import Loader from './loader';
 
 function Profile() {
     const [userData, setUserData] = useState(null);
     const [probData, setprobData] = useState(null);
+    const [loading, setLoading] = useState(true);
     const API_URL = "http://localhost:5000"
     
     useEffect(() => {
-        const extractUser = async () => {
+        const loadProfileData = async () => {
             try {
-                const response = await fetch(`${API_URL}/profile`, {
+                const userPromise = fetch(`${API_URL}/profile`, {
                     method: 'GET',
                     credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json'
                     }
-                });
+                }).then(res => res.ok ? res.json() : null);
 
-                if (response.ok) {
-                    const data = await response.json();
-                    setUserData(data); 
-                } else {
-                    console.error("Failed to fetch userData:", response.status);
-                }
-            } catch (error) {
-                console.error("Fetch error:", error);
-            }
-        };
-
-        extractUser();
-    }, []);
-
-    useEffect(() => {
-        const extractProb = async () => {
-            try {
-                const response = await fetch(`${API_URL}/api/problems`, {
+                const probPromise = fetch(`${API_URL}/api/problems`, {
                     method: 'GET',
                     credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json'
                     }
-                });
+                }).then(res => res.ok ? res.json() : null);
 
-                if (response.ok) {
-                    const data = await response.json();
-                    setprobData(data.problems); 
-                } else {
-                    console.error("Failed to fetch probData:", response.status);
-                }
+                const [userResult, probResult] = await Promise.all([userPromise, probPromise]);
+                if (userResult) setUserData(userResult);
+                if (probResult) setprobData(probResult.problems);
             } catch (error) {
-                console.error("Fetch error:", error);
+                console.error("Error loading profile data:", error);
+            } finally {
+                setLoading(false);
             }
         };
-
-        extractProb();
+        loadProfileData();
     }, []);
 
     return (
-        <div className="profile-wrapper">
+        <>
+            {loading && <Loader messages={["Fetching User Profile...", "Compiling submissions...", "Generating coder stats..."]} />}
+            <div className="profile-wrapper">
             <div className="profile-container">
                 <div className="leftProfile">
                     <div className="user-card">
@@ -116,6 +101,7 @@ function Profile() {
                 </div>
             </div>
         </div>
+        </>
     );
 }
 

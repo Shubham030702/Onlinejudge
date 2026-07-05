@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './loginpage.css';
 import { useNavigate } from 'react-router-dom';
-import RegisterLoader from './RegisterLoader'
+import Loader from './loader'
 
 const Register = () => {
   const API_URL = "http://localhost:5000"
@@ -150,7 +150,14 @@ const Register = () => {
 
   return ( 
     loading? (
-      <RegisterLoader/>
+      <Loader messages={[
+        "Initializing SigningUp...",
+        "Get Ready...",
+        "To discover the Best...",
+        "Coding Platform...",
+        "AceCode...",
+        "#Hustling For Glory..."
+      ]}/>
     ) : (
       <div className="login-container">
         <h2>Sign Up</h2>

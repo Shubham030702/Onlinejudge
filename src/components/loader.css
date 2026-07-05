@@ -1,39 +1,47 @@
-.loader {
-    width: 60px;
-    height: 40px;
-    position: relative;
-    scale: 2;
-    margin: 20% auto;
-  }
-  .loader::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(farthest-side at bottom   ,#ffc10a 92%,#0000)   top          /30px 15px,
-      radial-gradient(farthest-side at top left ,#0000   92%,#ffc10a) bottom left / 15px 20px,
-      radial-gradient(farthest-side at top right,#0000   92%,#ffc10a) bottom right/ 15px 20px,
-      linear-gradient(#ffc10a 0 0) bottom/30px 26px;
-    background-repeat: no-repeat;
-    transform-origin: 50% -3px;
-    animation: l10-1 .5s infinite alternate linear;
-  }
-  .loader::before {
-    content: "";
-    position: absolute;
-    inset: -6px calc(50% - 10px) -10px;
-    background: 
-    radial-gradient(farthest-side,#ff9f04 90%,#0000) top /10px 10px, radial-gradient(farthest-side,#c17fa1 90%,#0000) bottom/20px 20px;
-    background-repeat: no-repeat;
-    transform-origin: 50% 3px;
-    animation: l10-2 .5s infinite alternate linear;
-  }
-  @keyframes l10-1 {
-    0%   {transform: rotate(-30deg)}
-    100% {transform: rotate(30deg)}
-  }
-  
-  @keyframes l10-2 {
-    0%   {transform: rotate(-20deg)}
-    100% {transform: rotate(20deg)}
-  }
+#cyber-loader {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000000d0;
+  z-index: 9999;
+}
+
+#glitch-text {
+  color: #0ff;
+  font-family: monospace;
+  font-size: 2rem;
+  letter-spacing: 2px;
+  text-align: center;
+  animation: glitch 1s infinite;
+}
+
+.scanline {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  animation: scan 3s linear infinite;
+}
+
+@keyframes glitch {
+  0% { text-shadow: 2px 0 red, -2px 0 blue; }
+  20% { text-shadow: -2px 0 red, 2px 0 blue; }
+  40% { text-shadow: 2px 0 red, -2px 0 blue; }
+  60% { text-shadow: -2px 0 red, 2px 0 blue; }
+  80% { text-shadow: 2px 0 red, -2px 0 blue; }
+  100% { text-shadow: -2px 0 red, 2px 0 blue; }
+}
+
+@keyframes scan {
+  0% { top: -100%; }
+  100% { top: 100%; }
+}

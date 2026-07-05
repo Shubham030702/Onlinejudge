@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import Navbar from './components/navbar';
 import Login from './components/loginpage';
 import Register from './components/registerpage';
@@ -12,6 +12,7 @@ import ProblemDesc from './components/ProblemDesc';
 import RegisterContest from './components/registerContest';
 import Leaderboard from './components/Leaderboard';
 import ContestUpdate from './components/contestUpdate';
+import Journey from './components/Journey';
 import { useEffect, useState } from 'react';
 
 function App() {
@@ -45,7 +46,7 @@ function App() {
   return (
     <>
       {location.pathname !== '/' && location.pathname !== '/signup' && <Navbar />}
-      {location.pathname === '/' && Already && navigate('/home')}
+      {location.pathname === '/' && Already && <Navigate to="/home" replace />}
       <Routes>
         <Route path='/signup' element={<Register />} />
         <Route path='/' element={<Login />} />
@@ -58,6 +59,7 @@ function App() {
         <Route path='/contestUpdate' element={<ContestUpdate/>} />
         <Route path='/profile' element={<Profile/>}/>
         <Route path='/Leaderboard' element={<Leaderboard/>}/>
+        <Route path='/journey' element={<Journey />} />
       </Routes>
     </>
   );

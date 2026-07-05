@@ -15,11 +15,13 @@ function base64code(code){
 router.get('/api/problems', isLoggedIn, async (req, res) => {
   try {
     const problems = await Problem.find({contestOnly : false});
-    const attempted = req.session.user.submission.map(item=>item.Problem);
+    const userdata = await User.findById(req.session.user.id);
+    const attempted = userdata ? userdata.Submissions.map(item=>item.Problem.toString()) : [];
+    const solved = userdata ? userdata.Submissions.filter(item=>item.Status === 'Accepted' || item.Status === 'accepted').map(item=>item.Problem.toString()) : [];
     if (!problems) {
       return res.status(404).json({ message: "No problems found" });
     }
-    res.json({problems,attempted});
+    res.json({problems,attempted,solved});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -35,13 +37,32 @@ router.get('/api/problem/:id', isLoggedIn, async (req, res) => {
   }
 });
 
-router.post('/api/submission', async(req,res)=>{
+router.post('/api/submission', isLoggedIn, async(req,res)=>{
   const {id,Language,LanguageName,Code} = req.body.problemdesc
   console.log(req.body.problemdesc)
   const problem = await Problem.findById({_id:id});
   const userdata = await User.findById(req.session.user.id);
   if (!problem || !userdata) {
     return res.status(404).json({ error: "Problem, contest, or user not found." });
+  }
+
+  // Prerequisites check
+  if (problem.prerequisites && problem.prerequisites.length > 0) {
+    const solvedProblemIds = userdata.Submissions
+      .filter(sub => sub.Status === 'Accepted')
+      .map(sub => sub.Problem.toString());
+
+    const unmetPrerequisites = problem.prerequisites.filter(
+      prereqId => !solvedProblemIds.includes(prereqId.toString())
+    );
+
+    if (unmetPrerequisites.length > 0) {
+      return res.status(403).json({
+        error: "Prerequisites not met",
+        message: "You must solve all prerequisite problems before attempting this one.",
+        unmet: unmetPrerequisites
+      });
+    }
   }
   const inputs = []
   const outputs = []

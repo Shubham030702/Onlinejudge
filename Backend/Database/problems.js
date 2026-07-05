@@ -123,6 +123,14 @@ const problemSchema = new mongoose.Schema({
   contestId : {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'contest', 
+  },
+  prerequisites: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Problem'
+  }],
+  coordinates: {
+    x: { type: Number, default: 0 },
+    y: { type: Number, default: 0 }
   }
 });
 

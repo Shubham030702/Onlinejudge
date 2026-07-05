@@ -1,3 +1,4 @@
+// Active connection comment for nodemon auto-restart
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors'); 
@@ -15,12 +16,21 @@ const contestRoutes = require('./routes/contest');
 
 scheduler.startContestCron();
 
+const clientPromise = mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 30000 })
+  .then(m => {
+    return m.connection.getClient();
+  })
+  .catch((error) => {
+    console.error("Error connecting to the database:", error);
+    return null;
+  });
+
 app.use(session({
   secret: process.env.SecretKey,             
   resave: false,                
   saveUninitialized: false,     
   store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI, 
+    clientPromise: clientPromise,
     ttl: 24 * 60 * 60 
   }),
   cookie: {
@@ -46,11 +56,6 @@ app.use(express.json());
 app.use('/', authRoutes);
 app.use('/', problemRoutes);
 app.use('/', contestRoutes);
-
-mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 30000 })
-  .catch((error) => {
-    console.error("Error connecting to the database:", error);
-  });
 
 const db = mongoose.connection;
 

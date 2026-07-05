@@ -1,8 +1,9 @@
 import './home.css';
-import React, { useEffect, useState, useMemo, useRef } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleCheck, faSearch, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import Loader from './loader';
 
 import CustomDropdown from './CustomDropdown';
 
@@ -10,6 +11,7 @@ const ProblemList = () => {
   const API_URL = "http://localhost:5000"
   const [problems, setProblems] = useState([]);
   const [attempted, setattempted] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -33,12 +35,15 @@ const ProblemList = () => {
         setattempted(data.attempted || []);
       } catch (error) {
         console.error('Error fetching problems:', error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchProblems();
   }, [navigate]);
 
   const problemroute = async (id) => {
+    setLoading(true);
     try {
       const response = await fetch(`${API_URL}/api/problem/${id}`, {
         method: 'GET',
@@ -52,6 +57,8 @@ const ProblemList = () => {
       navigate(`/problems/${id}`, { state: { problemData: data } });
     } catch (error) {
       console.error('Error fetching problems:', error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -78,7 +85,9 @@ const ProblemList = () => {
   }, [problems, searchQuery, difficultyFilter, topicFilter]);
 
   return (
-    <div className="home-wrapper">
+    <>
+      {loading && <Loader messages={["Fetching Problems...", "Syncing Code Repository...", "Preparing workspace..."]} />}
+      <div className="home-wrapper">
       <div className="home">
         
         {/* Filters Section */}
@@ -166,6 +175,7 @@ const ProblemList = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

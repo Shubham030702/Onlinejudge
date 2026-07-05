@@ -41,6 +41,7 @@ function Navbar() {
           <Link to="/home" className={isActive('/home') ? 'active-link' : ''}>Home</Link>
           <Link to="/contest" className={isActive('/contest') ? 'active-link' : ''}>Contest</Link>
           <Link to="/Leaderboard" className={isActive('/Leaderboard') ? 'active-link' : ''}>Leaderboard</Link>
+          <Link to="/journey" className={isActive('/journey') ? 'active-link' : ''}>Journey</Link>
         </div>
       </div>
       <div className="nav-right">

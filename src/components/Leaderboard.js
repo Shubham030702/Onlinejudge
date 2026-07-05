@@ -1,11 +1,14 @@
 import React from 'react'
 import { useEffect,useState } from 'react'
 import "./Leaderboard.css"
+import Loader from './loader'
 
 function Leaderboard() {
     const API_URL = "http://localhost:5000"
     const [users,setusers] = useState([])
     const [currentInd,setcurrentInd] = useState()
+    const [loading, setLoading] = useState(true)
+
     useEffect(() => {
         const extractUser = async () => {
             try {
@@ -25,10 +28,16 @@ function Leaderboard() {
                 }
             } catch (error) {
                 console.error("Fetch error:", error);
+            } finally {
+                setLoading(false);
             }
         };
         extractUser();
     }, []);
+
+    if (loading) {
+        return <Loader messages={["Retrieving rankings...", "Calibrating leaderboard...", "Calculating standings..."]} />;
+    }
   return (
     <>
     <div className="rankings">

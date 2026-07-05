@@ -1,6 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import {useNavigate} from "react-router-dom"
 import './contest.css'
+import Loader from './loader'
 
 const Contest = () => {
     const API_URL = "http://localhost:5000"
@@ -28,6 +29,7 @@ const Contest = () => {
     },[])
 
     const contestroute = async(id)=>{
+        setLoading(true);
         try{
             const response = await fetch(`${API_URL}/api/contest/${id}`,{
                 method : 'GET',
@@ -66,9 +68,7 @@ const Contest = () => {
         }
 
     if(Loading) return (
-        <>
-        <div class="spin">⌛</div>
-        </>    
+        <Loader messages={["Syncing Contests...", "Retrieving Leaderboard Status...", "Loading Arena..."]} />   
     )
     return(
     <> 

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './contestUpdate.css';
+import Loader from './loader';
 
 function ContestUpdate() {
   const API_URL = "http://localhost:5000"
@@ -8,7 +9,10 @@ function ContestUpdate() {
   const location = useLocation();
   console.log(location);
   const problems = location.state.cont.problems
+  const [loading, setLoading] = useState(false);
+
   const problemroute = async(id) =>{
+    setLoading(true);
     try {
       const response = await fetch(`${API_URL}/api/problem/${id}`,{
       method:'GET',  
@@ -25,7 +29,13 @@ function ContestUpdate() {
       navigate(`/problems/${id}`, { state: { problemData: data } });
     } catch (error) {
       console.error('Error fetching problems:', error);
+    } finally {
+      setLoading(false);
     }
+  }
+  
+  if (loading) {
+    return <Loader messages={["Loading Problem Details...", "Fetching code editor...", "Syncing with compiler..."]} />;
   }
   if(location.state.status === "Upcoming"){
     const utcTime = new Date(location.state.cont.starttime);

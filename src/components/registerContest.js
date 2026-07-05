@@ -1,13 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useLocation,useNavigate } from 'react-router-dom'
 import "./registerContest.css"
+import Loader from './loader'
 
 function RegisterContest() {
   const API_URL = "http://localhost:5000"
   const location = useLocation()
   const navigate = useNavigate()
   const id = location.state.cont._id
+  const [loading, setLoading] = useState(false)
+  
   const register = async (id) => {
+    setLoading(true)
     try {
       const response = await fetch(`${API_URL}/contest/register`, {
         method: 'POST',
@@ -23,11 +27,14 @@ function RegisterContest() {
       navigate(`/contest`);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false)
     }
   };  
   return (
     <>
-    <div className="contest-container">
+      {loading && <Loader messages={["Enrolling in Contest...", "Configuring Leaderboard...", "Good Luck!"]} />}
+      <div className="contest-container">
     <h1 className="contest-title">Contest Rules</h1>
     <ul className="contest-rules">
     <li style={{ color: "#fff7ba" }}>

@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useLocation , useNavigate } from 'react-router-dom'
 import "./contestProblem.css"
 import ContestTimer from "./ContestTimer.js"
-import {useState} from 'react'
+import Loader from './loader'
 
 function ContestProblem() {
   const API_URL = "http://localhost:5000"
@@ -12,7 +12,10 @@ function ContestProblem() {
   const endTime = location.state.cont.endtime
   const problems = location.state.cont.problems
   const [standings,setStandings] = useState([]);
+  const [loading, setLoading] = useState(false);
+  
   async function problemInter(id){
+    setLoading(true);
     try {
       const response = await fetch(`${API_URL}/api/problem/${id}`,{
       method:'GET',  
@@ -36,14 +39,17 @@ function ContestProblem() {
       navigate(`/problemdesc/${id}`, { state: { problemData: data } });
     } catch (error) {
       console.error('Error fetching problems:', error);
+    } finally {
+      setLoading(false);
     }
   }
   return (
     <>
-    <ContestTimer 
-      startTime={startTime}
-      endTime={endTime} 
-    />
+      {loading && <Loader messages={["Loading Problem Details...", "Fetching Leaderboard...", "Setting up compilers..."]} />}
+      <ContestTimer 
+        startTime={startTime}
+        endTime={endTime} 
+      />
     <div className="ContestProblemPage">
       <div className="leftContest">
        {problems.map(problem => (
