@@ -40,13 +40,19 @@ app.use(session({
   }
 }));
 
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://acecodecp.netlify.app',
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-  origin: 'http://localhost:3000', 
+  origin: allowedOrigins, 
   credentials: true, 
 }));
 
 app.options('*', cors({
-  origin: 'http://localhost:3000',
+  origin: allowedOrigins,
   credentials: true,
 }));
 
