@@ -4,7 +4,7 @@ import "./Leaderboard.css"
 import Loader from './loader'
 
 function Leaderboard() {
-    const API_URL = "http://localhost:5000"
+    const API_URL = process.env.REACT_APP_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://onlinejudge-2.onrender.com')
     const [users,setusers] = useState([])
     const [currentInd,setcurrentInd] = useState()
     const [loading, setLoading] = useState(true)

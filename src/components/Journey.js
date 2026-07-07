@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import Loader from './loader';
 import './Journey.css';
 
-const API_URL = "http://localhost:5000";
+const API_URL = process.env.REACT_APP_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://onlinejudge-2.onrender.com');
 
 // Custom Node Component
 const ProblemNode = ({ data }) => {

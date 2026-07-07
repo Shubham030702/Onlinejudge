@@ -8,7 +8,7 @@ import Loader from './loader';
 import CustomDropdown from './CustomDropdown';
 
 const ProblemList = () => {
-  const API_URL = "http://localhost:5000"
+  const API_URL = process.env.REACT_APP_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://onlinejudge-2.onrender.com')
   const [problems, setProblems] = useState([]);
   const [attempted, setattempted] = useState([]);
   const [loading, setLoading] = useState(true);

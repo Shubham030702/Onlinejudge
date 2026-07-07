@@ -7,7 +7,7 @@ function Profile() {
     const [userData, setUserData] = useState(null);
     const [probData, setprobData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const API_URL = "http://localhost:5000"
+    const API_URL = process.env.REACT_APP_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://onlinejudge-2.onrender.com')
     
     useEffect(() => {
         const loadProfileData = async () => {

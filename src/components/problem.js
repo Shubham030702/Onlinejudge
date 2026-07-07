@@ -9,7 +9,7 @@ import Loader from './loader.js'
 import CustomDropdown from './CustomDropdown';
 
 function Problems() {
-  const API_URL = "http://localhost:5000"
+  const API_URL = process.env.REACT_APP_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://onlinejudge-2.onrender.com')
   const [height, setHeight] = useState(50);
   const [status, setstatus] = useState(null);
   const [input, setinput] = useState(null);

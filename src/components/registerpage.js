@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Loader from './loader'
 
 const Register = () => {
-  const API_URL = "http://localhost:5000"
+  const API_URL = process.env.REACT_APP_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://onlinejudge-2.onrender.com')
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [username, setUsername] = useState(''); 
