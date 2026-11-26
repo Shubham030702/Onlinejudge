@@ -344,37 +344,284 @@
     align-items: center;
 }
 
-.evaluation {
-    background: rgba(0,0,0,0.2);
-    border-radius: 16px;
-    padding: 24px;
-    margin: 16px;
-    border: 1px solid rgba(255,255,255,0.05);
+.evaluation-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-.evaluation h1 {
-    font-size: 1.25rem;
-    margin-bottom: 16px;
-    margin-top: 0;
-    color: #10b981;
+.eval-verdict-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 22px;
+    border-radius: 12px;
+    border: 1px solid #262c36;
+    background: #0d1117;
 }
 
-.evaluation h3 {
-    color: #a1a1aa;
-    font-size: 0.9rem;
-    margin-bottom: 20px;
-    font-weight: 400;
+.eval-verdict-banner.accepted {
+    border-color: rgba(16, 185, 129, 0.4);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, #0d1117 70%);
 }
 
-.evaluation h2 {
-    font-size: 0.9rem;
-    margin: 10px 0;
-    font-family: 'Consolas', monospace;
-    background: rgba(0,0,0,0.3);
-    padding: 12px;
+.eval-verdict-banner.failed {
+    border-color: rgba(239, 68, 68, 0.4);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, #0d1117 70%);
+}
+
+.eval-verdict-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.eval-verdict-icon {
+    font-size: 2rem;
+}
+
+.eval-verdict-banner.accepted .eval-verdict-icon { color: #10b981; }
+.eval-verdict-banner.failed .eval-verdict-icon { color: #ef4444; }
+
+.eval-verdict-label {
+    font-size: 0.74rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #8b949e;
+    margin-bottom: 3px;
+}
+
+.eval-verdict-title {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    font-size: 1.45rem !important;
+    font-weight: 700;
+}
+
+.eval-verdict-banner.accepted .eval-verdict-title { color: #34d399; }
+.eval-verdict-banner.failed .eval-verdict-title { color: #f87171; }
+
+/* Progress Donut Ring */
+.eval-ring-wrap {
+    position: relative;
+    width: 84px;
+    height: 84px;
+    flex-shrink: 0;
+}
+
+.eval-ring-svg {
+    transform: rotate(-90deg);
+}
+
+.eval-ring-track {
+    fill: none;
+    stroke: #21262d;
+    stroke-width: 7;
+}
+
+.eval-ring-fill {
+    fill: none;
+    stroke-width: 7;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.5s ease;
+}
+
+.eval-ring-fill.accepted { stroke: #10b981; }
+.eval-ring-fill.failed { stroke: #ef4444; }
+
+.eval-ring-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.1;
+}
+
+.eval-ring-text strong {
+    font-size: 0.98rem;
+    color: #f0f6fc;
+}
+
+.eval-ring-text span {
+    font-size: 0.65rem;
+    color: #8b949e;
+}
+
+/* Metrics Row */
+.eval-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.eval-metric-card {
+    background: #0d1117;
+    border: 1px solid #262c36;
+    border-radius: 10px;
+    padding: 12px 14px;
+}
+
+.eval-metric-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: #8b949e;
+    margin-bottom: 6px;
+}
+
+.eval-metric-val {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #f0f6fc;
+}
+
+.eval-metric-val span {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #8b949e;
+}
+
+/* Section Cards */
+.eval-section-card {
+    background: #0d1117;
+    border: 1px solid #262c36;
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+
+.eval-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #f0f6fc;
+    margin-bottom: 12px;
+}
+
+.eval-section-sub {
+    font-size: 0.76rem;
+    font-weight: 500;
+    color: #8b949e;
+}
+
+/* Testcase Matrix */
+.eval-tc-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.eval-tc-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
     border-radius: 8px;
-    color: #e4e4e7;
-    font-weight: normal;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: 1px solid #262c36;
+    background: #161b22;
+    color: #8b949e;
+}
+
+.eval-tc-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #6e7681;
+}
+
+.eval-tc-pill.passed {
+    background: rgba(16, 185, 129, 0.12);
+    border-color: rgba(16, 185, 129, 0.35);
+    color: #34d399;
+}
+
+.eval-tc-pill.passed .eval-tc-dot { background: #10b981; }
+
+.eval-tc-pill.failed {
+    background: rgba(239, 68, 68, 0.12);
+    border-color: rgba(239, 68, 68, 0.35);
+    color: #f87171;
+}
+
+.eval-tc-pill.failed .eval-tc-dot { background: #ef4444; }
+
+/* Runtime Bar Chart */
+.eval-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.eval-bar-row {
+    display: grid;
+    grid-template-columns: 46px 1fr 56px;
+    align-items: center;
+    gap: 10px;
+}
+
+.eval-bar-label {
+    font-size: 0.76rem;
+    color: #8b949e;
+    font-weight: 600;
+}
+
+.eval-bar-track {
+    height: 8px;
+    background: #161b22;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.eval-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+}
+
+.eval-bar-fill.passed { background: linear-gradient(90deg, #10b981, #38bdf8); }
+.eval-bar-fill.failed { background: #ef4444; }
+
+.eval-bar-time {
+    font-size: 0.76rem;
+    color: #c9d1d9;
+    text-align: right;
+    font-family: 'Consolas', monospace;
+}
+
+/* Failed IO */
+.eval-io-block {
+    margin-bottom: 10px;
+}
+
+.eval-io-block:last-child {
+    margin-bottom: 0;
+}
+
+.eval-io-label {
+    display: block;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: #8b949e;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.eval-io-block pre {
+    margin: 0 !important;
+    padding: 10px 12px !important;
+    border-radius: 8px !important;
+    background: #161b22 !important;
+    border: 1px solid #262c36 !important;
+    border-left: 3px solid #ef4444 !important;
+    font-size: 0.85rem;
+    color: #e6edf3;
 }
 
 /* Submission List Styling */

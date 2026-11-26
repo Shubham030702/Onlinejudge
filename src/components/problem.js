@@ -1,5 +1,6 @@
-import React from 'react'
-import { useState , useEffect ,useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleCheck, faCircleXmark, faClock, faCode, faVial } from '@fortawesome/free-solid-svg-icons';
 import './problem.css'
 import Editor from '@monaco-editor/react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -26,6 +27,7 @@ function Problems() {
   const [userdata, setUserdata] = useState(null);
   const [solution, setsolution] = useState(null);
   const [time,settime] = useState(null);
+  const [evalDetails, setEvalDetails] = useState(null);
   const [language, setLanguage] = useState(52);
   const [languageName, setLanguageName] = useState("cpp");
   const editorRef = useRef(null);
@@ -71,6 +73,7 @@ function Problems() {
     setinput(null);
     setoutput(null);
     setexpoutput(null);
+    setEvalDetails(null);
     setLoading(true)
     try{  
       const response = await fetch(`${API_URL}/api/submission`,{
@@ -82,9 +85,15 @@ function Problems() {
         body : JSON.stringify({problemdesc})
       })
       const result = await response.json();
+      setEvalDetails({
+        passedCount: result.passedCount ?? (result.status === 'Accepted' ? problemData.testCases.length : 0),
+        totalCount: result.totalCount ?? problemData.testCases.length,
+        testResults: result.testResults || [],
+        isRun: false
+      });
+      settime(result.time ?? 0);
       if(!result.result){
         setstatus(result.status)
-        settime(result.time);
       }
       else{
         setstatus(result.result.status.description)
@@ -103,6 +112,7 @@ function Problems() {
     setinput(null);
     setoutput(null);
     setexpoutput(null);
+    setEvalDetails(null);
     setLoading(true)
     try{  
       const response = await fetch(`${API_URL}/api/runprob`,{
@@ -113,9 +123,15 @@ function Problems() {
         body : JSON.stringify({problemdesc})
       })
       const result = await response.json();
+      setEvalDetails({
+        passedCount: result.passedCount ?? (result.status === 'Accepted' ? Math.min(2, problemData.testCases.length) : 0),
+        totalCount: result.totalCount ?? Math.min(2, problemData.testCases.length),
+        testResults: result.testResults || [],
+        isRun: true
+      });
+      settime(result.time ?? 0);
       if(!result.result){
         setstatus(result.status)
-        settime(result.time);
       }
       else{
         setstatus(result.result.status.description)
@@ -278,15 +294,159 @@ function Problems() {
           )}
           {view === 'Evaluation' && (
               <>
-              { loading ? <div className="loading"><Loader messages={["Compiling Code...", "Running Test Cases...", "Evaluating Submission...", "Finishing evaluation..."]}/></div> :
-              <div className="evaluation">
-                <h3>Time Took: {time} s</h3>
-                <h1>{status}</h1>
-                {input && <h2>Input: {input}</h2>}
-                {output && <h2>Your Output: {output}</h2>}
-                {expoutput && <h2>Expected Output: {expoutput}</h2>}
-              </div>      
-              }
+              { loading ? <div className="loading"><Loader messages={["Compiling Code...", "Running Test Cases...", "Evaluating Submission...", "Finishing evaluation..."]}/></div> : (
+                (() => {
+                  const isAccepted = status === 'Accepted';
+                  const total = evalDetails?.totalCount || 0;
+                  const passed = evalDetails?.passedCount ?? (isAccepted ? total : 0);
+                  const passPct = total > 0 ? Math.round((passed / total) * 100) : (isAccepted ? 100 : 0);
+                  const radius = 34;
+                  const circumference = 2 * Math.PI * radius;
+                  const dashOffset = circumference - (passPct / 100) * circumference;
+                  const results = evalDetails?.testResults || [];
+                  const maxTcTime = Math.max(0.001, ...results.map(r => r.time || 0));
+
+                  return (
+                    <div className="evaluation-dashboard">
+                      <div className={`eval-verdict-banner ${isAccepted ? 'accepted' : 'failed'}`}>
+                        <div className="eval-verdict-left">
+                          <FontAwesomeIcon
+                            icon={isAccepted ? faCircleCheck : faCircleXmark}
+                            className="eval-verdict-icon"
+                          />
+                          <div>
+                            <div className="eval-verdict-label">
+                              {evalDetails?.isRun ? 'Sample Run Result' : 'Submission Verdict'}
+                            </div>
+                            <h1 className="eval-verdict-title">{status || 'Evaluated'}</h1>
+                          </div>
+                        </div>
+
+                        <div className="eval-ring-wrap">
+                          <svg width="84" height="84" viewBox="0 0 84 84" className="eval-ring-svg">
+                            <circle cx="42" cy="42" r={radius} className="eval-ring-track" />
+                            <circle
+                              cx="42"
+                              cy="42"
+                              r={radius}
+                              className={`eval-ring-fill ${isAccepted ? 'accepted' : 'failed'}`}
+                              strokeDasharray={circumference}
+                              strokeDashoffset={dashOffset}
+                            />
+                          </svg>
+                          <div className="eval-ring-text">
+                            <strong>{passPct}%</strong>
+                            <span>Passed</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="eval-metrics-grid">
+                        <div className="eval-metric-card">
+                          <div className="eval-metric-head">
+                            <FontAwesomeIcon icon={faVial} />
+                            <span>Testcases</span>
+                          </div>
+                          <div className="eval-metric-val">
+                            {passed} <span>/ {total}</span>
+                          </div>
+                        </div>
+                        <div className="eval-metric-card">
+                          <div className="eval-metric-head">
+                            <FontAwesomeIcon icon={faClock} />
+                            <span>Total Runtime</span>
+                          </div>
+                          <div className="eval-metric-val">
+                            {time ?? 0} <span>sec</span>
+                          </div>
+                        </div>
+                        <div className="eval-metric-card">
+                          <div className="eval-metric-head">
+                            <FontAwesomeIcon icon={faCode} />
+                            <span>Language</span>
+                          </div>
+                          <div className="eval-metric-val">
+                            {languageName.toUpperCase()}
+                          </div>
+                        </div>
+                      </div>
+
+                      {total > 0 && (
+                        <div className="eval-section-card">
+                          <div className="eval-section-header">
+                            <span>Testcase Execution Matrix</span>
+                            <span className="eval-section-sub">{passed} of {total} passed</span>
+                          </div>
+                          <div className="eval-tc-grid">
+                            {Array.from({ length: total }).map((_, idx) => {
+                              const tc = results[idx];
+                              const tcState = tc ? (tc.passed ? 'passed' : 'failed') : 'skipped';
+                              return (
+                                <div key={idx} className={`eval-tc-pill ${tcState}`} title={tc ? `Case ${idx + 1}: ${tc.status} (${tc.time}s)` : `Case ${idx + 1}: Not executed`}>
+                                  <span className="eval-tc-dot" />
+                                  <span>Case {idx + 1}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      {results.length > 0 && (
+                        <div className="eval-section-card">
+                          <div className="eval-section-header">
+                            <span>Per-Testcase Runtime</span>
+                            <span className="eval-section-sub">Execution time (s)</span>
+                          </div>
+                          <div className="eval-bars">
+                            {results.map((tc) => {
+                              const widthPct = Math.max(8, Math.round(((tc.time || 0) / maxTcTime) * 100));
+                              return (
+                                <div key={tc.index} className="eval-bar-row">
+                                  <span className="eval-bar-label">TC {tc.index}</span>
+                                  <div className="eval-bar-track">
+                                    <div
+                                      className={`eval-bar-fill ${tc.passed ? 'passed' : 'failed'}`}
+                                      style={{ width: `${widthPct}%` }}
+                                    />
+                                  </div>
+                                  <span className="eval-bar-time">{tc.time.toFixed(3)}s</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      {(input || output || expoutput) && (
+                        <div className="eval-section-card eval-io-card">
+                          <div className="eval-section-header">
+                            <span>Failed Testcase Details</span>
+                          </div>
+                          {input && (
+                            <div className="eval-io-block">
+                              <span className="eval-io-label">Input</span>
+                              <pre>{input}</pre>
+                            </div>
+                          )}
+                          {output && (
+                            <div className="eval-io-block">
+                              <span className="eval-io-label">Your Output</span>
+                              <pre>{output}</pre>
+                            </div>
+                          )}
+                          {expoutput && (
+                            <div className="eval-io-block">
+                              <span className="eval-io-label">Expected Output</span>
+                              <pre>{expoutput}</pre>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()
+              )}
               </>
           )}
         </div>

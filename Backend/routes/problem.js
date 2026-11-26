@@ -172,25 +172,62 @@ router.post('/api/submission', isLoggedIn, async(req,res)=>{
   const FullCode = boilerplate.replace("## Enter Code Here ##",Code)
   const code64 = base64code(FullCode)
   async function evaluateSubmissions() {
-    let Time=0;
+    let Time = 0;
+    const testResults = [];
+    const totalCount = inputs.length;
+
     for (const [index, input] of inputs.entries()) {
       const output = outputs[index];
       const code64inp = base64code(input);
       const code64out = base64code(output);
       try {
-        const result = await submission.evaluation(code64inp,Language,code64out, code64);
-        const decode = Buffer.from(result.stdout,'base64').toString('utf-8');
-        let d = parseFloat(result.time);
-        Time+=d;
-        if(result.status.id > 3){
-          return {result,output,input,decode}
+        const result = await submission.evaluation(code64inp, Language, code64out, code64);
+        const decode = result.stdout ? Buffer.from(result.stdout, 'base64').toString('utf-8') : '';
+        const tcTime = parseFloat(result.time) || 0;
+        Time += tcTime;
+        const passed = result.status.id <= 3;
+        testResults.push({
+          index: index + 1,
+          passed,
+          status: result.status.description,
+          time: tcTime
+        });
+        if (!passed) {
+          return {
+            result,
+            output,
+            input,
+            decode,
+            time: Number(Time.toFixed(3)),
+            passedCount: index,
+            totalCount,
+            testResults
+          };
         }
-      } catch (error) {        
+      } catch (error) {
         console.log(error);
-        return {status:"Runtime Error",time:Time};
-      } 
+        testResults.push({
+          index: index + 1,
+          passed: false,
+          status: 'Runtime Error',
+          time: 0
+        });
+        return {
+          status: 'Runtime Error',
+          time: Number(Time.toFixed(3)),
+          passedCount: index,
+          totalCount,
+          testResults
+        };
+      }
     }
-    return {status:"Accepted",time:Time};
+    return {
+      status: 'Accepted',
+      time: Number(Time.toFixed(3)),
+      passedCount: totalCount,
+      totalCount,
+      testResults
+    };
   }
   try {
     const result = await evaluateSubmissions();
@@ -229,24 +266,61 @@ router.post('/api/runprob', async(req,res)=>{
   const FullCode = boilerplate.replace("## Enter Code Here ##",Code)
   const code64 = base64code(FullCode)
   async function evaluateSubmissions() {
-    let Time=0;
+    let Time = 0;
+    const testResults = [];
+    const totalCount = inputs.length;
+
     for (const [index, input] of inputs.entries()) {
       const output = outputs[index];
       const code64inp = base64code(input);
       const code64out = base64code(output);
       try {
-        const result = await submission.evaluation(code64inp,Language, code64out, code64);
-        const decode = Buffer.from(result.stdout,'base64').toString('utf-8');
-        let d = parseFloat(result.time);
-        Time+=d;
-        if(result.status.id > 3){
-          return {result,output,input,decode}
+        const result = await submission.evaluation(code64inp, Language, code64out, code64);
+        const decode = result.stdout ? Buffer.from(result.stdout, 'base64').toString('utf-8') : '';
+        const tcTime = parseFloat(result.time) || 0;
+        Time += tcTime;
+        const passed = result.status.id <= 3;
+        testResults.push({
+          index: index + 1,
+          passed,
+          status: result.status.description,
+          time: tcTime
+        });
+        if (!passed) {
+          return {
+            result,
+            output,
+            input,
+            decode,
+            time: Number(Time.toFixed(3)),
+            passedCount: index,
+            totalCount,
+            testResults
+          };
         }
       } catch (error) {
-        return {status:"Runtime Error",time:Time};
+        testResults.push({
+          index: index + 1,
+          passed: false,
+          status: 'Runtime Error',
+          time: 0
+        });
+        return {
+          status: 'Runtime Error',
+          time: Number(Time.toFixed(3)),
+          passedCount: index,
+          totalCount,
+          testResults
+        };
       }
     }
-    return {status:"Accepted",time:Time};
+    return {
+      status: 'Accepted',
+      time: Number(Time.toFixed(3)),
+      passedCount: totalCount,
+      totalCount,
+      testResults
+    };
   }
   try {
     const result = await evaluateSubmissions();
