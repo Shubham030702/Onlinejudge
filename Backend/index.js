@@ -30,18 +30,26 @@ const clientPromise = mongoose.connect(process.env.MONGODB_URI, { serverSelectio
     process.exit(1);
   });
 
+const isProduction = process.env.NODE_ENV === 'production' || Boolean(process.env.RENDER);
+
+if (isProduction) {
+  app.set('trust proxy', 1);
+}
+
 app.use(session({
-  secret: process.env.SecretKey,             
-  resave: false,                
-  saveUninitialized: false,     
+  secret: process.env.SecretKey,
+  resave: false,
+  saveUninitialized: false,
+  proxy: isProduction,
   store: MongoStore.create({
     clientPromise: clientPromise,
-    ttl: 24 * 60 * 60 
+    ttl: 24 * 60 * 60
   }),
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24, 
+    maxAge: 1000 * 60 * 60 * 24,
     httpOnly: true,
-    secure : false
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax'
   }
 }));
 
