@@ -1,5 +1,6 @@
 // Active connection comment for nodemon auto-restart
 const express = require('express');
+const dns = require('dns');
 const mongoose = require('mongoose');
 const cors = require('cors'); 
 const app = express();
@@ -16,13 +17,17 @@ const contestRoutes = require('./routes/contest');
 
 scheduler.startContestCron();
 
+if (process.platform === 'win32') {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+}
+
 const clientPromise = mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 30000 })
   .then(m => {
     return m.connection.getClient();
   })
   .catch((error) => {
     console.error("Error connecting to the database:", error);
-    return null;
+    process.exit(1);
   });
 
 app.use(session({

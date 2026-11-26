@@ -1,8 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import ReactFlow, {
-  Background,
-  Controls,
-  MiniMap,
   Handle,
   Position,
   MarkerType

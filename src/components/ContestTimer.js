@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from "react";
 import "./ContestTimer.css"
 
+const pad = (n) => (n < 10 ? "0" + n : n);
+
+const formatTime = (ms) => {
+  let totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  totalSeconds %= 3600;
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+};
+
 function ContestTimer({ startTime, endTime }) {
   const [timeLeft, setTimeLeft] = useState("");
   const [status, setStatus] = useState("");
@@ -28,18 +40,6 @@ function ContestTimer({ startTime, endTime }) {
 
     return () => clearInterval(interval);
   }, [startTime, endTime]);
-
-  const formatTime = (ms) => {
-    let totalSeconds = Math.floor(ms / 1000);
-    const hours = Math.floor(totalSeconds / 3600);
-    totalSeconds %= 3600;
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-
-    return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-  };
-
-  const pad = (n) => (n < 10 ? "0" + n : n);
 
   return (
     <div className="timer">

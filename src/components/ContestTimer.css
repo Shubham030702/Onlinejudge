@@ -1,21 +1,28 @@
 .timer {
     text-align: center;
-    color: white;
-    background: #1e1e1e;
-    padding: 20px;
-    border-radius: 10px;
+    color: #f0f6fc;
+    background: #161b22;
+    border: 1px solid #262c36;
+    padding: 14px 28px;
+    border-radius: 12px;
     width: fit-content;
-    position: relative;
-    margin: 15vh auto 5vh auto;
-  }
-  
-  .timer h1 {
-    font-size: 2rem;
-    color: #00e676;
-  }
-  
-  .timer h2 {
-    font-size: 1.2rem;
-    color: #ffcc00;
-  }
-  
+    margin: 84px auto 20px auto;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+    font-family: 'Inter', sans-serif;
+}
+
+.timer h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #34d399;
+    margin: 4px 0 0;
+}
+
+.timer h2 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #fbbf24;
+    margin: 0;
+}

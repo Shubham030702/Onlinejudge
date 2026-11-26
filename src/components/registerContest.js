@@ -34,23 +34,25 @@ function RegisterContest() {
   return (
     <>
       {loading && <Loader messages={["Enrolling in Contest...", "Configuring Leaderboard...", "Good Luck!"]} />}
-      <div className="contest-container">
-    <h1 className="contest-title">Contest Rules</h1>
-    <ul className="contest-rules">
-    <li style={{ color: "#fff7ba" }}>
-  Only Register If You are sure to Participate. Otherwise, it can affect the rating.
-</li>
-        <li>1. Each participant must submit their own code.</li>
-        <li>2. Plagiarism will result in disqualification.</li>
-        <li>3. The contest duration is 1 hours.</li>
-        <li>4. Only solutions submitted within the contest time will be considered.</li>
-        <li>5. Each problem has a different score based on difficulty.</li>
-        <li>6. The leaderboard will be updated in real-time.</li>
-        <li>7. You cannot change your code once submitted.</li>
-        <li>8. The final decision of the organizers is binding.</li>
-    </ul>
-    <button className="register-btn" onClick={()=>register(id)}>Register</button>
-</div>
+      <div className="reg-contest-wrapper">
+        <div className="reg-contest-card">
+          <h1 className="reg-contest-title">Contest Rules</h1>
+          <ul className="reg-contest-rules">
+            <li className="reg-contest-warning">
+              Only register if you are sure to participate. Otherwise, it can affect your rating.
+            </li>
+            <li>1. Each participant must submit their own code.</li>
+            <li>2. Plagiarism will result in disqualification.</li>
+            <li>3. The contest duration is 1 hour.</li>
+            <li>4. Only solutions submitted within the contest time will be considered.</li>
+            <li>5. Each problem has a different score based on difficulty.</li>
+            <li>6. The leaderboard will be updated in real-time.</li>
+            <li>7. You cannot change your code once submitted.</li>
+            <li>8. The final decision of the organizers is binding.</li>
+          </ul>
+          <button className="reg-contest-btn" onClick={() => register(id)}>Register for Contest</button>
+        </div>
+      </div>
 
     </>
   )

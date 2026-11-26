@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import Navbar from './components/navbar';
 import Login from './components/loginpage';
 import Register from './components/registerpage';
@@ -15,9 +15,9 @@ import ContestUpdate from './components/contestUpdate';
 import Journey from './components/Journey';
 import { useEffect, useState } from 'react';
 
-function App() {
-  const API_URL = process.env.REACT_APP_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://onlinejudge-2.onrender.com')
+const API_URL = process.env.REACT_APP_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://onlinejudge-2.onrender.com')
 
+function App() {
   const [Already,setAlready] = useState(false);
 
   useEffect(()=>{
@@ -41,7 +41,6 @@ function App() {
     isloggedin();
   },[])
 
-  const navigate = useNavigate();
   const location = useLocation();
   return (
     <>

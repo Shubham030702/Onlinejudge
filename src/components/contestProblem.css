@@ -1,129 +1,119 @@
 .ContestProblemPage {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 24px;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 24px 48px;
+    font-family: 'Inter', sans-serif;
+}
+
+.leftContest {
     display: flex;
-    background: none;
-    min-height: 60vh;
-  }
-  
-  .timer {
-    text-align: center;
-    width: 80vw;
-    margin: 5vh 0;
-  }
-  
-  .leftContest {
-    width: 60%;
-  }
-  
-  .leftContest li {
-    color: white;
-    text-decoration: none;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.leftContest li {
+    color: #e6edf3;
     list-style: none;
-  }
-  
-  .problems {
-    background: #ffffff5c;
-    margin: 2vh 1vw;
-    border-radius: 30px;
-    padding: 25px 30px;
+}
+
+.problems {
+    background: #161b22;
+    border: 1px solid #262c36;
+    border-radius: 12px;
+    padding: 16px 22px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: all 0.2s ease-in-out;
-  }
-  
-  .problems:hover {
-    scale: 1.02;
+    transition: all 0.15s ease;
     cursor: pointer;
-    background: #ffffff8a;
-  }
-  
-  .stat {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: yellowgreen;
-  }
-  
-  .rightContest {
-    width: 40%;
-    background: linear-gradient(135deg, #1e3b726e, #3f4042);
-    color: white;
-    padding: 25px 15px;
-    border-radius: 20px;
+}
+
+.problems:hover {
+    background: #1f2630;
+    border-color: rgba(16, 185, 129, 0.45);
+}
+
+.problemtitle h1 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #f0f6fc;
+}
+
+.stat h3 {
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(16, 185, 129, 0.14);
+    color: #34d399;
+}
+
+.rightContest {
+    background: #161b22;
+    border: 1px solid #262c36;
+    color: #e6edf3;
+    padding: 20px;
+    border-radius: 12px;
     overflow-y: auto;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-  }
-  
-  .rightContest::-webkit-scrollbar {
-    width: 8px;
-  }
-  .rightContest::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 10px;
-  }
-  .rightContest::-webkit-scrollbar-thumb:hover {
-    background-color: #555;
-  }
-  
-  .rightContest h1 {
-    text-align: center;
-    color: #ffd43b;
-    margin: 3vh 0;
-    font-size: 1.6rem;
-    border-bottom: 2px solid #ffffff4d;
-    padding-bottom: 10px;
-  }
-  
-  .rightContest ul {
+    max-height: 65vh;
+    scrollbar-width: thin;
+    scrollbar-color: #30363d transparent;
+}
+
+.rightContest h1 {
+    text-align: left;
+    color: #f0f6fc;
+    margin: 0 0 16px;
+    font-size: 1.15rem;
+    border-bottom: 1px solid #262c36;
+    padding-bottom: 12px;
+}
+
+.rightContest ul {
     list-style: none;
     padding: 0;
     margin: 0;
-  }
-  
-  .rightContest li {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rightContest li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #ffffff80;
-    border-radius: 10px;
-    margin: 8px 1vw;
-    padding: 10px 15px;
-    color: #222;
+    background: #0d1117;
+    border: 1px solid #21262d;
+    border-radius: 9px;
+    padding: 10px 14px;
+    color: #e6edf3;
     font-weight: 500;
-    transition: all 0.3s ease;
-  }
-  
-  .rightContest li:hover {
-    background: #ffffffb3;
-    transform: scale(1.02);
-  }
-  
-  .rank {
+}
+
+.rank {
     font-weight: 700;
-    color: #ffd43b;
-    width: 40px;
-    text-align: left;
-  }
-  
-  .username {
+    color: #8b949e;
+    width: 44px;
+}
+
+.username {
     flex: 1;
-    text-align: left;
     font-weight: 600;
-    color: #111;
-  }
-  
-  .score {
-    color: #28a745;
+    color: #f0f6fc;
+}
+
+.score {
+    color: #34d399;
     font-weight: 700;
-  }
-  
-  .rightContest li:nth-child(1) .rank {
-    color: gold;
-  }
-  .rightContest li:nth-child(2) .rank {
-    color: silver;
-  }
-  .rightContest li:nth-child(3) .rank {
-    color: #cd7f32;
-  }
-  
+}
+
+@media (max-width: 820px) {
+    .ContestProblemPage {
+        grid-template-columns: 1fr;
+    }
+}

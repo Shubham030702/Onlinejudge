@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,93 +8,108 @@
 
 body {
     height: 100vh;
-    background-image: url('../assets/pexels-elti-meshau-107925-333850.jpg');
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
+    background:
+        radial-gradient(ellipse 70% 45% at 50% -10%, rgba(16, 185, 129, 0.12), transparent 70%),
+        #0d1117;
+    color: #e6edf3;
+    font-family: 'Inter', sans-serif;
 }
 
 .chakra-petch-regular {
-    font-family: "Chakra Petch", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-  }
+    font-family: 'Inter', sans-serif;
+}
 
 .login-container {
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    width: 30vw;
-    color: white;
+    padding: 36px 32px;
+    border-radius: 14px;
+    background: #161b22;
+    border: 1px solid #262c36;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    width: min(420px, 92vw);
+    color: #f0f6fc;
     text-align: center;
-    backdrop-filter: blur(5px);
-    font-family: "Chakra Petch", sans-serif;    
-    margin: 15% auto;
+    font-family: 'Inter', sans-serif;
+    margin: 12vh auto;
 }
 
 .login-container h2 {
-    margin-bottom: 20px;
-    color: #ffffff;
+    margin-bottom: 24px;
+    color: #f0f6fc;
+    font-size: 1.5rem;
+    font-weight: 700;
 }
 
 .input-group {
     position: relative;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
 }
 
 .input-group input {
     width: 100%;
-    padding: 10px;
-    background: none;
-    border: 1px solid #ffffff;
-    border-radius: 50px;
-    color: white;
+    padding: 12px 14px;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    color: #f0f6fc;
     outline: none;
+    font-size: 0.92rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-group input:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.14);
 }
 
 .input-group label {
     position: absolute;
-    top: 10px;
-    left: 10px;
-    color: #08deff;
+    top: 12px;
+    left: 14px;
+    color: #8b949e;
+    font-size: 0.88rem;
     pointer-events: none;
     transition: 0.2s ease all;
+    background: transparent;
 }
 
 .input-group input:focus ~ label,
 .input-group input:not(:placeholder-shown) ~ label {
-    top: -25px;
+    top: -10px;
     left: 10px;
-    font-size: 16px;
-    color: #ffffff;
+    font-size: 0.75rem;
+    color: #34d399;
+    background: #161b22;
+    padding: 0 6px;
 }
 
 .actions button {
     width: 100%;
-    padding: 10px;
-    background: none;
+    padding: 11px 16px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     border: none;
-    border-radius: 5px;
-    color: white;
-    font-weight: bold;
+    border-radius: 10px;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.95rem;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
 }
 
 .actions button:hover {
-    background: #7e7e7e84;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.28);
 }
 
 .links {
-    margin-top: 20px;
+    margin-top: 18px;
 }
 
 .links a {
-    color: #00aaff;
+    color: #34d399;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 0.85rem;
     display: block;
-    margin: 5px 0;
+    margin: 6px 0;
 }
 
 .links a:hover {
