@@ -148,109 +148,125 @@ const Register = () => {
     setLoading(false)
   }
 
-  return ( 
-    loading? (
+  return (
+    loading ? (
       <Loader messages={[
-        "Initializing SigningUp...",
-        "Get Ready...",
-        "To discover the Best...",
-        "Coding Platform...",
-        "AceCode...",
-        "#Hustling For Glory..."
-      ]}/>
+        'Initializing SigningUp...',
+        'Get Ready...',
+        'To discover the Best...',
+        'Coding Platform...',
+        'AceCode...',
+        '#Hustling For Glory...'
+      ]} />
     ) : (
-      <div className="login-container">
-        <h2>Sign Up</h2>
-    
-        {steps === 'manager' && (
-          <form onSubmit={otpManagement}>
-            <div className="input-group">
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <label htmlFor="email">Email</label>
-              {errors.email && <div className="error-message">{errors.email}</div>}
-            </div>
-            <div className="actions">
-              <button type="submit">Verify Email!</button>
-              <button type="button" onClick={handleLoginRoute}>Already exist user..Login</button>
-            </div>
-          </form>
-        )}
-    
-        {steps === 'otpverify' && (
-          <form onSubmit={otpVerifier}>
-            <div className="input-group">
-              <input
-                type="text"
-                id="otp"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                required
-              />
-              <label htmlFor="otp">Otp</label>
-              {errors.otp && <div className="error-message">{errors.otp}</div>}
-            </div>
-            <div className="actions">
-              <button type="submit">Verify Otp!</button>
-            </div>
-          </form>
-        )}
-    
-        {steps === 'Register' && (
-          <form onSubmit={handleSubmit}>
-            <div className="input-group">
-              <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-              <label htmlFor="username">Username</label>
-              {errors.username && (
-                <div className="error-message">{errors.username}</div>
-              )}
-            </div>
-            <div className="input-group">
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <label htmlFor="password">Password</label>
-              {errors.password && (
-                <div className="error-message">{errors.password}</div>
-              )}
-            </div>
-            <div className="input-group">
-              <input
-                type="password"
-                id="conPassword"
-                value={conPassword}
-                onChange={(e) => setConPassword(e.target.value)}
-                required
-              />
-              <label htmlFor="conPassword">Confirm Password</label>
-              {errors.conPassword && (
-                <div className="error-message">{errors.conPassword}</div>
-              )}
-            </div>
-            <div className="actions">
-              <button type="submit">Sign Up</button>
-              <button type="button" onClick={handleLoginRoute}>Already exist User..Login</button>
-            </div>
-          </form>
-        )}
+      <div className="auth-wrapper">
+        <div className="login-container">
+          <div className="auth-brand">AcECode</div>
+          <h2>Create your account</h2>
+          <p className="auth-subtitle">Join the coding arena and track your progress.</p>
+
+          <div className="auth-steps">
+            <span className={`auth-step ${steps === 'manager' ? 'active' : 'done'}`}>1. Email</span>
+            <span className="auth-step-sep" />
+            <span className={`auth-step ${steps === 'otpverify' ? 'active' : steps === 'Register' ? 'done' : ''}`}>2. OTP</span>
+            <span className="auth-step-sep" />
+            <span className={`auth-step ${steps === 'Register' ? 'active' : ''}`}>3. Details</span>
+          </div>
+
+          {steps === 'manager' && (
+            <form onSubmit={otpManagement}>
+              <div className="input-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                {errors.email && <div className="error-message">{errors.email}</div>}
+              </div>
+              <div className="actions">
+                <button type="submit" className="auth-primary-btn">Send Verification Code</button>
+              </div>
+            </form>
+          )}
+
+          {steps === 'otpverify' && (
+            <form onSubmit={otpVerifier}>
+              <div className="input-group">
+                <label htmlFor="otp">One-Time Password</label>
+                <input
+                  type="text"
+                  id="otp"
+                  placeholder="Enter 6-digit OTP"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  required
+                />
+                {errors.otp && <div className="error-message">{errors.otp}</div>}
+              </div>
+              <div className="actions">
+                <button type="submit" className="auth-primary-btn">Verify OTP</button>
+              </div>
+            </form>
+          )}
+
+          {steps === 'Register' && (
+            <form onSubmit={handleSubmit}>
+              <div className="input-group">
+                <label htmlFor="username">Username</label>
+                <input
+                  type="text"
+                  id="username"
+                  placeholder="Choose a handle"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+                {errors.username && <div className="error-message">{errors.username}</div>}
+              </div>
+              <div className="input-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  placeholder="At least 6 characters"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                {errors.password && <div className="error-message">{errors.password}</div>}
+              </div>
+              <div className="input-group">
+                <label htmlFor="conPassword">Confirm Password</label>
+                <input
+                  type="password"
+                  id="conPassword"
+                  placeholder="Re-enter password"
+                  value={conPassword}
+                  onChange={(e) => setConPassword(e.target.value)}
+                  required
+                />
+                {errors.conPassword && <div className="error-message">{errors.conPassword}</div>}
+              </div>
+              <div className="actions">
+                <button type="submit" className="auth-primary-btn">Create Account</button>
+              </div>
+            </form>
+          )}
+
+          <div className="auth-footer">
+            <span>Already have an account?</span>
+            <button type="button" className="auth-link-btn" onClick={handleLoginRoute}>
+              Log in
+            </button>
+          </div>
+        </div>
       </div>
     )
-  )
+  );
 };
 
 export default Register;

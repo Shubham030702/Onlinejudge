@@ -1,5 +1,5 @@
 import './home.css';
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircleCheck,
@@ -16,41 +16,111 @@ import CustomDropdown from './CustomDropdown';
 
 const API_URL = process.env.REACT_APP_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://onlinejudge-2.onrender.com')
 
+const PAGE_SIZE = 20;
+
 const ProblemList = () => {
   const [problems, setProblems] = useState([]);
   const [attempted, setattempted] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [nextCursor, setNextCursor] = useState(null);
+  const [hasMore, setHasMore] = useState(false);
+  const [stats, setStats] = useState({
+    total: 0,
+    solved: 0,
+    Easy: { total: 0, solved: 0 },
+    Medium: { total: 0, solved: 0 },
+    Hard: { total: 0, solved: 0 }
+  });
+  const [topicCounts, setTopicCounts] = useState([]);
   const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState("All");
   const [topicFilter, setTopicFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [showAllTopics, setShowAllTopics] = useState(false);
 
+  const loadMoreRef = useRef(null);
+
   useEffect(() => {
-    const fetchProblems = async () => {
-      try {
-        const response = await fetch(`${API_URL}/api/problems`, {
-          method: 'GET',
-          credentials: 'include',
-        });
-        if (!response.ok) {
-          if (response.status === 401) {
-            navigate('/')
-          } else throw new Error('Network response was not ok');
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const fetchProblemsPage = useCallback(async (cursorVal = null, isAppend = false) => {
+    if (isAppend) {
+      setLoadingMore(true);
+    } else {
+      setLoading(true);
+    }
+
+    try {
+      const params = new URLSearchParams({
+        limit: String(PAGE_SIZE),
+        difficulty: difficultyFilter,
+        topic: topicFilter,
+        status: statusFilter
+      });
+      if (debouncedSearch.trim()) {
+        params.set('search', debouncedSearch.trim());
+      }
+      if (cursorVal) {
+        params.set('cursor', cursorVal);
+      }
+
+      const response = await fetch(`${API_URL}/api/problems?${params.toString()}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        if (response.status === 401) {
+          navigate('/');
+          return;
         }
-        const data = await response.json();
-        setProblems(data.problems || []);
-        setattempted(data.attempted || []);
-      } catch (error) {
-        console.error('Error fetching problems:', error);
-      } finally {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setProblems(prev => (isAppend ? [...prev, ...(data.problems || [])] : (data.problems || [])));
+      setattempted(data.attempted || []);
+      setNextCursor(data.nextCursor || null);
+      setHasMore(Boolean(data.hasMore));
+      if (data.stats) setStats(data.stats);
+      if (data.topicCounts) setTopicCounts(data.topicCounts);
+    } catch (error) {
+      console.error('Error fetching problems:', error);
+    } finally {
+      if (isAppend) {
+        setLoadingMore(false);
+      } else {
         setLoading(false);
       }
-    };
-    fetchProblems();
-  }, [navigate]);
+    }
+  }, [debouncedSearch, difficultyFilter, topicFilter, statusFilter, navigate]);
+
+  useEffect(() => {
+    fetchProblemsPage(null, false);
+  }, [fetchProblemsPage]);
+
+  useEffect(() => {
+    const sentinel = loadMoreRef.current;
+    if (!sentinel || !hasMore || loadingMore || loading) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loadingMore && nextCursor) {
+          fetchProblemsPage(nextCursor, true);
+        }
+      },
+      { rootMargin: '200px' }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [hasMore, loadingMore, loading, nextCursor, fetchProblemsPage]);
 
   const problemroute = async (id) => {
     setLoading(true);
@@ -72,66 +142,10 @@ const ProblemList = () => {
     }
   }
 
-  // Extract unique topics with counts
-  const topicCounts = useMemo(() => {
-    const counts = {};
-    problems.forEach(p => {
-      if (p.topics) {
-        p.topics.forEach(t => {
-          counts[t] = (counts[t] || 0) + 1;
-        });
-      }
-    });
-    return Object.entries(counts)
-      .sort((a, b) => b[1] - a[1])
-      .map(([name, count]) => ({ name, count }));
-  }, [problems]);
-
-  // Stats for LeetCode-style progress summary
-  const stats = useMemo(() => {
-    const counts = {
-      total: problems.length,
-      solved: 0,
-      Easy: { total: 0, solved: 0 },
-      Medium: { total: 0, solved: 0 },
-      Hard: { total: 0, solved: 0 }
-    };
-    problems.forEach(p => {
-      const isSolved = attempted.includes(p._id);
-      if (isSolved) counts.solved += 1;
-      if (counts[p.difficulty]) {
-        counts[p.difficulty].total += 1;
-        if (isSolved) counts[p.difficulty].solved += 1;
-      }
-    });
-    return counts;
-  }, [problems, attempted]);
-
-  // Filter logic
-  const filteredProblems = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-    return problems.filter(problem => {
-      const matchesSearch =
-        !query ||
-        problem.problemName.toLowerCase().includes(query) ||
-        (problem.topics && problem.topics.some(t => t.toLowerCase().includes(query)));
-      const matchesDifficulty = difficultyFilter === "All" || problem.difficulty === difficultyFilter;
-      const matchesTopic = topicFilter === "All" || (problem.topics && problem.topics.includes(topicFilter));
-      const isSolved = attempted.includes(problem._id);
-      const matchesStatus =
-        statusFilter === "All" ||
-        (statusFilter === "Solved" && isSolved) ||
-        (statusFilter === "Unsolved" && !isSolved);
-
-      return matchesSearch && matchesDifficulty && matchesTopic && matchesStatus;
-    });
-  }, [problems, attempted, searchQuery, difficultyFilter, topicFilter, statusFilter]);
-
   const handlePickRandom = () => {
-    const pool = filteredProblems.length > 0 ? filteredProblems : problems;
-    if (pool.length === 0) return;
-    const unsolvedPool = pool.filter(p => !attempted.includes(p._id));
-    const targetPool = unsolvedPool.length > 0 ? unsolvedPool : pool;
+    if (problems.length === 0) return;
+    const unsolvedPool = problems.filter(p => !attempted.includes(p._id));
+    const targetPool = unsolvedPool.length > 0 ? unsolvedPool : problems;
     const randomProblem = targetPool[Math.floor(Math.random() * targetPool.length)];
     problemroute(randomProblem._id);
   };
@@ -206,7 +220,7 @@ const ProblemList = () => {
                 onClick={() => setTopicFilter("All")}
               >
                 <span>All Topics</span>
-                <span className="topic-count">{problems.length}</span>
+                <span className="topic-count">{stats.total}</span>
               </button>
               {visibleTopics.map(({ name, count }) => (
                 <button
@@ -302,7 +316,7 @@ const ProblemList = () => {
             </div>
 
             <div className="problems-table-body">
-              {filteredProblems.map((problem, index) => {
+              {problems.map((problem, index) => {
                 const isAttempted = attempted.includes(problem._id);
                 const diffClass = problem.difficulty ? problem.difficulty.toLowerCase() : "easy";
                 const topics = problem.topics || [];
@@ -361,7 +375,7 @@ const ProblemList = () => {
                 );
               })}
 
-              {filteredProblems.length === 0 && (
+              {problems.length === 0 && !loading && (
                 <div className="no-results">
                   <p>No problems found matching your current filters.</p>
                   {hasActiveFilters && (
@@ -372,6 +386,20 @@ const ProblemList = () => {
                 </div>
               )}
             </div>
+          </div>
+
+          <div ref={loadMoreRef} className="pagination-sentinel">
+            {loadingMore && (
+              <div className="loading-more">
+                <span className="loading-more-spinner" />
+                <span>Loading next 20 problems...</span>
+              </div>
+            )}
+            {!loading && !loadingMore && !hasMore && problems.length > 0 && (
+              <div className="end-of-list">
+                Showing {problems.length} problems
+              </div>
+            )}
           </div>
 
         </div>

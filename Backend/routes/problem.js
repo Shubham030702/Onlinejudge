@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const Problem = require('../Database/problems');
 const User = require('../Database/user');
 const CodeSubmission = require('../judge0');
@@ -14,14 +15,111 @@ function base64code(code){
 
 router.get('/api/problems', isLoggedIn, async (req, res) => {
   try {
-    const problems = await Problem.find({contestOnly : false});
     const userdata = await User.findById(req.session.user.id);
-    const attempted = userdata ? userdata.Submissions.map(item=>item.Problem.toString()) : [];
-    const solved = userdata ? userdata.Submissions.filter(item=>item.Status === 'Accepted' || item.Status === 'accepted').map(item=>item.Problem.toString()) : [];
-    if (!problems) {
-      return res.status(404).json({ message: "No problems found" });
+    const attempted = userdata ? userdata.Submissions.map(item => item.Problem.toString()) : [];
+    const solved = userdata
+      ? userdata.Submissions.filter(item => item.Status === 'Accepted' || item.Status === 'accepted').map(item => item.Problem.toString())
+      : [];
+
+    const hasPaginationParams = req.query.limit !== undefined || req.query.cursor !== undefined;
+    if (!hasPaginationParams) {
+      const problems = await Problem.find({ contestOnly: false });
+      if (!problems) {
+        return res.status(404).json({ message: 'No problems found' });
+      }
+      return res.json({ problems, attempted, solved });
     }
-    res.json({problems,attempted,solved});
+
+    const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 20, 1), 100);
+    const { cursor, search, difficulty, topic, status } = req.query;
+
+    const filter = { contestOnly: false };
+
+    if (cursor && mongoose.Types.ObjectId.isValid(cursor)) {
+      filter._id = { $gt: new mongoose.Types.ObjectId(cursor) };
+    }
+
+    if (difficulty && difficulty !== 'All') {
+      filter.difficulty = difficulty;
+    }
+
+    if (topic && topic !== 'All') {
+      filter.topics = topic;
+    }
+
+    if (search && search.trim()) {
+      const regex = new RegExp(search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      filter.$or = [{ problemName: regex }, { topics: regex }];
+    }
+
+    if (status === 'Solved') {
+      const attemptedObjectIds = attempted
+        .filter(id => mongoose.Types.ObjectId.isValid(id))
+        .map(id => new mongoose.Types.ObjectId(id));
+      filter._id = filter._id
+        ? { ...filter._id, $in: attemptedObjectIds }
+        : { $in: attemptedObjectIds };
+    } else if (status === 'Unsolved') {
+      const attemptedObjectIds = attempted
+        .filter(id => mongoose.Types.ObjectId.isValid(id))
+        .map(id => new mongoose.Types.ObjectId(id));
+      filter._id = filter._id
+        ? { ...filter._id, $nin: attemptedObjectIds }
+        : { $nin: attemptedObjectIds };
+    }
+
+    const items = await Problem.find(filter)
+      .sort({ _id: 1 })
+      .limit(limit + 1);
+
+    const hasMore = items.length > limit;
+    const problems = hasMore ? items.slice(0, limit) : items;
+    const nextCursor = hasMore ? problems[problems.length - 1]._id.toString() : null;
+
+    let stats = null;
+    let topicCounts = null;
+
+    if (!cursor) {
+      const allMeta = await Problem.find({ contestOnly: false }).select('_id difficulty topics').lean();
+      const attemptedSet = new Set(attempted);
+      const counts = {
+        total: allMeta.length,
+        solved: 0,
+        Easy: { total: 0, solved: 0 },
+        Medium: { total: 0, solved: 0 },
+        Hard: { total: 0, solved: 0 }
+      };
+      const tMap = {};
+
+      allMeta.forEach(p => {
+        const isDone = attemptedSet.has(p._id.toString());
+        if (isDone) counts.solved += 1;
+        if (counts[p.difficulty]) {
+          counts[p.difficulty].total += 1;
+          if (isDone) counts[p.difficulty].solved += 1;
+        }
+        if (Array.isArray(p.topics)) {
+          p.topics.forEach(t => {
+            tMap[t] = (tMap[t] || 0) + 1;
+          });
+        }
+      });
+
+      stats = counts;
+      topicCounts = Object.entries(tMap)
+        .sort((a, b) => b[1] - a[1])
+        .map(([name, count]) => ({ name, count }));
+    }
+
+    res.json({
+      problems,
+      attempted,
+      solved,
+      nextCursor,
+      hasMore,
+      stats,
+      topicCounts
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

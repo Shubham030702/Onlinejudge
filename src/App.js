@@ -12,7 +12,6 @@ import ProblemDesc from './components/ProblemDesc';
 import RegisterContest from './components/registerContest';
 import Leaderboard from './components/Leaderboard';
 import ContestUpdate from './components/contestUpdate';
-import Journey from './components/Journey';
 import { useEffect, useState } from 'react';
 
 const API_URL = process.env.REACT_APP_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://onlinejudge-2.onrender.com')
@@ -58,7 +57,6 @@ function App() {
         <Route path='/contestUpdate' element={<ContestUpdate/>} />
         <Route path='/profile' element={<Profile/>}/>
         <Route path='/Leaderboard' element={<Leaderboard/>}/>
-        <Route path='/journey' element={<Journey />} />
       </Routes>
     </>
   );

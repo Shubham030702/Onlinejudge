@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import ReactFlow, {
+  Background,
+  Controls,
+  MiniMap,
   Handle,
   Position,
   MarkerType
@@ -15,14 +18,14 @@ const API_URL = process.env.REACT_APP_API_URL || (window.location.hostname === '
 const ProblemNode = ({ data }) => {
   const { label, difficulty, status, onClick } = data;
 
-  const difficultyColor = useMemo(() => {
-    if (difficulty === 'Easy') return '#10b981';
-    if (difficulty === 'Medium') return '#f59e0b';
-    return '#ef4444';
+  const difficultyClass = useMemo(() => {
+    if (difficulty === 'Easy') return 'diff-easy';
+    if (difficulty === 'Medium') return 'diff-medium';
+    return 'diff-hard';
   }, [difficulty]);
 
   return (
-    <div 
+    <div
       className={`custom-problem-node node-${status}`}
       onClick={status !== 'locked' ? onClick : undefined}
     >
@@ -30,17 +33,17 @@ const ProblemNode = ({ data }) => {
       <div className="node-glow" />
       <div className="node-content-wrap">
         <div className="node-top-bar">
-          <span className={`status-badge badge-${status}`}>
-            {status === 'completed' ? 'SOLVED' : status.toUpperCase()}
+          <span className={`journey-status-badge badge-${status}`}>
+            {status === 'completed' ? 'Solved' : status === 'unlocked' ? 'Available' : 'Locked'}
           </span>
-          <span className="diff-label" style={{ color: difficultyColor }}>
+          <span className={`journey-diff-pill ${difficultyClass}`}>
             {difficulty}
           </span>
         </div>
         <div className="node-title" title={label}>{label}</div>
         <div className="node-footer">
           <span className="node-action-text">
-            {status === 'locked' ? 'Prerequisites locked 🔒' : 'Solve problem 🚀'}
+            {status === 'locked' ? 'Complete prerequisites to unlock' : status === 'completed' ? 'Review solution →' : 'Solve challenge →'}
           </span>
         </div>
       </div>
@@ -167,10 +170,10 @@ function Journey() {
             const col = index % maxNodesPerRow;
             
             const rowCount = (row === numRows - 1) ? (group.length % maxNodesPerRow || maxNodesPerRow) : maxNodesPerRow;
-            const rowWidth = rowCount * 360;
+            const rowWidth = rowCount * 280;
             
-            const x = (col * 360) - (rowWidth / 2) + 180;
-            const y = lvl * 450 + row * 240 + 100;
+            const x = (col * 280) - (rowWidth / 2) + 140;
+            const y = lvl * 220 + row * 150 + 40;
             calculatedPositions[id] = { x, y };
           });
         });
@@ -235,15 +238,15 @@ function Journey() {
                   id: `e-${prereqStr}-${prob._id}`,
                   source: prereqStr,
                   target: prob._id,
+                  type: 'smoothstep',
                   animated: isSourceCompleted,
-                  style: { 
-                    stroke: isSourceCompleted ? '#10b981' : '#4b5563', 
-                    strokeWidth: 2,
-                    boxShadow: isSourceCompleted ? '0 0 8px #10b981' : 'none'
+                  style: {
+                    stroke: isSourceCompleted ? '#10b981' : '#64748b',
+                    strokeWidth: 2.5
                   },
                   markerEnd: {
                     type: MarkerType.ArrowClosed,
-                    color: isSourceCompleted ? '#10b981' : '#4b5563'
+                    color: isSourceCompleted ? '#10b981' : '#64748b'
                   }
                 });
               }
@@ -265,14 +268,28 @@ function Journey() {
     fetchJourneyData();
   }, [navigate]);
 
+  const completedCount = useMemo(
+    () => nodes.filter(n => n.data?.status === 'completed').length,
+    [nodes]
+  );
+
   return (
     <div className="journey-wrapper">
       {loading && <Loader messages={["Constructing Skill Tree...", "Connecting paths...", "Glow mapping..."]} />}
       
       <div className="journey-header">
-        <h1>Learn Journey</h1>
-        <p>Unlock problems step-by-step. Solve highlighted nodes to advance along paths.</p>
-        {errorMsg && <p style={{ color: '#ef4444', marginTop: '8px', fontWeight: 'bold' }}>⚠️ Error: {errorMsg}</p>}
+        <div className="journey-header-left">
+          <h1>Learn Journey</h1>
+          <p>Unlock problems step-by-step. Solve highlighted nodes to advance along paths.</p>
+          {errorMsg && <p style={{ color: '#ef4444', marginTop: '8px', fontWeight: 'bold' }}>⚠️ Error: {errorMsg}</p>}
+        </div>
+
+        <div className="journey-legend">
+          <span className="legend-progress">{completedCount} / {nodes.length} Solved</span>
+          <span className="legend-item"><span className="legend-dot completed" />Solved</span>
+          <span className="legend-item"><span className="legend-dot unlocked" />Available</span>
+          <span className="legend-item"><span className="legend-dot locked" />Locked</span>
+        </div>
       </div>
 
       <div className="journey-flow-container">
@@ -283,8 +300,25 @@ function Journey() {
           onInit={setReactFlowInstance}
           style={{ width: '100%', height: '100%' }}
           proOptions={{ hideAttribution: true }}
+          minZoom={0.25}
+          maxZoom={1.5}
           fitView
-        />
+          fitViewOptions={{ padding: 0.12 }}
+        >
+          <Background variant="dots" gap={22} size={1.5} color="#30363d" />
+          <Controls position="bottom-left" showInteractive={false} />
+          <MiniMap
+            position="bottom-right"
+            pannable
+            zoomable
+            nodeColor={(node) => {
+              if (node.data?.status === 'completed') return '#10b981';
+              if (node.data?.status === 'unlocked') return '#38bdf8';
+              return '#484f58';
+            }}
+            maskColor="rgba(13, 17, 23, 0.75)"
+          />
+        </ReactFlow>
       </div>
     </div>
   );
